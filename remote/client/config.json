@@ -1,0 +1,11 @@
+{
+    "server_url": "ws://192.168.1.100:8089",
+    "quality": 40,
+    "fps": 30,
+    "scale": 0.5,
+    "auto_start": true,
+    "require_approval": false,
+    "adaptive_quality": true,
+    "min_quality": 15,
+    "max_quality": 70
+}

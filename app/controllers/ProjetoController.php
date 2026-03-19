@@ -1,0 +1,99 @@
+<?php
+/**
+ * Controller: Projeto
+ */
+require_once __DIR__ . '/../models/Projeto.php';
+require_once __DIR__ . '/../models/Usuario.php';
+require_once __DIR__ . '/../models/Notificacao.php';
+
+class ProjetoController {
+    private $projeto;
+    private $notificacao;
+
+    public function __construct() {
+        $this->projeto = new Projeto();
+        $this->notificacao = new Notificacao();
+    }
+
+    public function listar() {
+        $filtros = [
+            'status' => $_GET['status'] ?? '',
+            'busca' => $_GET['busca'] ?? ''
+        ];
+        return $this->projeto->listar($filtros);
+    }
+
+    public function ver($id) {
+        $projeto = $this->projeto->findById($id);
+        if (!$projeto) return null;
+        $projeto['equipe'] = $this->projeto->getEquipe($id);
+        $projeto['comentarios'] = $this->projeto->getComentarios($id);
+        return $projeto;
+    }
+
+    public function criar($dados) {
+        $projetoData = [
+            'nome' => sanitizar($dados['nome']),
+            'descricao' => sanitizar($dados['descricao'] ?? ''),
+            'responsavel_id' => $dados['responsavel_id'] ?? null,
+            'prioridade' => $dados['prioridade'] ?? 'media',
+            'status' => 'planejamento',
+            'data_inicio' => $dados['data_inicio'] ?? null,
+            'prazo' => $dados['prazo'] ?? null
+        ];
+
+        $id = $this->projeto->criar($projetoData);
+
+        // Adicionar membros da equipe
+        if (!empty($dados['equipe'])) {
+            foreach ($dados['equipe'] as $membroId) {
+                $this->projeto->adicionarMembro($id, $membroId);
+            }
+        }
+
+        // Notificar responsável
+        if (!empty($dados['responsavel_id'])) {
+            $usuario = new Usuario();
+            $responsavel = $usuario->findById($dados['responsavel_id']);
+            if ($responsavel) {
+                $projetoData['nome'] = $dados['nome'];
+                $this->notificacao->notificarNovoProjeto($projetoData, $responsavel);
+            }
+        }
+
+        // Log
+        $db = Database::getInstance();
+        $db->insert('logs', [
+            'usuario_id' => $_SESSION['usuario_id'] ?? null,
+            'acao' => 'projeto_criado',
+            'entidade_tipo' => 'projeto',
+            'entidade_id' => $id,
+            'detalhes' => "Projeto '{$dados['nome']}' criado",
+            'ip' => $_SERVER['REMOTE_ADDR'] ?? ''
+        ]);
+
+        return ['success' => true, 'id' => $id];
+    }
+
+    public function atualizar($id, $dados) {
+        $update = [];
+        $campos = ['nome', 'descricao', 'responsavel_id', 'prioridade', 'status', 'data_inicio', 'prazo', 'progresso'];
+        
+        foreach ($campos as $campo) {
+            if (isset($dados[$campo])) {
+                $update[$campo] = sanitizar($dados[$campo]);
+            }
+        }
+
+        if (!empty($update)) {
+            $this->projeto->atualizar($id, $update);
+        }
+
+        return ['success' => true];
+    }
+
+    public function comentar($projetoId, $conteudo) {
+        $this->projeto->adicionarComentario($projetoId, $_SESSION['usuario_id'], sanitizar($conteudo));
+        return ['success' => true];
+    }
+}

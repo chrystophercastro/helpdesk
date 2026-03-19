@@ -1,0 +1,26 @@
+RewriteEngine On
+RewriteBase /helpdesk/
+
+# Bloquear acesso a arquivos sensíveis
+<FilesMatch "\.(sql|md|env|log)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Bloquear acesso à pasta config
+RewriteRule ^config/ - [F,L]
+
+# Permitir acesso a arquivos estáticos
+RewriteCond %{REQUEST_URI} \.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|pdf|doc|docx|xls|xlsx)$ [NC]
+RewriteRule ^ - [L]
+
+# Upload files
+RewriteRule ^uploads/(.*)$ uploads/$1 [L]
+
+# Headers de segurança
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

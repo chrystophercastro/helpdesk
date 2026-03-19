@@ -1,0 +1,473 @@
+[2026-03-17 17:51:58] [INFO] ══════════════════════════════════════════════
+[2026-03-17 17:51:58] [INFO]   HelpDesk Remote — WebSocket Relay Server
+[2026-03-17 17:51:58] [INFO]   Escutando em ws://0.0.0.0:8089
+[2026-03-17 17:51:58] [INFO] ══════════════════════════════════════════════
+[2026-03-17 17:52:01] [DEBUG] Nova conexão de: 127.0.0.1:52547
+[2026-03-17 17:52:01] [INFO] Unknown desconectou: 127.0.0.1:52547
+[2026-03-17 17:52:30] [DEBUG] Nova conexão de: 127.0.0.1:52058
+[2026-03-17 17:52:30] [INFO] Unknown desconectou: 127.0.0.1:52058
+[2026-03-17 17:53:04] [DEBUG] Nova conexão de: 127.0.0.1:54790
+[2026-03-17 17:53:04] [INFO] Unknown desconectou: 127.0.0.1:54790
+[2026-03-17 18:15:30] [DEBUG] Nova conexão de: 127.0.0.1:52374
+[2026-03-17 18:15:30] [INFO] Unknown desconectou: 127.0.0.1:52374
+[2026-03-18 10:49:58] [DEBUG] Nova conexão de: 127.0.0.1:52378
+[2026-03-18 10:49:58] [INFO] Unknown desconectou: 127.0.0.1:52378
+[2026-03-18 10:50:13] [DEBUG] Nova conexão de: 127.0.0.1:56168
+[2026-03-18 10:50:13] [INFO] Unknown desconectou: 127.0.0.1:56168
+[2026-03-18 10:50:28] [DEBUG] Nova conexão de: 127.0.0.1:59578
+[2026-03-18 10:50:28] [INFO] Unknown desconectou: 127.0.0.1:59578
+[2026-03-18 10:50:43] [DEBUG] Nova conexão de: 127.0.0.1:63160
+[2026-03-18 10:50:43] [INFO] Unknown desconectou: 127.0.0.1:63160
+[2026-03-18 10:50:58] [DEBUG] Nova conexão de: 127.0.0.1:55739
+[2026-03-18 10:50:58] [INFO] Unknown desconectou: 127.0.0.1:55739
+[2026-03-18 10:51:13] [DEBUG] Nova conexão de: 127.0.0.1:59544
+[2026-03-18 10:51:13] [INFO] Unknown desconectou: 127.0.0.1:59544
+[2026-03-18 10:51:29] [DEBUG] Nova conexão de: 127.0.0.1:56607
+[2026-03-18 10:51:29] [INFO] Unknown desconectou: 127.0.0.1:56607
+[2026-03-18 10:51:44] [DEBUG] Nova conexão de: 127.0.0.1:59726
+[2026-03-18 10:51:44] [INFO] Unknown desconectou: 127.0.0.1:59726
+[2026-03-18 10:51:59] [DEBUG] Nova conexão de: 127.0.0.1:60692
+[2026-03-18 10:51:59] [INFO] Unknown desconectou: 127.0.0.1:60692
+[2026-03-18 10:52:14] [DEBUG] Nova conexão de: 127.0.0.1:62435
+[2026-03-18 10:52:14] [INFO] Unknown desconectou: 127.0.0.1:62435
+[2026-03-18 10:52:35] [DEBUG] Nova conexão de: 127.0.0.1:65246
+[2026-03-18 10:52:35] [INFO] Unknown desconectou: 127.0.0.1:65246
+[2026-03-18 10:53:35] [DEBUG] Nova conexão de: 127.0.0.1:57419
+[2026-03-18 10:53:35] [INFO] Unknown desconectou: 127.0.0.1:57419
+[2026-03-18 10:54:35] [DEBUG] Nova conexão de: 127.0.0.1:61763
+[2026-03-18 10:54:35] [INFO] Unknown desconectou: 127.0.0.1:61763
+[2026-03-18 10:55:35] [DEBUG] Nova conexão de: 127.0.0.1:64364
+[2026-03-18 10:55:35] [INFO] Unknown desconectou: 127.0.0.1:64364
+[2026-03-18 10:56:35] [DEBUG] Nova conexão de: 127.0.0.1:58963
+[2026-03-18 10:56:35] [INFO] Unknown desconectou: 127.0.0.1:58963
+[2026-03-18 10:57:35] [DEBUG] Nova conexão de: 127.0.0.1:50814
+[2026-03-18 10:57:35] [INFO] Unknown desconectou: 127.0.0.1:50814
+[2026-03-18 10:58:35] [DEBUG] Nova conexão de: 127.0.0.1:56082
+[2026-03-18 10:58:35] [INFO] Unknown desconectou: 127.0.0.1:56082
+[2026-03-18 10:59:35] [DEBUG] Nova conexão de: 127.0.0.1:49184
+[2026-03-18 10:59:35] [INFO] Unknown desconectou: 127.0.0.1:49184
+[2026-03-18 10:59:40] [INFO] ══════════════════════════════════════════════
+[2026-03-18 10:59:40] [INFO]   HelpDesk Remote — WebSocket Relay Server
+[2026-03-18 10:59:40] [INFO]   Escutando em ws://0.0.0.0:8089
+[2026-03-18 10:59:40] [INFO]   PID: 24184
+[2026-03-18 10:59:40] [INFO] ══════════════════════════════════════════════
+[2026-03-18 10:59:46] [DEBUG] Nova conexão de: 127.0.0.1:49202
+[2026-03-18 10:59:46] [INFO] Unknown desconectou: 127.0.0.1:49202
+[2026-03-18 11:00:35] [DEBUG] Nova conexão de: 127.0.0.1:50974
+[2026-03-18 11:00:35] [INFO] Unknown desconectou: 127.0.0.1:50974
+[2026-03-18 11:01:35] [DEBUG] Nova conexão de: 127.0.0.1:61963
+[2026-03-18 11:01:35] [INFO] Unknown desconectou: 127.0.0.1:61963
+[2026-03-18 11:02:35] [DEBUG] Nova conexão de: 127.0.0.1:50162
+[2026-03-18 11:02:35] [INFO] Unknown desconectou: 127.0.0.1:50162
+[2026-03-18 11:03:35] [DEBUG] Nova conexão de: 127.0.0.1:50280
+[2026-03-18 11:03:35] [INFO] Unknown desconectou: 127.0.0.1:50280
+[2026-03-18 11:04:35] [DEBUG] Nova conexão de: 127.0.0.1:58138
+[2026-03-18 11:04:35] [INFO] Unknown desconectou: 127.0.0.1:58138
+[2026-03-18 11:05:35] [DEBUG] Nova conexão de: 127.0.0.1:51827
+[2026-03-18 11:05:35] [INFO] Unknown desconectou: 127.0.0.1:51827
+[2026-03-18 11:06:35] [DEBUG] Nova conexão de: 127.0.0.1:59273
+[2026-03-18 11:06:35] [INFO] Unknown desconectou: 127.0.0.1:59273
+[2026-03-18 11:06:44] [DEBUG] Nova conexão de: 127.0.0.1:53580
+[2026-03-18 11:06:44] [INFO] Unknown desconectou: 127.0.0.1:53580
+[2026-03-18 11:06:59] [DEBUG] Nova conexão de: 127.0.0.1:61214
+[2026-03-18 11:06:59] [INFO] Unknown desconectou: 127.0.0.1:61214
+[2026-03-18 11:07:14] [DEBUG] Nova conexão de: 127.0.0.1:56822
+[2026-03-18 11:07:14] [INFO] Unknown desconectou: 127.0.0.1:56822
+[2026-03-18 11:07:29] [DEBUG] Nova conexão de: 127.0.0.1:63191
+[2026-03-18 11:07:29] [INFO] Unknown desconectou: 127.0.0.1:63191
+[2026-03-18 11:08:30] [DEBUG] Nova conexão de: 127.0.0.1:59617
+[2026-03-18 11:08:30] [INFO] Unknown desconectou: 127.0.0.1:59617
+[2026-03-18 11:09:31] [DEBUG] Nova conexão de: 127.0.0.1:57908
+[2026-03-18 11:09:31] [INFO] Unknown desconectou: 127.0.0.1:57908
+[2026-03-18 11:10:32] [DEBUG] Nova conexão de: 127.0.0.1:61636
+[2026-03-18 11:10:32] [INFO] Unknown desconectou: 127.0.0.1:61636
+[2026-03-18 11:11:33] [DEBUG] Nova conexão de: 127.0.0.1:58580
+[2026-03-18 11:11:33] [INFO] Unknown desconectou: 127.0.0.1:58580
+[2026-03-18 11:12:34] [DEBUG] Nova conexão de: 127.0.0.1:59221
+[2026-03-18 11:12:34] [INFO] Unknown desconectou: 127.0.0.1:59221
+[2026-03-18 11:13:35] [DEBUG] Nova conexão de: 127.0.0.1:52214
+[2026-03-18 11:13:35] [INFO] Unknown desconectou: 127.0.0.1:52214
+[2026-03-18 11:14:35] [DEBUG] Nova conexão de: 127.0.0.1:55585
+[2026-03-18 11:14:35] [INFO] Unknown desconectou: 127.0.0.1:55585
+[2026-03-18 11:15:35] [DEBUG] Nova conexão de: 127.0.0.1:61144
+[2026-03-18 11:15:35] [INFO] Unknown desconectou: 127.0.0.1:61144
+[2026-03-18 11:16:35] [DEBUG] Nova conexão de: 127.0.0.1:58333
+[2026-03-18 11:16:35] [INFO] Unknown desconectou: 127.0.0.1:58333
+[2026-03-18 11:17:35] [DEBUG] Nova conexão de: 127.0.0.1:52562
+[2026-03-18 11:17:35] [INFO] Unknown desconectou: 127.0.0.1:52562
+[2026-03-18 11:18:35] [DEBUG] Nova conexão de: 127.0.0.1:56606
+[2026-03-18 11:18:35] [INFO] Unknown desconectou: 127.0.0.1:56606
+[2026-03-18 11:19:35] [DEBUG] Nova conexão de: 127.0.0.1:49836
+[2026-03-18 11:19:35] [INFO] Unknown desconectou: 127.0.0.1:49836
+[2026-03-18 11:20:35] [DEBUG] Nova conexão de: 127.0.0.1:62396
+[2026-03-18 11:20:35] [INFO] Unknown desconectou: 127.0.0.1:62396
+[2026-03-18 11:21:35] [DEBUG] Nova conexão de: 127.0.0.1:51934
+[2026-03-18 11:21:35] [INFO] Unknown desconectou: 127.0.0.1:51934
+[2026-03-18 11:22:35] [DEBUG] Nova conexão de: 127.0.0.1:64470
+[2026-03-18 11:22:35] [INFO] Unknown desconectou: 127.0.0.1:64470
+[2026-03-18 11:23:35] [DEBUG] Nova conexão de: 127.0.0.1:51914
+[2026-03-18 11:23:35] [INFO] Unknown desconectou: 127.0.0.1:51914
+[2026-03-18 11:24:35] [DEBUG] Nova conexão de: 127.0.0.1:51265
+[2026-03-18 11:24:35] [INFO] Unknown desconectou: 127.0.0.1:51265
+[2026-03-18 11:25:35] [DEBUG] Nova conexão de: 127.0.0.1:64109
+[2026-03-18 11:25:35] [INFO] Unknown desconectou: 127.0.0.1:64109
+[2026-03-18 11:26:35] [DEBUG] Nova conexão de: 127.0.0.1:49673
+[2026-03-18 11:26:35] [INFO] Unknown desconectou: 127.0.0.1:49673
+[2026-03-18 11:27:35] [DEBUG] Nova conexão de: 127.0.0.1:52388
+[2026-03-18 11:27:35] [INFO] Unknown desconectou: 127.0.0.1:52388
+[2026-03-18 11:28:35] [DEBUG] Nova conexão de: 127.0.0.1:63506
+[2026-03-18 11:28:35] [INFO] Unknown desconectou: 127.0.0.1:63506
+[2026-03-18 11:29:35] [DEBUG] Nova conexão de: 127.0.0.1:63038
+[2026-03-18 11:29:35] [INFO] Unknown desconectou: 127.0.0.1:63038
+[2026-03-18 11:30:35] [DEBUG] Nova conexão de: 127.0.0.1:58430
+[2026-03-18 11:30:35] [INFO] Unknown desconectou: 127.0.0.1:58430
+[2026-03-18 11:31:35] [DEBUG] Nova conexão de: 127.0.0.1:57947
+[2026-03-18 11:31:35] [INFO] Unknown desconectou: 127.0.0.1:57947
+[2026-03-18 11:32:35] [DEBUG] Nova conexão de: 127.0.0.1:61099
+[2026-03-18 11:32:35] [INFO] Unknown desconectou: 127.0.0.1:61099
+[2026-03-18 11:33:35] [DEBUG] Nova conexão de: 127.0.0.1:52824
+[2026-03-18 11:33:35] [INFO] Unknown desconectou: 127.0.0.1:52824
+[2026-03-18 11:34:22] [DEBUG] Nova conexão de: 127.0.0.1:53596
+[2026-03-18 11:34:22] [INFO] Unknown desconectou: 127.0.0.1:53596
+[2026-03-18 11:34:22] [DEBUG] Nova conexão de: 127.0.0.1:53597
+[2026-03-18 11:34:22] [INFO] Unknown desconectou: 127.0.0.1:53597
+[2026-03-18 11:34:35] [DEBUG] Nova conexão de: 127.0.0.1:64131
+[2026-03-18 11:34:35] [INFO] Unknown desconectou: 127.0.0.1:64131
+[2026-03-18 11:35:35] [DEBUG] Nova conexão de: 127.0.0.1:63182
+[2026-03-18 11:35:35] [INFO] Unknown desconectou: 127.0.0.1:63182
+[2026-03-18 11:35:40] [DEBUG] Nova conexão de: 127.0.0.1:63185
+[2026-03-18 11:35:40] [DEBUG] Handshake OK: 127.0.0.1:63185
+[2026-03-18 11:35:40] [INFO] Unknown desconectou: 127.0.0.1:63185
+[2026-03-18 11:36:35] [DEBUG] Nova conexão de: 127.0.0.1:62808
+[2026-03-18 11:36:35] [INFO] Unknown desconectou: 127.0.0.1:62808
+[2026-03-18 11:37:35] [DEBUG] Nova conexão de: 127.0.0.1:54743
+[2026-03-18 11:37:35] [INFO] Unknown desconectou: 127.0.0.1:54743
+[2026-03-18 11:37:43] [DEBUG] Nova conexão de: 127.0.0.1:52314
+[2026-03-18 11:37:43] [INFO] Unknown desconectou: 127.0.0.1:52314
+[2026-03-18 11:37:43] [DEBUG] Nova conexão de: 127.0.0.1:49320
+[2026-03-18 11:37:43] [INFO] Unknown desconectou: 127.0.0.1:49320
+[2026-03-18 11:37:58] [DEBUG] Nova conexão de: 127.0.0.1:63185
+[2026-03-18 11:37:58] [INFO] Unknown desconectou: 127.0.0.1:63185
+[2026-03-18 11:38:14] [DEBUG] Nova conexão de: 127.0.0.1:64691
+[2026-03-18 11:38:14] [INFO] Unknown desconectou: 127.0.0.1:64691
+[2026-03-18 11:38:29] [DEBUG] Nova conexão de: 127.0.0.1:58294
+[2026-03-18 11:38:29] [INFO] Unknown desconectou: 127.0.0.1:58294
+[2026-03-18 11:38:44] [DEBUG] Nova conexão de: 127.0.0.1:58618
+[2026-03-18 11:38:44] [INFO] Unknown desconectou: 127.0.0.1:58618
+[2026-03-18 11:38:58] [DEBUG] Nova conexão de: 127.0.0.1:61456
+[2026-03-18 11:38:58] [INFO] Unknown desconectou: 127.0.0.1:61456
+[2026-03-18 11:39:02] [DEBUG] Nova conexão de: 127.0.0.1:61168
+[2026-03-18 11:39:02] [DEBUG] Handshake OK: 127.0.0.1:61168
+[2026-03-18 11:39:05] [INFO] Unknown desconectou: 127.0.0.1:61168
+[2026-03-18 11:39:30] [DEBUG] Nova conexão de: 127.0.0.1:61186
+[2026-03-18 11:39:30] [INFO] Unknown desconectou: 127.0.0.1:61186
+[2026-03-18 11:39:31] [DEBUG] Nova conexão de: 127.0.0.1:60444
+[2026-03-18 11:39:31] [DEBUG] Handshake OK: 127.0.0.1:60444
+[2026-03-18 11:39:45] [DEBUG] Nova conexão de: 127.0.0.1:60448
+[2026-03-18 11:39:45] [INFO] Unknown desconectou: 127.0.0.1:60448
+[2026-03-18 11:39:52] [INFO] Unknown desconectou: 127.0.0.1:60444
+[2026-03-18 11:39:52] [DEBUG] Nova conexão de: 127.0.0.1:60566
+[2026-03-18 11:39:52] [INFO] Unknown desconectou: 127.0.0.1:60566
+[2026-03-18 11:40:00] [DEBUG] Nova conexão de: 127.0.0.1:61554
+[2026-03-18 11:40:00] [INFO] Unknown desconectou: 127.0.0.1:61554
+[2026-03-18 11:40:15] [DEBUG] Nova conexão de: 127.0.0.1:64356
+[2026-03-18 11:40:15] [INFO] Unknown desconectou: 127.0.0.1:64356
+[2026-03-18 11:40:30] [DEBUG] Nova conexão de: 127.0.0.1:55602
+[2026-03-18 11:40:30] [INFO] Unknown desconectou: 127.0.0.1:55602
+[2026-03-18 11:40:37] [DEBUG] Nova conexão de: 127.0.0.1:63485
+[2026-03-18 11:40:37] [DEBUG] Handshake OK: 127.0.0.1:63485
+[2026-03-18 11:40:44] [INFO] Unknown desconectou: 127.0.0.1:63485
+[2026-03-18 11:40:44] [DEBUG] Nova conexão de: 127.0.0.1:54364
+[2026-03-18 11:40:44] [INFO] Unknown desconectou: 127.0.0.1:54364
+[2026-03-18 11:40:45] [DEBUG] Nova conexão de: 127.0.0.1:54366
+[2026-03-18 11:40:45] [INFO] Unknown desconectou: 127.0.0.1:54366
+[2026-03-18 11:41:00] [DEBUG] Nova conexão de: 127.0.0.1:64765
+[2026-03-18 11:41:00] [INFO] Unknown desconectou: 127.0.0.1:64765
+[2026-03-18 11:41:15] [DEBUG] Nova conexão de: 127.0.0.1:63349
+[2026-03-18 11:41:15] [INFO] Unknown desconectou: 127.0.0.1:63349
+[2026-03-18 11:41:30] [DEBUG] Nova conexão de: 127.0.0.1:63538
+[2026-03-18 11:41:30] [INFO] Unknown desconectou: 127.0.0.1:63538
+[2026-03-18 11:41:45] [DEBUG] Nova conexão de: 127.0.0.1:53481
+[2026-03-18 11:41:45] [INFO] Unknown desconectou: 127.0.0.1:53481
+[2026-03-18 11:42:00] [DEBUG] Nova conexão de: 127.0.0.1:58691
+[2026-03-18 11:42:00] [INFO] Unknown desconectou: 127.0.0.1:58691
+[2026-03-18 11:42:35] [DEBUG] Nova conexão de: 127.0.0.1:62285
+[2026-03-18 11:42:35] [INFO] Unknown desconectou: 127.0.0.1:62285
+[2026-03-18 11:42:41] [DEBUG] Nova conexão de: 127.0.0.1:62286
+[2026-03-18 11:42:41] [DEBUG] Handshake OK: 127.0.0.1:62286
+[2026-03-18 11:42:41] [INFO] Unknown desconectou: 127.0.0.1:62286
+[2026-03-18 11:43:04] [DEBUG] Nova conexão de: 127.0.0.1:53505
+[2026-03-18 11:43:04] [DEBUG] Handshake OK: 127.0.0.1:53505
+[2026-03-18 11:43:04] [INFO] Unknown desconectou: 127.0.0.1:53505
+[2026-03-18 11:43:35] [DEBUG] Nova conexão de: 127.0.0.1:53933
+[2026-03-18 11:43:35] [INFO] Unknown desconectou: 127.0.0.1:53933
+[2026-03-18 11:44:35] [DEBUG] Nova conexão de: 127.0.0.1:59604
+[2026-03-18 11:44:35] [INFO] Unknown desconectou: 127.0.0.1:59604
+[2026-03-18 11:45:15] [DEBUG] Nova conexão de: 127.0.0.1:54116
+[2026-03-18 11:45:15] [INFO] Unknown desconectou: 127.0.0.1:54116
+[2026-03-18 11:45:30] [DEBUG] Nova conexão de: 127.0.0.1:56447
+[2026-03-18 11:45:30] [INFO] Unknown desconectou: 127.0.0.1:56447
+[2026-03-18 11:45:45] [DEBUG] Nova conexão de: 127.0.0.1:59052
+[2026-03-18 11:45:45] [INFO] Unknown desconectou: 127.0.0.1:59052
+[2026-03-18 11:46:00] [DEBUG] Nova conexão de: 127.0.0.1:51149
+[2026-03-18 11:46:00] [INFO] Unknown desconectou: 127.0.0.1:51149
+[2026-03-18 11:46:15] [DEBUG] Nova conexão de: 127.0.0.1:50963
+[2026-03-18 11:46:15] [INFO] Unknown desconectou: 127.0.0.1:50963
+[2026-03-18 11:46:35] [DEBUG] Nova conexão de: 127.0.0.1:50455
+[2026-03-18 11:46:35] [INFO] Unknown desconectou: 127.0.0.1:50455
+[2026-03-18 11:47:35] [DEBUG] Nova conexão de: 127.0.0.1:52706
+[2026-03-18 11:47:35] [INFO] Unknown desconectou: 127.0.0.1:52706
+[2026-03-18 11:48:35] [DEBUG] Nova conexão de: 127.0.0.1:58788
+[2026-03-18 11:48:35] [INFO] Unknown desconectou: 127.0.0.1:58788
+[2026-03-18 11:49:35] [DEBUG] Nova conexão de: 127.0.0.1:64222
+[2026-03-18 11:49:35] [INFO] Unknown desconectou: 127.0.0.1:64222
+[2026-03-18 11:50:35] [DEBUG] Nova conexão de: 127.0.0.1:50824
+[2026-03-18 11:50:35] [INFO] Unknown desconectou: 127.0.0.1:50824
+[2026-03-18 11:51:35] [DEBUG] Nova conexão de: 127.0.0.1:51323
+[2026-03-18 11:51:35] [INFO] Unknown desconectou: 127.0.0.1:51323
+[2026-03-18 11:52:35] [DEBUG] Nova conexão de: 127.0.0.1:52110
+[2026-03-18 11:52:35] [INFO] Unknown desconectou: 127.0.0.1:52110
+[2026-03-18 11:53:35] [DEBUG] Nova conexão de: 127.0.0.1:60823
+[2026-03-18 11:53:35] [INFO] Unknown desconectou: 127.0.0.1:60823
+[2026-03-18 11:54:35] [DEBUG] Nova conexão de: 127.0.0.1:60774
+[2026-03-18 11:54:35] [INFO] Unknown desconectou: 127.0.0.1:60774
+[2026-03-18 11:55:35] [DEBUG] Nova conexão de: 127.0.0.1:53629
+[2026-03-18 11:55:35] [INFO] Unknown desconectou: 127.0.0.1:53629
+[2026-03-18 11:56:35] [DEBUG] Nova conexão de: 127.0.0.1:55003
+[2026-03-18 11:56:35] [INFO] Unknown desconectou: 127.0.0.1:55003
+[2026-03-18 11:57:35] [DEBUG] Nova conexão de: 127.0.0.1:53829
+[2026-03-18 11:57:35] [INFO] Unknown desconectou: 127.0.0.1:53829
+[2026-03-18 11:58:35] [DEBUG] Nova conexão de: 127.0.0.1:63199
+[2026-03-18 11:58:35] [INFO] Unknown desconectou: 127.0.0.1:63199
+[2026-03-18 11:59:35] [DEBUG] Nova conexão de: 127.0.0.1:62750
+[2026-03-18 11:59:35] [INFO] Unknown desconectou: 127.0.0.1:62750
+[2026-03-18 12:00:35] [DEBUG] Nova conexão de: 127.0.0.1:49673
+[2026-03-18 12:00:35] [INFO] Unknown desconectou: 127.0.0.1:49673
+[2026-03-18 12:01:35] [DEBUG] Nova conexão de: 127.0.0.1:63930
+[2026-03-18 12:01:35] [INFO] Unknown desconectou: 127.0.0.1:63930
+[2026-03-18 12:02:35] [DEBUG] Nova conexão de: 127.0.0.1:49829
+[2026-03-18 12:02:35] [INFO] Unknown desconectou: 127.0.0.1:49829
+[2026-03-18 12:03:35] [DEBUG] Nova conexão de: 127.0.0.1:49895
+[2026-03-18 12:03:35] [INFO] Unknown desconectou: 127.0.0.1:49895
+[2026-03-18 12:04:35] [DEBUG] Nova conexão de: 127.0.0.1:58035
+[2026-03-18 12:04:35] [INFO] Unknown desconectou: 127.0.0.1:58035
+[2026-03-18 12:05:35] [DEBUG] Nova conexão de: 127.0.0.1:61757
+[2026-03-18 12:05:35] [INFO] Unknown desconectou: 127.0.0.1:61757
+[2026-03-18 12:05:52] [DEBUG] Nova conexão de: 127.0.0.1:55845
+[2026-03-18 12:05:52] [INFO] Unknown desconectou: 127.0.0.1:55845
+[2026-03-18 12:06:00] [DEBUG] Nova conexão de: 127.0.0.1:49788
+[2026-03-18 12:06:00] [INFO] Unknown desconectou: 127.0.0.1:49788
+[2026-03-18 12:06:15] [DEBUG] Nova conexão de: 127.0.0.1:59399
+[2026-03-18 12:06:15] [INFO] Unknown desconectou: 127.0.0.1:59399
+[2026-03-18 12:06:30] [DEBUG] Nova conexão de: 127.0.0.1:55004
+[2026-03-18 12:06:30] [INFO] Unknown desconectou: 127.0.0.1:55004
+[2026-03-18 12:06:45] [DEBUG] Nova conexão de: 127.0.0.1:56919
+[2026-03-18 12:06:45] [INFO] Unknown desconectou: 127.0.0.1:56919
+[2026-03-18 12:07:33] [DEBUG] Nova conexão de: 127.0.0.1:65143
+[2026-03-18 12:07:33] [INFO] Unknown desconectou: 127.0.0.1:65143
+[2026-03-18 12:07:36] [DEBUG] Nova conexão de: 127.0.0.1:65147
+[2026-03-18 12:07:36] [INFO] Unknown desconectou: 127.0.0.1:65147
+[2026-03-18 12:07:52] [DEBUG] Nova conexão de: 127.0.0.1:51168
+[2026-03-18 12:07:52] [INFO] Unknown desconectou: 127.0.0.1:51168
+[2026-03-18 12:08:07] [DEBUG] Nova conexão de: 127.0.0.1:63046
+[2026-03-18 12:08:07] [INFO] Unknown desconectou: 127.0.0.1:63046
+[2026-03-18 12:08:22] [DEBUG] Nova conexão de: 127.0.0.1:53505
+[2026-03-18 12:08:22] [INFO] Unknown desconectou: 127.0.0.1:53505
+[2026-03-18 12:08:37] [DEBUG] Nova conexão de: 127.0.0.1:58805
+[2026-03-18 12:08:37] [INFO] Unknown desconectou: 127.0.0.1:58805
+[2026-03-18 12:08:52] [DEBUG] Nova conexão de: 127.0.0.1:55590
+[2026-03-18 12:08:52] [INFO] Unknown desconectou: 127.0.0.1:55590
+[2026-03-18 12:09:07] [DEBUG] Nova conexão de: 127.0.0.1:50307
+[2026-03-18 12:09:07] [INFO] Unknown desconectou: 127.0.0.1:50307
+[2026-03-18 12:09:22] [DEBUG] Nova conexão de: 127.0.0.1:49245
+[2026-03-18 12:09:22] [INFO] Unknown desconectou: 127.0.0.1:49245
+[2026-03-18 12:10:23] [DEBUG] Nova conexão de: 127.0.0.1:53064
+[2026-03-18 12:10:23] [INFO] Unknown desconectou: 127.0.0.1:53064
+[2026-03-18 12:11:24] [DEBUG] Nova conexão de: 127.0.0.1:59152
+[2026-03-18 12:11:24] [INFO] Unknown desconectou: 127.0.0.1:59152
+[2026-03-18 12:12:25] [DEBUG] Nova conexão de: 127.0.0.1:57619
+[2026-03-18 12:12:25] [INFO] Unknown desconectou: 127.0.0.1:57619
+[2026-03-18 12:13:26] [DEBUG] Nova conexão de: 127.0.0.1:52657
+[2026-03-18 12:13:26] [INFO] Unknown desconectou: 127.0.0.1:52657
+[2026-03-18 12:14:27] [DEBUG] Nova conexão de: 127.0.0.1:53151
+[2026-03-18 12:14:27] [INFO] Unknown desconectou: 127.0.0.1:53151
+[2026-03-18 12:15:28] [DEBUG] Nova conexão de: 127.0.0.1:59273
+[2026-03-18 12:15:28] [INFO] Unknown desconectou: 127.0.0.1:59273
+[2026-03-18 12:16:29] [DEBUG] Nova conexão de: 127.0.0.1:59342
+[2026-03-18 12:16:29] [INFO] Unknown desconectou: 127.0.0.1:59342
+[2026-03-18 12:17:30] [DEBUG] Nova conexão de: 127.0.0.1:64522
+[2026-03-18 12:17:30] [INFO] Unknown desconectou: 127.0.0.1:64522
+[2026-03-18 12:18:31] [DEBUG] Nova conexão de: 127.0.0.1:58605
+[2026-03-18 12:18:31] [INFO] Unknown desconectou: 127.0.0.1:58605
+[2026-03-18 12:19:32] [DEBUG] Nova conexão de: 127.0.0.1:49339
+[2026-03-18 12:19:32] [INFO] Unknown desconectou: 127.0.0.1:49339
+[2026-03-18 12:20:33] [DEBUG] Nova conexão de: 127.0.0.1:65361
+[2026-03-18 12:20:33] [INFO] Unknown desconectou: 127.0.0.1:65361
+[2026-03-18 12:21:34] [DEBUG] Nova conexão de: 127.0.0.1:50517
+[2026-03-18 12:21:34] [INFO] Unknown desconectou: 127.0.0.1:50517
+[2026-03-18 12:22:35] [DEBUG] Nova conexão de: 127.0.0.1:50451
+[2026-03-18 12:22:35] [INFO] Unknown desconectou: 127.0.0.1:50451
+[2026-03-18 12:23:35] [DEBUG] Nova conexão de: 127.0.0.1:54013
+[2026-03-18 12:23:35] [INFO] Unknown desconectou: 127.0.0.1:54013
+[2026-03-18 12:24:35] [DEBUG] Nova conexão de: 127.0.0.1:52385
+[2026-03-18 12:24:35] [INFO] Unknown desconectou: 127.0.0.1:52385
+[2026-03-18 12:25:35] [DEBUG] Nova conexão de: 127.0.0.1:57109
+[2026-03-18 12:25:35] [INFO] Unknown desconectou: 127.0.0.1:57109
+[2026-03-18 12:26:35] [DEBUG] Nova conexão de: 127.0.0.1:58184
+[2026-03-18 12:26:35] [INFO] Unknown desconectou: 127.0.0.1:58184
+[2026-03-18 12:27:35] [DEBUG] Nova conexão de: 127.0.0.1:58297
+[2026-03-18 12:27:35] [INFO] Unknown desconectou: 127.0.0.1:58297
+[2026-03-18 12:28:35] [DEBUG] Nova conexão de: 127.0.0.1:63416
+[2026-03-18 12:28:35] [INFO] Unknown desconectou: 127.0.0.1:63416
+[2026-03-18 12:29:35] [DEBUG] Nova conexão de: 127.0.0.1:49970
+[2026-03-18 12:29:35] [INFO] Unknown desconectou: 127.0.0.1:49970
+[2026-03-18 12:30:35] [DEBUG] Nova conexão de: 127.0.0.1:59034
+[2026-03-18 12:30:35] [INFO] Unknown desconectou: 127.0.0.1:59034
+[2026-03-18 12:31:35] [DEBUG] Nova conexão de: 127.0.0.1:54040
+[2026-03-18 12:31:35] [INFO] Unknown desconectou: 127.0.0.1:54040
+[2026-03-18 12:32:35] [DEBUG] Nova conexão de: 127.0.0.1:59756
+[2026-03-18 12:32:35] [INFO] Unknown desconectou: 127.0.0.1:59756
+[2026-03-18 12:33:35] [DEBUG] Nova conexão de: 127.0.0.1:56994
+[2026-03-18 12:33:35] [INFO] Unknown desconectou: 127.0.0.1:56994
+[2026-03-18 12:34:35] [DEBUG] Nova conexão de: 127.0.0.1:53704
+[2026-03-18 12:34:35] [INFO] Unknown desconectou: 127.0.0.1:53704
+[2026-03-18 12:35:35] [DEBUG] Nova conexão de: 127.0.0.1:53529
+[2026-03-18 12:35:35] [INFO] Unknown desconectou: 127.0.0.1:53529
+[2026-03-18 12:36:35] [DEBUG] Nova conexão de: 127.0.0.1:62718
+[2026-03-18 12:36:35] [INFO] Unknown desconectou: 127.0.0.1:62718
+[2026-03-18 12:37:35] [DEBUG] Nova conexão de: 127.0.0.1:59265
+[2026-03-18 12:37:35] [INFO] Unknown desconectou: 127.0.0.1:59265
+[2026-03-18 12:38:35] [DEBUG] Nova conexão de: 127.0.0.1:62940
+[2026-03-18 12:38:35] [INFO] Unknown desconectou: 127.0.0.1:62940
+[2026-03-18 12:39:35] [DEBUG] Nova conexão de: 127.0.0.1:64885
+[2026-03-18 12:39:35] [INFO] Unknown desconectou: 127.0.0.1:64885
+[2026-03-18 12:40:35] [DEBUG] Nova conexão de: 127.0.0.1:54091
+[2026-03-18 12:40:35] [INFO] Unknown desconectou: 127.0.0.1:54091
+[2026-03-18 12:41:35] [DEBUG] Nova conexão de: 127.0.0.1:64088
+[2026-03-18 12:41:35] [INFO] Unknown desconectou: 127.0.0.1:64088
+[2026-03-18 12:42:35] [DEBUG] Nova conexão de: 127.0.0.1:62820
+[2026-03-18 12:42:35] [INFO] Unknown desconectou: 127.0.0.1:62820
+[2026-03-18 12:43:35] [DEBUG] Nova conexão de: 127.0.0.1:58583
+[2026-03-18 12:43:35] [INFO] Unknown desconectou: 127.0.0.1:58583
+[2026-03-18 12:44:35] [DEBUG] Nova conexão de: 127.0.0.1:63771
+[2026-03-18 12:44:35] [INFO] Unknown desconectou: 127.0.0.1:63771
+[2026-03-18 12:45:35] [DEBUG] Nova conexão de: 127.0.0.1:58091
+[2026-03-18 12:45:35] [INFO] Unknown desconectou: 127.0.0.1:58091
+[2026-03-18 12:46:35] [DEBUG] Nova conexão de: 127.0.0.1:65015
+[2026-03-18 12:46:35] [INFO] Unknown desconectou: 127.0.0.1:65015
+[2026-03-18 12:47:35] [DEBUG] Nova conexão de: 127.0.0.1:57369
+[2026-03-18 12:47:35] [INFO] Unknown desconectou: 127.0.0.1:57369
+[2026-03-18 12:48:35] [DEBUG] Nova conexão de: 127.0.0.1:58552
+[2026-03-18 12:48:35] [INFO] Unknown desconectou: 127.0.0.1:58552
+[2026-03-18 12:49:35] [DEBUG] Nova conexão de: 127.0.0.1:63646
+[2026-03-18 12:49:35] [INFO] Unknown desconectou: 127.0.0.1:63646
+[2026-03-18 12:50:35] [DEBUG] Nova conexão de: 127.0.0.1:53340
+[2026-03-18 12:50:35] [INFO] Unknown desconectou: 127.0.0.1:53340
+[2026-03-18 12:51:35] [DEBUG] Nova conexão de: 127.0.0.1:50405
+[2026-03-18 12:51:35] [INFO] Unknown desconectou: 127.0.0.1:50405
+[2026-03-18 12:52:35] [DEBUG] Nova conexão de: 127.0.0.1:63426
+[2026-03-18 12:52:35] [INFO] Unknown desconectou: 127.0.0.1:63426
+[2026-03-18 12:53:35] [DEBUG] Nova conexão de: 127.0.0.1:58687
+[2026-03-18 12:53:35] [INFO] Unknown desconectou: 127.0.0.1:58687
+[2026-03-18 12:54:35] [DEBUG] Nova conexão de: 127.0.0.1:60447
+[2026-03-18 12:54:35] [INFO] Unknown desconectou: 127.0.0.1:60447
+[2026-03-18 12:55:35] [DEBUG] Nova conexão de: 127.0.0.1:60241
+[2026-03-18 12:55:35] [INFO] Unknown desconectou: 127.0.0.1:60241
+[2026-03-18 12:56:35] [DEBUG] Nova conexão de: 127.0.0.1:50266
+[2026-03-18 12:56:35] [INFO] Unknown desconectou: 127.0.0.1:50266
+[2026-03-18 12:57:35] [DEBUG] Nova conexão de: 127.0.0.1:56400
+[2026-03-18 12:57:35] [INFO] Unknown desconectou: 127.0.0.1:56400
+[2026-03-18 12:58:35] [DEBUG] Nova conexão de: 127.0.0.1:57906
+[2026-03-18 12:58:35] [INFO] Unknown desconectou: 127.0.0.1:57906
+[2026-03-18 12:59:35] [DEBUG] Nova conexão de: 127.0.0.1:52018
+[2026-03-18 12:59:35] [INFO] Unknown desconectou: 127.0.0.1:52018
+[2026-03-18 13:00:35] [DEBUG] Nova conexão de: 127.0.0.1:50353
+[2026-03-18 13:00:35] [INFO] Unknown desconectou: 127.0.0.1:50353
+[2026-03-18 13:01:35] [DEBUG] Nova conexão de: 127.0.0.1:65280
+[2026-03-18 13:01:35] [INFO] Unknown desconectou: 127.0.0.1:65280
+[2026-03-18 13:02:35] [DEBUG] Nova conexão de: 127.0.0.1:53644
+[2026-03-18 13:02:35] [INFO] Unknown desconectou: 127.0.0.1:53644
+[2026-03-18 13:03:35] [DEBUG] Nova conexão de: 127.0.0.1:54398
+[2026-03-18 13:03:35] [INFO] Unknown desconectou: 127.0.0.1:54398
+[2026-03-18 13:04:35] [DEBUG] Nova conexão de: 127.0.0.1:60905
+[2026-03-18 13:04:35] [INFO] Unknown desconectou: 127.0.0.1:60905
+[2026-03-18 13:05:35] [DEBUG] Nova conexão de: 127.0.0.1:59600
+[2026-03-18 13:05:35] [INFO] Unknown desconectou: 127.0.0.1:59600
+[2026-03-18 13:06:35] [DEBUG] Nova conexão de: 127.0.0.1:49241
+[2026-03-18 13:06:35] [INFO] Unknown desconectou: 127.0.0.1:49241
+[2026-03-18 13:07:35] [DEBUG] Nova conexão de: 127.0.0.1:49787
+[2026-03-18 13:07:35] [INFO] Unknown desconectou: 127.0.0.1:49787
+[2026-03-18 13:08:35] [DEBUG] Nova conexão de: 127.0.0.1:63646
+[2026-03-18 13:08:35] [INFO] Unknown desconectou: 127.0.0.1:63646
+[2026-03-18 13:09:35] [DEBUG] Nova conexão de: 127.0.0.1:55003
+[2026-03-18 13:09:35] [INFO] Unknown desconectou: 127.0.0.1:55003
+[2026-03-18 13:10:35] [DEBUG] Nova conexão de: 127.0.0.1:55820
+[2026-03-18 13:10:35] [INFO] Unknown desconectou: 127.0.0.1:55820
+[2026-03-18 13:11:35] [DEBUG] Nova conexão de: 127.0.0.1:52966
+[2026-03-18 13:11:35] [INFO] Unknown desconectou: 127.0.0.1:52966
+[2026-03-18 13:12:35] [DEBUG] Nova conexão de: 127.0.0.1:52443
+[2026-03-18 13:12:35] [INFO] Unknown desconectou: 127.0.0.1:52443
+[2026-03-18 13:13:35] [DEBUG] Nova conexão de: 127.0.0.1:56078
+[2026-03-18 13:13:35] [INFO] Unknown desconectou: 127.0.0.1:56078
+[2026-03-18 13:14:35] [DEBUG] Nova conexão de: 127.0.0.1:56352
+[2026-03-18 13:14:35] [INFO] Unknown desconectou: 127.0.0.1:56352
+[2026-03-18 13:15:35] [DEBUG] Nova conexão de: 127.0.0.1:52201
+[2026-03-18 13:15:35] [INFO] Unknown desconectou: 127.0.0.1:52201
+[2026-03-18 13:16:35] [DEBUG] Nova conexão de: 127.0.0.1:53534
+[2026-03-18 13:16:35] [INFO] Unknown desconectou: 127.0.0.1:53534
+[2026-03-18 13:17:35] [DEBUG] Nova conexão de: 127.0.0.1:63456
+[2026-03-18 13:17:35] [INFO] Unknown desconectou: 127.0.0.1:63456
+[2026-03-18 13:18:35] [DEBUG] Nova conexão de: 127.0.0.1:61951
+[2026-03-18 13:18:35] [INFO] Unknown desconectou: 127.0.0.1:61951
+[2026-03-18 13:19:35] [DEBUG] Nova conexão de: 127.0.0.1:50611
+[2026-03-18 13:19:35] [INFO] Unknown desconectou: 127.0.0.1:50611
+[2026-03-18 13:20:35] [DEBUG] Nova conexão de: 127.0.0.1:55736
+[2026-03-18 13:20:35] [INFO] Unknown desconectou: 127.0.0.1:55736
+[2026-03-18 13:21:35] [DEBUG] Nova conexão de: 127.0.0.1:54817
+[2026-03-18 13:21:35] [INFO] Unknown desconectou: 127.0.0.1:54817
+[2026-03-18 13:22:35] [DEBUG] Nova conexão de: 127.0.0.1:55362
+[2026-03-18 13:22:35] [INFO] Unknown desconectou: 127.0.0.1:55362
+[2026-03-18 13:23:35] [DEBUG] Nova conexão de: 127.0.0.1:55892
+[2026-03-18 13:23:35] [INFO] Unknown desconectou: 127.0.0.1:55892
+[2026-03-18 13:24:35] [DEBUG] Nova conexão de: 127.0.0.1:54130
+[2026-03-18 13:24:35] [INFO] Unknown desconectou: 127.0.0.1:54130
+[2026-03-18 13:25:35] [DEBUG] Nova conexão de: 127.0.0.1:57314
+[2026-03-18 13:25:35] [INFO] Unknown desconectou: 127.0.0.1:57314
+[2026-03-18 13:26:35] [DEBUG] Nova conexão de: 127.0.0.1:52786
+[2026-03-18 13:26:35] [INFO] Unknown desconectou: 127.0.0.1:52786
+[2026-03-18 13:27:35] [DEBUG] Nova conexão de: 127.0.0.1:64341
+[2026-03-18 13:27:35] [INFO] Unknown desconectou: 127.0.0.1:64341
+[2026-03-18 13:28:35] [DEBUG] Nova conexão de: 127.0.0.1:51872
+[2026-03-18 13:28:35] [INFO] Unknown desconectou: 127.0.0.1:51872
+[2026-03-18 13:29:35] [DEBUG] Nova conexão de: 127.0.0.1:64360
+[2026-03-18 13:29:35] [INFO] Unknown desconectou: 127.0.0.1:64360
+[2026-03-18 13:30:35] [DEBUG] Nova conexão de: 127.0.0.1:55768
+[2026-03-18 13:30:35] [INFO] Unknown desconectou: 127.0.0.1:55768
+[2026-03-18 13:31:35] [DEBUG] Nova conexão de: 127.0.0.1:54483
+[2026-03-18 13:31:35] [INFO] Unknown desconectou: 127.0.0.1:54483
+[2026-03-18 13:32:35] [DEBUG] Nova conexão de: 127.0.0.1:53427
+[2026-03-18 13:32:35] [INFO] Unknown desconectou: 127.0.0.1:53427
+[2026-03-18 13:33:26] [DEBUG] Nova conexão de: 127.0.0.1:52089
+[2026-03-18 13:33:26] [INFO] Unknown desconectou: 127.0.0.1:52089
+[2026-03-18 13:33:37] [DEBUG] Nova conexão de: 127.0.0.1:64056
+[2026-03-18 13:33:37] [INFO] Unknown desconectou: 127.0.0.1:64056
+[2026-03-18 13:33:52] [DEBUG] Nova conexão de: 127.0.0.1:51690
+[2026-03-18 13:33:52] [INFO] Unknown desconectou: 127.0.0.1:51690
+[2026-03-18 13:34:07] [DEBUG] Nova conexão de: 127.0.0.1:50255
+[2026-03-18 13:34:07] [INFO] Unknown desconectou: 127.0.0.1:50255
+[2026-03-18 13:34:22] [DEBUG] Nova conexão de: 127.0.0.1:63213
+[2026-03-18 13:34:22] [INFO] Unknown desconectou: 127.0.0.1:63213
+[2026-03-18 13:35:23] [DEBUG] Nova conexão de: 127.0.0.1:65503
+[2026-03-18 13:35:23] [INFO] Unknown desconectou: 127.0.0.1:65503
+[2026-03-18 13:36:24] [DEBUG] Nova conexão de: 127.0.0.1:59864
+[2026-03-18 13:36:24] [INFO] Unknown desconectou: 127.0.0.1:59864
+[2026-03-18 13:37:25] [DEBUG] Nova conexão de: 127.0.0.1:49671
+[2026-03-18 13:37:25] [INFO] Unknown desconectou: 127.0.0.1:49671
+[2026-03-18 13:38:20] [DEBUG] Nova conexão de: 127.0.0.1:64897
+[2026-03-18 13:38:20] [INFO] Unknown desconectou: 127.0.0.1:64897
+[2026-03-18 13:38:21] [DEBUG] Nova conexão de: 127.0.0.1:64900
+[2026-03-18 13:38:21] [INFO] Unknown desconectou: 127.0.0.1:64900
+[2026-03-18 13:43:41] [DEBUG] Nova conexão de: 127.0.0.1:53173
+[2026-03-18 13:43:41] [INFO] Unknown desconectou: 127.0.0.1:53173
+[2026-03-18 16:10:34] [DEBUG] Nova conexão de: 127.0.0.1:53626
+[2026-03-18 16:10:34] [INFO] Unknown desconectou: 127.0.0.1:53626
