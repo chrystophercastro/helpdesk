@@ -13,6 +13,7 @@ if (!isLoggedIn()) {
 
 require_once __DIR__ . '/../app/controllers/SprintController.php';
 $controller = new SprintController();
+$deptFilter = getDeptFilter();
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -22,12 +23,31 @@ if ($method === 'POST') {
 
     switch ($action) {
         case 'criar':
+            // Verificar se gestor tem acesso ao projeto da sprint
+            if ($deptFilter) {
+                $db = Database::getInstance();
+                $projDept = $db->fetchColumn("SELECT departamento_id FROM projetos WHERE id = ?", [(int)($data['projeto_id'] ?? 0)]);
+                if ((int)$projDept !== (int)$deptFilter) {
+                    jsonResponse(['error' => 'Acesso negado: projeto de outro departamento'], 403);
+                }
+            }
             $result = $controller->criar($data);
             jsonResponse($result);
             break;
 
         case 'atualizar':
             $id = (int)($data['id'] ?? 0);
+            // Verificar acesso via projeto
+            if ($deptFilter) {
+                $sprint = $controller->ver($id);
+                if ($sprint) {
+                    $db = Database::getInstance();
+                    $projDept = $db->fetchColumn("SELECT departamento_id FROM projetos WHERE id = ?", [$sprint['projeto_id'] ?? 0]);
+                    if ((int)$projDept !== (int)$deptFilter) {
+                        jsonResponse(['error' => 'Acesso negado'], 403);
+                    }
+                }
+            }
             $result = $controller->atualizar($id, $data);
             jsonResponse($result);
             break;
@@ -46,7 +66,7 @@ if ($method === 'POST') {
 
         case 'listar':
             $projetoId = $_GET['projeto_id'] ?? null;
-            $sprints = $controller->listar($projetoId);
+            $sprints = $controller->listar($projetoId, $deptFilter);
             jsonResponse($sprints);
             break;
 

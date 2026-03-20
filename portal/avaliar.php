@@ -13,7 +13,7 @@ $configs = [];
 $confs = $db->fetchAll("SELECT chave, valor FROM configuracoes");
 foreach ($confs as $c) $configs[$c['chave']] = $c['valor'];
 
-$empresaNome = $configs['empresa_nome'] ?? 'HelpDesk TI';
+$empresaNome = $configs['empresa_nome'] ?? 'Oracle X';
 
 // Parâmetros: ?codigo=HD-2026-00001&token=abc123
 $codigo = $_GET['codigo'] ?? '';
@@ -76,19 +76,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $chamado && !$sucesso) {
         $notificacao = new Notificacao();
 
         $estrelas = str_repeat('⭐', $nota);
-        $msgEquipe  = "📊 *Avaliação de Atendimento Recebida*\n\n";
-        $msgEquipe .= "📋 *Chamado:* {$chamado['codigo']}\n";
-        $msgEquipe .= "📝 *Título:* {$chamado['titulo']}\n";
-        $msgEquipe .= "👤 *Solicitante:* {$chamado['solicitante_nome']}\n";
+        $msgEquipe  = "ðŸ“Š *Avaliação de Atendimento Recebida*\n\n";
+        $msgEquipe .= "ðŸ“‹ *Chamado:* {$chamado['codigo']}\n";
+        $msgEquipe .= "ðŸ“ *Título:* {$chamado['titulo']}\n";
+        $msgEquipe .= "ðŸ‘¤ *Solicitante:* {$chamado['solicitante_nome']}\n";
         if (!empty($chamado['tecnico_nome'])) {
-            $msgEquipe .= "🔧 *Técnico:* {$chamado['tecnico_nome']}\n";
+            $msgEquipe .= "ðŸ”§ *Técnico:* {$chamado['tecnico_nome']}\n";
         }
         $msgEquipe .= "\n{$estrelas} *Nota: {$nota}/5*\n";
         if (!empty($comentario)) {
             $preview = mb_strlen($comentario) > 300 ? mb_substr($comentario, 0, 300) . '...' : $comentario;
-            $msgEquipe .= "\n💭 *Comentário:*\n_{$preview}_\n";
+            $msgEquipe .= "\nðŸ’­ *Comentário:*\n_{$preview}_\n";
         }
-        $msgEquipe .= "\n📅 " . date('d/m/Y H:i');
+        $msgEquipe .= "\nðŸ“… " . date('d/m/Y H:i');
 
         // Enviar para equipe técnica
         $tecnicos = $db->fetchAll("SELECT telefone FROM usuarios WHERE tipo IN ('tecnico','gestor','admin') AND ativo = 1");
@@ -520,11 +520,11 @@ $statusList = CHAMADO_STATUS;
 
 <script>
 const ratingTexts = {
-    1: '😞 Ruim — Precisa melhorar muito',
-    2: '😐 Regular — Abaixo das expectativas',
-    3: '🙂 Bom — Atendeu parcialmente',
-    4: '😊 Muito Bom — Quase perfeito',
-    5: '🤩 Excelente — Superou as expectativas!'
+    1: 'ðŸ˜ž Ruim — Precisa melhorar muito',
+    2: 'ðŸ˜ Regular — Abaixo das expectativas',
+    3: 'ðŸ™‚ Bom — Atendeu parcialmente',
+    4: 'ðŸ˜Š Muito Bom — Quase perfeito',
+    5: 'ðŸ¤© Excelente — Superou as expectativas!'
 };
 
 document.querySelectorAll('.av-stars input').forEach(input => {

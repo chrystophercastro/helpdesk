@@ -1,5 +1,5 @@
-/**
- * HelpDesk TI - Kanban Board JavaScript
+﻿/**
+ * Oracle X - Kanban Board JavaScript
  * Handles drag-and-drop via SortableJS
  */
 document.addEventListener('DOMContentLoaded', function() {

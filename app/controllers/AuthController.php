@@ -28,6 +28,12 @@ class AuthController {
                 $_SESSION['usuario_telefone'] = $user['telefone'];
                 $_SESSION['usuario_tipo'] = $user['tipo'];
                 $_SESSION['usuario_avatar'] = $user['avatar'];
+                $_SESSION['usuario_departamento_id'] = $user['departamento_id'] ?? null;
+
+                // Salvar sigla do departamento na sessão
+                $db = Database::getInstance();
+                $dept = $db->fetch("SELECT sigla FROM departamentos WHERE id = ?", [$user['departamento_id'] ?? 0]);
+                $_SESSION['usuario_departamento_sigla'] = $dept['sigla'] ?? null;
 
                 // Log
                 $db = Database::getInstance();

@@ -44,6 +44,9 @@ foreach ($projetos as $p) {
 <div class="proj-filters-bar">
     <div class="proj-filters-left">
         <h1 class="proj-page-title"><i class="fas fa-project-diagram"></i> Projetos</h1>
+        <?php if (!isAdmin()): ?>
+        <small style="color: var(--text-secondary); margin-left: 10px;">— Exibindo projetos do seu departamento</small>
+        <?php endif; ?>
     </div>
     <div class="proj-filters-right">
         <div class="proj-filter-group">
@@ -65,6 +68,9 @@ foreach ($projetos as $p) {
                 <?php endforeach; ?>
             </select>
         </div>
+        <button class="btn btn-sm ia-insight-btn" onclick="iaInsight('projeto_risk')">
+            <i class="fas fa-robot"></i> Risco IA
+        </button>
         <button class="btn btn-primary" onclick="HelpDesk.openModal('novoProjeto')">
             <i class="fas fa-plus"></i> Novo Projeto
         </button>

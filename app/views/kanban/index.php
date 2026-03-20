@@ -10,7 +10,7 @@ $colunas = KANBAN_COLUNAS;
 <div class="page-header">
     <div>
         <h1 class="page-title">Quadro Kanban</h1>
-        <p class="page-subtitle">Gerencie tarefas com drag and drop</p>
+        <p class="page-subtitle">Gerencie tarefas com drag and drop<?php if (!isAdmin()) echo ' — Projetos do seu departamento'; ?></p>
     </div>
     <div class="page-actions">
         <select class="form-select" id="kanbanProjetoFilter" onchange="filtrarProjeto(this.value)">
@@ -19,6 +19,9 @@ $colunas = KANBAN_COLUNAS;
             <option value="<?= $p['id'] ?>" <?= ($projetoId ?? '') == $p['id'] ? 'selected' : '' ?>><?= htmlspecialchars($p['nome']) ?></option>
             <?php endforeach; ?>
         </select>
+        <button class="btn btn-sm ia-insight-btn" onclick="iaInsight('kanban_assignment', {projeto_id: document.getElementById('kanbanProjetoFilter')?.value || ''})">
+            <i class="fas fa-robot"></i> Análise IA
+        </button>
         <button class="btn btn-primary" onclick="HelpDesk.openModal('novaTarefa')">
             <i class="fas fa-plus"></i> Nova Tarefa
         </button>

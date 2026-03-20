@@ -17,6 +17,7 @@
     <button class="config-tab" data-tab="whatsapp" onclick="showConfigTab('whatsapp')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
     <button class="config-tab" data-tab="sla" onclick="showConfigTab('sla')"><i class="fas fa-clock"></i> SLA</button>
     <button class="config-tab" data-tab="categorias" onclick="showConfigTab('categorias')"><i class="fas fa-tags"></i> Categorias</button>
+    <button class="config-tab" data-tab="portal" onclick="showConfigTab('portal')"><i class="fas fa-globe"></i> Portal</button>
 </div>
 
 <!-- Tab: Geral -->
@@ -191,6 +192,7 @@
                     <tr>
                         <th>Ícone</th>
                         <th>Nome</th>
+                        <th>Departamento</th>
                         <th>Tipo</th>
                         <th>Status</th>
                         <th>Ações</th>
@@ -201,6 +203,15 @@
                     <tr>
                         <td><i class="<?= $cat['icone'] ?? 'fas fa-tag' ?>" style="color:#3B82F6;font-size:1.2rem"></i></td>
                         <td><strong><?= htmlspecialchars($cat['nome']) ?></strong></td>
+                        <td>
+                            <?php if (!empty($cat['departamento_sigla'])): ?>
+                            <span class="tag" style="background:<?= $cat['departamento_cor'] ?? '#6366F1' ?>15;color:<?= $cat['departamento_cor'] ?? '#6366F1' ?>;border:1px solid <?= $cat['departamento_cor'] ?? '#6366F1' ?>30;font-weight:600;font-size:11px">
+                                <?= htmlspecialchars($cat['departamento_sigla']) ?>
+                            </span>
+                            <?php else: ?>
+                            <span class="text-muted">—</span>
+                            <?php endif; ?>
+                        </td>
                         <td class="text-muted"><?= htmlspecialchars($cat['tipo'] ?? '-') ?></td>
                         <td>
                             <?php if ($cat['ativo'] ?? 1): ?>
@@ -216,6 +227,162 @@
                     <?php endforeach; ?>
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- Tab: Portal -->
+<div id="tab-portal" class="config-panel">
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fas fa-globe"></i> Personalização do Portal Público</h3>
+            <a href="<?= BASE_URL ?>/portal/" target="_blank" class="btn btn-sm btn-secondary"><i class="fas fa-external-link-alt"></i> Ver Portal</a>
+        </div>
+        <div class="card-body">
+            <form id="formConfigPortal">
+                <!-- Textos -->
+                <h4 style="margin-bottom:12px;color:var(--gray-700);font-size:0.9rem;"><i class="fas fa-font"></i> Textos & Identidade</h4>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Título do Portal</label>
+                        <input type="text" name="config[portal_titulo]" class="form-input" value="<?= htmlspecialchars($portalConfigs['portal_titulo'] ?? '') ?>" placeholder="Deixe vazio para usar nome da empresa">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ícone (Font Awesome)</label>
+                        <input type="text" name="config[portal_icone]" class="form-input" value="<?= htmlspecialchars($portalConfigs['portal_icone'] ?? 'fas fa-headset') ?>" placeholder="fas fa-headset">
+                    </div>
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Subtítulo do Portal</label>
+                        <input type="text" name="config[portal_subtitulo]" class="form-input" value="<?= htmlspecialchars($portalConfigs['portal_subtitulo'] ?? '') ?>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Título da Seção Mural</label>
+                        <input type="text" name="config[portal_mural_titulo]" class="form-input" value="<?= htmlspecialchars($portalConfigs['portal_mural_titulo'] ?? 'Mural da Empresa') ?>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Título da Seção Consultar</label>
+                        <input type="text" name="config[portal_consulta_titulo]" class="form-input" value="<?= htmlspecialchars($portalConfigs['portal_consulta_titulo'] ?? 'Consultar Chamado') ?>">
+                    </div>
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Texto do Rodapé</label>
+                        <input type="text" name="config[portal_footer_texto]" class="form-input" value="<?= htmlspecialchars($portalConfigs['portal_footer_texto'] ?? '') ?>" placeholder="Texto adicional no rodapé (opcional)">
+                    </div>
+                </div>
+
+                <hr style="margin:24px 0;border:none;border-top:1px solid var(--gray-200)">
+
+                <!-- Cores -->
+                <h4 style="margin-bottom:12px;color:var(--gray-700);font-size:0.9rem;"><i class="fas fa-palette"></i> Cores</h4>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Cor Primária</label>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <input type="color" id="portalCorPrimaria" value="<?= htmlspecialchars($portalConfigs['portal_cor_primaria'] ?? '#4F46E5') ?>" style="width:40px;height:36px;border:none;cursor:pointer;" onchange="document.querySelector('[name=\\'config[portal_cor_primaria]\\']').value=this.value">
+                            <input type="text" name="config[portal_cor_primaria]" class="form-input" value="<?= htmlspecialchars($portalConfigs['portal_cor_primaria'] ?? '#4F46E5') ?>" style="flex:1" onchange="document.getElementById('portalCorPrimaria').value=this.value">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cor Primária Escura</label>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <input type="color" id="portalCorPrimariaDark" value="<?= htmlspecialchars($portalConfigs['portal_cor_primaria_dark'] ?? '#3730A3') ?>" style="width:40px;height:36px;border:none;cursor:pointer;" onchange="document.querySelector('[name=\\'config[portal_cor_primaria_dark]\\']').value=this.value">
+                            <input type="text" name="config[portal_cor_primaria_dark]" class="form-input" value="<?= htmlspecialchars($portalConfigs['portal_cor_primaria_dark'] ?? '#3730A3') ?>" style="flex:1" onchange="document.getElementById('portalCorPrimariaDark').value=this.value">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gradiente Header — Cor 1 (Início)</label>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <input type="color" id="portalH1" value="<?= htmlspecialchars($portalConfigs['portal_cor_header_1'] ?? '#1E1B4B') ?>" style="width:40px;height:36px;border:none;cursor:pointer;" onchange="document.querySelector('[name=\\'config[portal_cor_header_1]\\']').value=this.value;previewGradient()">
+                            <input type="text" name="config[portal_cor_header_1]" class="form-input" value="<?= htmlspecialchars($portalConfigs['portal_cor_header_1'] ?? '#1E1B4B') ?>" style="flex:1" onchange="document.getElementById('portalH1').value=this.value;previewGradient()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gradiente Header — Cor 2 (Meio)</label>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <input type="color" id="portalH2" value="<?= htmlspecialchars($portalConfigs['portal_cor_header_2'] ?? '#4338CA') ?>" style="width:40px;height:36px;border:none;cursor:pointer;" onchange="document.querySelector('[name=\\'config[portal_cor_header_2]\\']').value=this.value;previewGradient()">
+                            <input type="text" name="config[portal_cor_header_2]" class="form-input" value="<?= htmlspecialchars($portalConfigs['portal_cor_header_2'] ?? '#4338CA') ?>" style="flex:1" onchange="document.getElementById('portalH2').value=this.value;previewGradient()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gradiente Header — Cor 3 (Fim)</label>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <input type="color" id="portalH3" value="<?= htmlspecialchars($portalConfigs['portal_cor_header_3'] ?? '#6366F1') ?>" style="width:40px;height:36px;border:none;cursor:pointer;" onchange="document.querySelector('[name=\\'config[portal_cor_header_3]\\']').value=this.value;previewGradient()">
+                            <input type="text" name="config[portal_cor_header_3]" class="form-input" value="<?= htmlspecialchars($portalConfigs['portal_cor_header_3'] ?? '#6366F1') ?>" style="flex:1" onchange="document.getElementById('portalH3').value=this.value;previewGradient()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Preview do Gradiente</label>
+                        <div id="gradientPreview" style="height:48px;border-radius:10px;background:linear-gradient(135deg, <?= htmlspecialchars($portalConfigs['portal_cor_header_1'] ?? '#1E1B4B') ?> 0%, <?= htmlspecialchars($portalConfigs['portal_cor_header_2'] ?? '#4338CA') ?> 50%, <?= htmlspecialchars($portalConfigs['portal_cor_header_3'] ?? '#6366F1') ?> 100%)"></div>
+                    </div>
+                </div>
+
+                <hr style="margin:24px 0;border:none;border-top:1px solid var(--gray-200)">
+
+                <!-- Imagens -->
+                <h4 style="margin-bottom:12px;color:var(--gray-700);font-size:0.9rem;"><i class="fas fa-image"></i> Imagens</h4>
+                <div class="form-grid">
+                    <div class="form-group col-span-2">
+                        <label class="form-label">URL da Logo (deixe vazio para usar ícone)</label>
+                        <input type="text" name="config[portal_logo]" class="form-input" value="<?= htmlspecialchars($portalConfigs['portal_logo'] ?? '') ?>" placeholder="https://... ou /helpdesk/uploads/logo.png">
+                    </div>
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Upload de Logo</label>
+                        <input type="file" id="portalLogoFile" class="form-input" accept="image/*" onchange="uploadPortalImage(this, 'config[portal_logo]')">
+                    </div>
+                    <div class="form-group col-span-2">
+                        <label class="form-label">URL do Banner do Mural (imagem decorativa)</label>
+                        <input type="text" name="config[portal_banner_url]" class="form-input" value="<?= htmlspecialchars($portalConfigs['portal_banner_url'] ?? '') ?>" placeholder="https://... ou /helpdesk/uploads/banner.png">
+                    </div>
+                    <div class="form-group col-span-2">
+                        <label class="form-label">Upload de Banner</label>
+                        <input type="file" id="portalBannerFile" class="form-input" accept="image/*" onchange="uploadPortalImage(this, 'config[portal_banner_url]')">
+                    </div>
+                </div>
+
+                <hr style="margin:24px 0;border:none;border-top:1px solid var(--gray-200)">
+
+                <!-- Seções -->
+                <h4 style="margin-bottom:12px;color:var(--gray-700);font-size:0.9rem;"><i class="fas fa-eye"></i> Visibilidade de Seções</h4>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Exibir Departamentos</label>
+                        <select name="config[portal_mostrar_depts]" class="form-select">
+                            <option value="1" <?= ($portalConfigs['portal_mostrar_depts'] ?? '1') == '1' ? 'selected' : '' ?>>Sim</option>
+                            <option value="0" <?= ($portalConfigs['portal_mostrar_depts'] ?? '1') == '0' ? 'selected' : '' ?>>Não</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Exibir Mural</label>
+                        <select name="config[portal_mostrar_mural]" class="form-select">
+                            <option value="1" <?= ($portalConfigs['portal_mostrar_mural'] ?? '1') == '1' ? 'selected' : '' ?>>Sim</option>
+                            <option value="0" <?= ($portalConfigs['portal_mostrar_mural'] ?? '1') == '0' ? 'selected' : '' ?>>Não</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Exibir Consultar Chamado</label>
+                        <select name="config[portal_mostrar_consulta]" class="form-select">
+                            <option value="1" <?= ($portalConfigs['portal_mostrar_consulta'] ?? '1') == '1' ? 'selected' : '' ?>>Sim</option>
+                            <option value="0" <?= ($portalConfigs['portal_mostrar_consulta'] ?? '1') == '0' ? 'selected' : '' ?>>Não</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Qtd. de Posts no Mural</label>
+                        <input type="number" name="config[portal_posts_quantidade]" class="form-input" min="1" max="50" value="<?= htmlspecialchars($portalConfigs['portal_posts_quantidade'] ?? '5') ?>">
+                    </div>
+                </div>
+
+                <hr style="margin:24px 0;border:none;border-top:1px solid var(--gray-200)">
+
+                <!-- CSS Personalizado -->
+                <h4 style="margin-bottom:12px;color:var(--gray-700);font-size:0.9rem;"><i class="fas fa-code"></i> CSS Personalizado</h4>
+                <div class="form-group">
+                    <label class="form-label">CSS customizado (avançado)</label>
+                    <textarea name="config[portal_css_custom]" class="form-input" rows="5" style="font-family:'SF Mono','Consolas',monospace;font-size:12px;min-height:100px;resize:vertical;" placeholder=".portal-header { /* suas regras */ }"><?= htmlspecialchars($portalConfigs['portal_css_custom'] ?? '') ?></textarea>
+                    <small style="color:var(--gray-400);font-size:0.78rem">CSS injetado diretamente na página do portal. Use com cuidado.</small>
+                </div>
+            </form>
+            <div style="margin-top:16px;text-align:right">
+                <button class="btn btn-primary" onclick="salvarConfig('portal')"><i class="fas fa-save"></i> Salvar Configurações do Portal</button>
+            </div>
         </div>
     </div>
 </div>
@@ -295,6 +462,19 @@ function novaCategoria() {
             <div class="form-group">
                 <label class="form-label">Nome *</label>
                 <input type="text" name="nome" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Departamento</label>
+                <select name="departamento_id" class="form-select">
+                    <option value="">— Nenhum (Global) —</option>
+                    <?php
+                    $db2 = Database::getInstance();
+                    $deptos = $db2->fetchAll("SELECT id, nome, sigla FROM departamentos WHERE ativo = 1 ORDER BY ordem, nome");
+                    foreach ($deptos as $dep):
+                    ?>
+                    <option value="<?= $dep['id'] ?>"><?= htmlspecialchars($dep['sigla'] . ' - ' . $dep['nome']) ?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
             <div class="form-group">
                 <label class="form-label">Descrição</label>
@@ -423,5 +603,39 @@ function excluirSLA(id) {
         if (resp.success) { HelpDesk.toast('Regra excluída!', 'success'); setTimeout(() => location.reload(), 500); }
         else HelpDesk.toast(resp.error || 'Erro', 'danger');
     });
+}
+
+/* === Portal functions === */
+function previewGradient() {
+    const c1 = document.getElementById('portalH1')?.value || '#1E1B4B';
+    const c2 = document.getElementById('portalH2')?.value || '#4338CA';
+    const c3 = document.getElementById('portalH3')?.value || '#6366F1';
+    const el = document.getElementById('gradientPreview');
+    if (el) el.style.background = `linear-gradient(135deg, ${c1} 0%, ${c2} 50%, ${c3} 100%)`;
+}
+
+function uploadPortalImage(input, targetName) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    if (file.size > 5 * 1024 * 1024) {
+        HelpDesk.toast('Imagem muito grande (max 5MB)', 'warning');
+        return;
+    }
+    const fd = new FormData();
+    fd.append('action', 'upload_portal_image');
+    fd.append('imagem', file);
+
+    fetch('<?= BASE_URL ?>/api/configuracoes.php', { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(resp => {
+            if (resp.success && resp.url) {
+                const targetInput = document.querySelector('[name="' + targetName + '"]');
+                if (targetInput) targetInput.value = resp.url;
+                HelpDesk.toast('Imagem enviada!', 'success');
+            } else {
+                HelpDesk.toast(resp.error || 'Erro no upload', 'danger');
+            }
+        })
+        .catch(() => HelpDesk.toast('Erro de conexão', 'danger'));
 }
 </script>

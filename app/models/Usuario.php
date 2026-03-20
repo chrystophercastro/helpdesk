@@ -12,7 +12,12 @@ class Usuario {
     }
 
     public function findById($id) {
-        return $this->db->fetch("SELECT * FROM usuarios WHERE id = ?", [$id]);
+        return $this->db->fetch(
+            "SELECT u.*, d.nome as departamento_nome, d.sigla as departamento_sigla, d.cor as departamento_cor, d.icone as departamento_icone
+             FROM usuarios u
+             LEFT JOIN departamentos d ON d.id = u.departamento_id
+             WHERE u.id = ?", [$id]
+        );
     }
 
     public function findByEmail($email) {
@@ -28,26 +33,40 @@ class Usuario {
         $params = [];
 
         if (!empty($filtros['tipo'])) {
-            $where .= " AND tipo = ?";
+            $where .= " AND u.tipo = ?";
             $params[] = $filtros['tipo'];
         }
         if (!empty($filtros['ativo'])) {
-            $where .= " AND ativo = ?";
+            $where .= " AND u.ativo = ?";
             $params[] = $filtros['ativo'];
         }
+        if (!empty($filtros['departamento_id'])) {
+            $where .= " AND u.departamento_id = ?";
+            $params[] = $filtros['departamento_id'];
+        }
         if (!empty($filtros['busca'])) {
-            $where .= " AND (nome LIKE ? OR email LIKE ? OR telefone LIKE ?)";
+            $where .= " AND (u.nome LIKE ? OR u.email LIKE ? OR u.telefone LIKE ? OR d.nome LIKE ?)";
             $busca = '%' . $filtros['busca'] . '%';
             $params[] = $busca;
             $params[] = $busca;
             $params[] = $busca;
+            $params[] = $busca;
         }
 
-        return $this->db->fetchAll("SELECT * FROM usuarios WHERE {$where} ORDER BY nome ASC", $params);
+        return $this->db->fetchAll(
+            "SELECT u.*, d.nome as departamento_nome, d.sigla as departamento_sigla, d.cor as departamento_cor, d.icone as departamento_icone
+             FROM usuarios u
+             LEFT JOIN departamentos d ON d.id = u.departamento_id
+             WHERE {$where} ORDER BY u.nome ASC", $params);
     }
 
     public function listarTecnicos() {
-        return $this->db->fetchAll("SELECT * FROM usuarios WHERE tipo IN ('tecnico','gestor','admin') AND ativo = 1 ORDER BY nome");
+        return $this->db->fetchAll(
+            "SELECT u.*, d.nome as departamento_nome, d.sigla as departamento_sigla, d.cor as departamento_cor
+             FROM usuarios u
+             LEFT JOIN departamentos d ON d.id = u.departamento_id
+             WHERE u.tipo IN ('tecnico','gestor','admin') AND u.ativo = 1 ORDER BY u.nome"
+        );
     }
 
     public function criar($dados) {

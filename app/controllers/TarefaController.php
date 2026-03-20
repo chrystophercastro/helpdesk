@@ -6,20 +6,23 @@ require_once __DIR__ . '/../models/Tarefa.php';
 require_once __DIR__ . '/../models/Projeto.php';
 require_once __DIR__ . '/../models/Usuario.php';
 require_once __DIR__ . '/../models/Notificacao.php';
+require_once __DIR__ . '/../models/NotificacaoInterna.php';
 
 class TarefaController {
     private $tarefa;
     private $projeto;
     private $notificacao;
+    private $notificacaoInterna;
 
     public function __construct() {
         $this->tarefa = new Tarefa();
         $this->projeto = new Projeto();
         $this->notificacao = new Notificacao();
+        $this->notificacaoInterna = new NotificacaoInterna();
     }
 
-    public function listarKanban($projetoId = null) {
-        $tarefas = $this->tarefa->listarPorColuna($projetoId);
+    public function listarKanban($projetoId = null, $deptId = null) {
+        $tarefas = $this->tarefa->listarPorColuna($projetoId, $deptId);
         $kanban = [];
         foreach (KANBAN_COLUNAS as $key => $col) {
             $kanban[$key] = [
@@ -48,6 +51,16 @@ class TarefaController {
         ];
 
         $id = $this->tarefa->criar($tarefaData);
+
+        // Notificação interna para responsável
+        if (!empty($dados['responsavel_id'])) {
+            $projetoNome = '';
+            if (!empty($dados['projeto_id'])) {
+                $p = $this->projeto->findById($dados['projeto_id']);
+                $projetoNome = $p['nome'] ?? '';
+            }
+            $this->notificacaoInterna->notificarTarefaAtribuida($id, (int)$dados['responsavel_id'], $tarefaData['titulo'], $projetoNome);
+        }
 
         // Atualizar progresso do projeto
         if (!empty($dados['projeto_id'])) {
@@ -104,6 +117,16 @@ class TarefaController {
                 $usuario = new Usuario();
                 $responsavel = $tarefa['responsavel_id'] ? $usuario->findById($tarefa['responsavel_id']) : null;
                 $this->notificacao->notificarAtualizacaoTarefa($tarefa, $responsavel);
+
+                // Notificação interna
+                if (!empty($tarefa['responsavel_id']) && $tarefa['responsavel_id'] != ($_SESSION['usuario_id'] ?? 0)) {
+                    $colunaLabel = KANBAN_COLUNAS[$dados['coluna']]['label'] ?? $dados['coluna'];
+                    $this->notificacaoInterna->notificarSistema(
+                        $tarefa['responsavel_id'],
+                        'Tarefa movida: ' . $tarefa['titulo'],
+                        'Nova coluna: ' . $colunaLabel
+                    );
+                }
             }
         }
 

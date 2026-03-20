@@ -499,7 +499,7 @@ class IAActions {
      * PHP monta toda a estrutura (sprints, prioridades, pontos)
      */
     public static function getPlannerPrompt() {
-        return "List 5 to 8 tasks for the user's project. Reply ONLY with this format:\nNAME: short project name\n- task 1\n- task 2\n- task 3\nNothing else. No explanations. Task titles in the user's language.";
+        return "Você é um planejador de projetos detalhado. O usuário vai descrever um projeto e você deve responder APENAS neste formato exato:\n\nNOME: nome curto do projeto\n- tarefa 1\n- tarefa 2\n- tarefa 3\n- (continuar até cobrir todo o escopo)\n\nRegras:\n- Responda entre 10 e 20 tarefas, uma por linha, começando com -\n- Seja detalhista: divida o trabalho em etapas específicas e granulares\n- Cubra todas as fases: análise, banco de dados, backend, frontend, testes, deploy\n- Cada tarefa deve ter pelo menos 10 caracteres e ser acionável\n- NOME: deve ser uma linha curta com o nome do projeto\n- NÃO adicione explicações, numeração, sprints, fases, títulos de seção ou qualquer outro texto\n- APENAS linhas começando com - (tarefas) e a linha NOME:\n- Responda no idioma do usuário\n- Se o pedido for em português, responda em português";
     }
 
     /**
@@ -507,66 +507,106 @@ class IAActions {
      * e construir plano completo com sprints e tarefas distribuídas
      */
     public static function parsePlanText($text) {
+        // Limpar markdown code blocks que alguns modelos adicionam
+        $text = preg_replace('/```(?:json|text|markdown)?\s*/i', '', $text);
+        $text = str_replace('```', '', $text);
+        $text = trim($text);
+
         $lines = array_filter(array_map('trim', explode("\n", $text)), fn($l) => $l !== '');
 
         $projectName = '';
         $taskTitles = [];
 
-        // Padrões a ignorar (headers, labels, etc.)
-        $skipPatterns = '/^(sprint\s*\d*\s*:|tarefas?:|goal:|objetivo:|nota:|obs:|fase\s*\d*\s*:)/iu';
+        // Padrões a ignorar (headers, labels genéricos)
+        $skipPatterns = '/^(sprint\s*\d*\s*:|tarefas?\s*:|goal\s*:|objetivo\s*:|nota\s*:|obs\s*:|fase\s*\d*\s*:|etapa\s*\d*\s*:)/iu';
 
         foreach ($lines as $line) {
-            // NOME: ou PROJETO: na primeira linha com nome
-            if (preg_match('/^(?:NOME|PROJETO|NAME)\s*:\s*(.+)/iu', $line, $m) && !$projectName) {
-                $projectName = trim($m[1]);
+            // Remover ** markdown bold do texto
+            $cleanLine = preg_replace('/\*\*(.+?)\*\*/', '$1', $line);
+            $cleanLine = trim($cleanLine);
+
+            // NOME: ou PROJETO: ou NAME: ou TITLE: (qualquer variação)
+            if (preg_match('/^(?:NOME|PROJETO|NAME|TITLE|NOMBRE|PROJECT)\s*:\s*(.+)/iu', $cleanLine, $m) && !$projectName) {
+                $projectName = trim($m[1], ' "\'\'\"');
                 if (mb_strlen($projectName) > 100) $projectName = mb_substr($projectName, 0, 100);
             }
-            // Linhas com - ou * ou + ou • ou número. (bullet list, qualquer nível de indentação)
-            elseif (preg_match('/^[-*•+]\s+(.+)/u', $line, $m) || preg_match('/^\d+[.)]\s+(.+)/u', $line, $m)) {
-                $title = trim($m[1]);
+            // Linhas com - ou * ou + ou • ou ✅ ou ➤ ou → ou número. (bullet list)
+            elseif (preg_match('/^(?:[-*•+✅➤→▶●◉]|\d+[.)\-])\s+(.+)/u', $cleanLine, $m)) {
+                $title = trim($m[1], ' "\'\'\"');
+                // Remover prefixos tipo "Tarefa 1:" ou "Task 1:"
+                $title = preg_replace('/^(?:tarefa|task|tarea)\s*\d*\s*:\s*/iu', '', $title);
+                $title = trim($title);
                 // Ignorar títulos curtos, headers e duplicatas
-                if (mb_strlen($title) < 8) continue;
+                if (mb_strlen($title) < 5) continue;
                 if (preg_match($skipPatterns, $title)) continue;
-                if (mb_strlen($title) > 120) $title = mb_substr($title, 0, 120);
+                if (mb_strlen($title) > 150) $title = mb_substr($title, 0, 150);
                 // Deduplicar por título normalizado
                 $normalized = mb_strtolower(preg_replace('/\s+/', ' ', $title));
-                if (in_array($normalized, array_map(fn($t) => mb_strtolower(preg_replace('/\s+/', ' ', $t)), $taskTitles))) continue;
-                if (count($taskTitles) < 10) {
+                $existentes = array_map(fn($t) => mb_strtolower(preg_replace('/\s+/', ' ', $t)), $taskTitles);
+                if (in_array($normalized, $existentes)) continue;
+                if (count($taskTitles) < 25) {
                     $taskTitles[] = $title;
                 }
             }
         }
 
-        // Se não encontrou nome, usar primeira linha não-vazia
+        // Se não encontrou nome com padrão NOME:, tentar extrair da primeira linha
         if (!$projectName && !empty($lines)) {
             $first = reset($lines);
-            if (mb_strlen($first) < 100) $projectName = $first;
-            else $projectName = mb_substr($first, 0, 100);
+            // Remover bold e prefixos comuns
+            $first = preg_replace('/\*\*(.+?)\*\*/', '$1', $first);
+            $first = preg_replace('/^(?:#+ |NOME|NAME|PROJETO|PROJECT)\s*:?\s*/iu', '', $first);
+            $first = trim($first, ' :"\'\'\"');
+            if (mb_strlen($first) >= 3 && mb_strlen($first) <= 100) {
+                $projectName = $first;
+            }
+        }
+
+        // Se ainda sem nome mas temos tarefas, gerar nome genérico
+        if (!$projectName && !empty($taskTitles)) {
+            $projectName = 'Projeto - ' . mb_substr($taskTitles[0], 0, 50);
         }
 
         if (!$projectName || empty($taskTitles)) {
             return null;
         }
 
-        // Construir plano estruturado com 2 sprints
-        $mid = (int)ceil(count($taskTitles) / 2);
+        // Construir plano estruturado com sprints proporcionais ao nº de tarefas
+        $nTarefas = count($taskTitles);
+        $nSprints = max(2, min(5, (int)ceil($nTarefas / 5))); // 1 sprint a cada ~5 tarefas, min 2, max 5
+        $tarefasPorSprint = (int)ceil($nTarefas / $nSprints);
+
+        $sprintNames = [
+            'Planejamento e Análise',
+            'Setup e Fundações',
+            'Desenvolvimento Core',
+            'Funcionalidades e Integrações',
+            'Testes, Ajustes e Deploy',
+        ];
+
         $plan = [
             'projeto' => [
                 'nome' => $projectName,
-                'descricao' => "Projeto gerado por IA com " . count($taskTitles) . " tarefas",
+                'descricao' => "Projeto gerado por IA com " . $nTarefas . " tarefas em " . $nSprints . " sprints",
                 'prioridade' => 'media',
             ],
-            'sprints' => [
-                ['nome' => 'Sprint 1 - Planejamento e Setup', 'duracao_semanas' => 2, 'meta' => 'Preparação e fundações'],
-                ['nome' => 'Sprint 2 - Desenvolvimento e Entrega', 'duracao_semanas' => 2, 'meta' => 'Implementação e finalização'],
-            ],
+            'sprints' => [],
             'tarefas' => [],
         ];
 
+        for ($s = 0; $s < $nSprints; $s++) {
+            $plan['sprints'][] = [
+                'nome' => 'Sprint ' . ($s + 1) . ' - ' . ($sprintNames[$s] ?? 'Fase ' . ($s + 1)),
+                'duracao_semanas' => 2,
+                'meta' => $sprintNames[$s] ?? 'Fase ' . ($s + 1),
+            ];
+        }
+
         foreach ($taskTitles as $i => $title) {
+            $sprintIdx = min((int)floor($i / $tarefasPorSprint), $nSprints - 1);
             $plan['tarefas'][] = [
                 'titulo' => $title,
-                'sprint_index' => $i < $mid ? 0 : 1,
+                'sprint_index' => $sprintIdx,
                 'prioridade' => 'media',
                 'pontos' => 3,
             ];

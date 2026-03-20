@@ -76,6 +76,14 @@ try {
                 emailJsonResponse(['success' => true, 'data' => $result]);
                 break;
 
+            case 'autodiscover':
+                if (empty($data['email'])) {
+                    emailJsonResponse(['error' => 'Endereço de e-mail é obrigatório'], 400);
+                }
+                $result = $email->autodiscover($data['email']);
+                emailJsonResponse(['success' => true, 'data' => $result]);
+                break;
+
             // ===== AÇÕES =====
             case 'marcar_lido':
                 if (empty($data['conta_id']) || !isset($data['uid'])) {
@@ -185,7 +193,8 @@ try {
                     ['role' => 'user', 'content' => $prompt],
                 ];
 
-                $modeloEscolhido = trim($data['modelo'] ?? '') ?: null;
+                // Usar modelo configurado centralmente para e-mails
+                $modeloEscolhido = trim($data['modelo'] ?? '') ?: $ia->getConfig('modelo_email', null);
 
                 $lastHeartbeat = microtime(true);
 

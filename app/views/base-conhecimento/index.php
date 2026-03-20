@@ -20,6 +20,12 @@ foreach ($artigos ?? [] as $a) {
             <i class="fas fa-search"></i>
             <input type="text" id="searchKB" class="form-input" placeholder="Buscar artigos..." value="<?= htmlspecialchars($_GET['busca'] ?? '') ?>" onkeydown="if(event.key==='Enter')buscarKB()">
         </div>
+        <button class="btn btn-sm ia-insight-btn" onclick="iaInsight('kb_search', {}, {input:true, inputLabel:'Descreva o problema:', inputPlaceholder:'Ex: impressora não imprime, tela azul, VPN não conecta...', inputKey:'query'})">
+            <i class="fas fa-robot"></i> Busca IA
+        </button>
+        <button class="btn btn-sm ia-insight-btn" onclick="iaInsight('kb_generate', {}, {input:true, inputLabel:'ID ou código do chamado resolvido:', inputPlaceholder:'Ex: 123 ou TI-2026-00045', inputKey:'chamado_id', inputType:'text'})" style="background:linear-gradient(135deg,#10B981,#059669)!important">
+            <i class="fas fa-magic"></i> Gerar Artigo
+        </button>
         <button class="btn btn-primary" onclick="HelpDesk.openModal('novoArtigo')">
             <i class="fas fa-plus"></i> Novo Artigo
         </button>

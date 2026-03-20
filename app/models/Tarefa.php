@@ -31,12 +31,16 @@ class Tarefa {
         );
     }
 
-    public function listarPorColuna($projetoId = null) {
+    public function listarPorColuna($projetoId = null, $deptId = null) {
         $where = "1=1";
         $params = [];
         if ($projetoId) {
             $where .= " AND t.projeto_id = ?";
             $params[] = $projetoId;
+        }
+        if ($deptId) {
+            $where .= " AND p.departamento_id = ?";
+            $params[] = $deptId;
         }
         return $this->db->fetchAll(
             "SELECT t.*, u.nome as responsavel_nome, u.avatar as responsavel_avatar, p.nome as projeto_nome

@@ -11,6 +11,9 @@
         <p class="page-subtitle">Monitoramento de serviços, uptime e alertas em tempo real</p>
     </div>
     <div class="page-actions">
+        <button class="btn btn-sm ia-insight-btn" onclick="iaInsight('monitor_correlation')">
+            <i class="fas fa-robot"></i> Correlacionar IA
+        </button>
         <button class="btn btn-sm" onclick="monVerificarTodos()" id="monBtnCheckAll">
             <i class="fas fa-sync-alt"></i> Verificar Todos
         </button>

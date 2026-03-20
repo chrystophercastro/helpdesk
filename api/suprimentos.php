@@ -11,6 +11,11 @@ if (!isLoggedIn()) {
     jsonResponse(['error' => 'Não autenticado'], 401);
 }
 
+// Restrito ao departamento de TI
+if (!isTIDept()) {
+    jsonResponse(['error' => 'Acesso restrito ao departamento de TI'], 403);
+}
+
 require_once __DIR__ . '/../app/models/Suprimento.php';
 $model = new Suprimento();
 

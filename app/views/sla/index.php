@@ -8,9 +8,18 @@
 <div class="page-header">
     <div>
         <h1 class="page-title"><i class="fas fa-tachometer-alt" style="margin-right:8px;color:var(--warning)"></i> SLA Dashboard</h1>
-        <p class="page-subtitle">Métricas de SLA, compliance e tempos de resposta em tempo real</p>
+        <p class="page-subtitle">
+            <?php if (!isAdmin()): ?>
+                <i class="fas fa-filter" style="margin-right:4px;color:var(--primary)"></i> Métricas de SLA do seu departamento
+            <?php else: ?>
+                Métricas de SLA, compliance e tempos de resposta em tempo real
+            <?php endif; ?>
+        </p>
     </div>
     <div class="page-actions">
+        <button class="btn btn-sm ia-insight-btn" onclick="iaInsight('sla_predictive')">
+            <i class="fas fa-robot"></i> Análise Preditiva
+        </button>
         <button class="btn btn-sm" onclick="slaRefresh()">
             <i class="fas fa-sync-alt"></i> Atualizar
         </button>

@@ -1,6 +1,6 @@
 <?php
 /**
- * HelpDesk TI - Login
+ * Oracle X - Login
  */
 session_start();
 
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - HelpDesk TI</title>
+    <title>Login - Oracle X</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css">
@@ -180,9 +180,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="login-container">
         <div class="login-card">
             <div class="login-logo">
-                <i class="fas fa-headset"></i>
-                <h1>HelpDesk TI</h1>
-                <p>Sistema de Gerenciamento de TI</p>
+                <i class="fas fa-bolt"></i>
+                <h1>Oracle X</h1>
+                <p>Sistema de Gerenciamento Corporativo</p>
             </div>
 
             <?php if ($error): ?>

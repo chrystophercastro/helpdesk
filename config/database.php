@@ -1,7 +1,7 @@
 <?php
 /**
  * Configuração do Banco de Dados
- * HelpDesk TI
+ * Oracle X
  */
 
 define('DB_HOST', 'localhost');

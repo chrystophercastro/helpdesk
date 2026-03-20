@@ -21,6 +21,9 @@ $abaAtiva = $_GET['aba'] ?? 'ativos';
         <p class="page-subtitle">Gestão de ativos e termos de responsabilidade</p>
     </div>
     <div class="page-actions">
+        <button class="btn btn-sm ia-insight-btn" onclick="iaInsight('inventario_lifecycle')">
+            <i class="fas fa-robot"></i> Ciclo de Vida IA
+        </button>
         <?php if ($abaAtiva === 'ativos'): ?>
         <button class="btn btn-primary" onclick="HelpDesk.openModal('novoAtivo')">
             <i class="fas fa-plus"></i> Novo Ativo

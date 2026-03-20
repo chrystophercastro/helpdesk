@@ -141,7 +141,7 @@ if ($action === 'ia_stream') {
         }
     }
 
-    $systemPrompt = "Você é um especialista em MikroTik RouterOS integrado ao sistema HelpDesk TI. "
+    $systemPrompt = "Você é um especialista em MikroTik RouterOS integrado ao sistema Oracle X. "
         . "Você tem acesso completo aos dados do roteador do usuário e deve analisar a configuração, "
         . "sugerir melhorias de segurança, performance e boas práticas. "
         . "Responda em português brasileiro. "
@@ -200,6 +200,9 @@ if ($action === 'ia_stream') {
     echo "data: " . json_encode(['status' => 'connected', 'model' => $modelo ?: 'default']) . "\n\n";
     $sseFlush();
 
+    // Usar modelo configurado centralmente para rede/MikroTik
+    $modeloRede = $modelo ?: $ia->getConfig('modelo_rede', null);
+
     try {
         $ia->chatStream($messages, function($chunk) use (&$fullContent, &$lastHeartbeat, $sseFlush) {
             // Heartbeat durante carregamento do modelo
@@ -224,7 +227,7 @@ if ($action === 'ia_stream') {
                 echo "data: " . json_encode(['done' => true, 'full_content' => $fullContent, 'tokens' => $tokens]) . "\n\n";
                 $sseFlush();
             }
-        }, $modelo ?: null);
+        }, $modeloRede);
 
         // Fallback done event (caso o callback done não tenha disparado)
         if ($fullContent && !str_contains($fullContent, '"done":true')) {

@@ -49,6 +49,9 @@ if ($method === 'POST') {
                 'icone' => !empty($icone) ? sanitizar($icone) : 'fas fa-tag',
                 'ativo' => 1
             ];
+            if (!empty($data['departamento_id'])) {
+                $campos['departamento_id'] = (int)$data['departamento_id'];
+            }
             $id = $db->insert('categorias', $campos);
             jsonResponse(['success' => true, 'id' => $id]);
             break;
@@ -179,6 +182,33 @@ if ($method === 'POST') {
                 jsonResponse(['success' => true, 'message' => 'Instância: ' . $state, 'state' => $state]);
             } else {
                 jsonResponse(['error' => 'Não foi possível conectar à API. HTTP: ' . $httpCode], $httpCode);
+            }
+            break;
+
+        case 'upload_portal_image':
+            if (empty($_FILES['imagem']) || $_FILES['imagem']['error'] !== UPLOAD_ERR_OK) {
+                jsonResponse(['error' => 'Nenhuma imagem enviada'], 400);
+            }
+            $file = $_FILES['imagem'];
+            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
+            if (!in_array($ext, $allowed)) {
+                jsonResponse(['error' => 'Formato não permitido. Use: ' . implode(', ', $allowed)], 400);
+            }
+            if ($file['size'] > 5 * 1024 * 1024) {
+                jsonResponse(['error' => 'Imagem muito grande (max 5MB)'], 400);
+            }
+            $uploadDir = BASE_PATH . '/uploads/portal/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            $newName = 'portal_' . uniqid() . '.' . $ext;
+            $destino = $uploadDir . $newName;
+            if (move_uploaded_file($file['tmp_name'], $destino)) {
+                $url = BASE_URL . '/uploads/portal/' . $newName;
+                jsonResponse(['success' => true, 'url' => $url]);
+            } else {
+                jsonResponse(['error' => 'Erro ao salvar arquivo'], 500);
             }
             break;
 

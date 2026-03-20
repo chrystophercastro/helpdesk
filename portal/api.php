@@ -26,6 +26,7 @@ switch ($action) {
         $titulo = sanitizar($data['titulo'] ?? '');
         $descricao = sanitizar($data['descricao'] ?? '');
         $categoria_id = (int)($data['categoria_id'] ?? 0);
+        $departamento_id = (int)($data['departamento_id'] ?? 0);
         $urgencia = sanitizar($data['urgencia'] ?? 'media');
         $impacto = sanitizar($data['impacto'] ?? 'medio');
 
@@ -51,6 +52,7 @@ switch ($action) {
             'titulo' => $titulo,
             'descricao' => $descricao,
             'categoria_id' => $categoria_id ?: null,
+            'departamento_id' => $departamento_id ?: null,
             'urgencia' => $urgencia,
             'impacto' => $impacto
         ], true);
@@ -68,19 +70,18 @@ switch ($action) {
         break;
 
     case 'consultar':
-        $telefone = formatarTelefone(sanitizar($data['telefone'] ?? ''));
         $codigo = strtoupper(sanitizar($data['codigo'] ?? ''));
 
-        if (empty($telefone) || empty($codigo)) {
-            jsonResponse(['error' => 'Informe o telefone e o código do chamado.'], 400);
+        if (empty($codigo)) {
+            jsonResponse(['error' => 'Informe o código do chamado.'], 400);
         }
 
         require_once __DIR__ . '/../app/models/Chamado.php';
         $chamadoModel = new Chamado();
-        $chamado = $chamadoModel->buscarPorTelefoneECodigo($telefone, $codigo);
+        $chamado = $chamadoModel->buscarPorCodigo($codigo);
 
         if (!$chamado) {
-            jsonResponse(['error' => 'Chamado não encontrado. Verifique o telefone e o código.'], 404);
+            jsonResponse(['error' => 'Chamado não encontrado. Verifique o código informado.'], 404);
         }
 
         $chamado['comentarios'] = $chamadoModel->getComentarios($chamado['id']);
@@ -100,6 +101,20 @@ switch ($action) {
         $statusList = CHAMADO_STATUS;
         $st = $statusList[$chamado['status']];
 
+        // Buscar dados do departamento
+        $deptNome = null; $deptCor = null; $deptIcone = null;
+        if (!empty($chamado['departamento_id'])) {
+            $dept = Database::getInstance()->fetch(
+                "SELECT nome, cor, icone FROM departamentos WHERE id = ?",
+                [$chamado['departamento_id']]
+            );
+            if ($dept) {
+                $deptNome = $dept['nome'];
+                $deptCor = $dept['cor'];
+                $deptIcone = $dept['icone'];
+            }
+        }
+
         jsonResponse([
             'success' => true,
             'chamado' => [
@@ -113,6 +128,9 @@ switch ($action) {
                 'categoria' => $chamado['categoria_nome'] ?? '-',
                 'tecnico' => $chamado['tecnico_nome'] ?? 'Aguardando atribuição',
                 'data_abertura' => formatarData($chamado['data_abertura']),
+                'departamento' => $deptNome,
+                'departamento_cor' => $deptCor,
+                'departamento_icone' => $deptIcone,
                 'comentarios' => $comentariosPublicos
             ]
         ]);

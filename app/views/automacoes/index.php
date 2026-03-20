@@ -10,6 +10,9 @@
         <p>Motor de regras automáticas para otimizar sua rotina de TI</p>
     </div>
     <div class="page-header-actions">
+        <button class="btn btn-sm ia-insight-btn" onclick="iaInsight('automacoes_suggest')">
+            <i class="fas fa-robot"></i> Sugerir IA
+        </button>
         <button class="btn btn-secondary" onclick="autoExecutarTodas()" title="Executar agora todas as automações ativas">
             <i class="fas fa-play-circle"></i> Executar Todas
         </button>

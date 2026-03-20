@@ -10,6 +10,9 @@
         <p>Gestão de contratos, fornecedores e garantias</p>
     </div>
     <div class="page-header-actions">
+        <button class="btn btn-sm ia-insight-btn" onclick="iaInsight('contratos_intelligence')">
+            <i class="fas fa-robot"></i> Inteligência IA
+        </button>
         <button class="btn btn-primary" onclick="ctAbrirModalContrato()"><i class="fas fa-plus"></i> Novo Contrato</button>
         <button class="btn btn-secondary" onclick="ctAbrirModalFornecedor()"><i class="fas fa-plus"></i> Novo Fornecedor</button>
     </div>

@@ -20,41 +20,44 @@ requireRole(['admin', 'gestor']);
 $sla = new SLADashboard();
 $method = $_SERVER['REQUEST_METHOD'];
 
+// Filtro por departamento: admin vê tudo, gestor só sua área
+$deptFilter = getDeptFilter();
+
 if ($method === 'GET') {
     $action = $_GET['action'] ?? '';
 
     switch ($action) {
         case 'overview':
-            jsonResponse(['success' => true, 'data' => $sla->getOverview()]);
+            jsonResponse(['success' => true, 'data' => $sla->getOverview($deptFilter)]);
             break;
 
         case 'semaforo':
-            jsonResponse(['success' => true, 'data' => $sla->getSemaforo()]);
+            jsonResponse(['success' => true, 'data' => $sla->getSemaforo($deptFilter)]);
             break;
 
         case 'em_risco':
             $limite = (int)($_GET['limite'] ?? 20);
-            jsonResponse(['success' => true, 'data' => $sla->getChamadosEmRisco($limite)]);
+            jsonResponse(['success' => true, 'data' => $sla->getChamadosEmRisco($limite, $deptFilter)]);
             break;
 
         case 'mttr':
             $dimensao = $_GET['dimensao'] ?? 'prioridade';
             $dias = (int)($_GET['dias'] ?? 30);
-            jsonResponse(['success' => true, 'data' => $sla->getMTTR($dimensao, $dias)]);
+            jsonResponse(['success' => true, 'data' => $sla->getMTTR($dimensao, $dias, $deptFilter)]);
             break;
 
         case 'tendencia':
             $meses = (int)($_GET['meses'] ?? 6);
-            jsonResponse(['success' => true, 'data' => $sla->getTendencia($meses)]);
+            jsonResponse(['success' => true, 'data' => $sla->getTendencia($meses, $deptFilter)]);
             break;
 
         case 'violacoes':
             $limite = (int)($_GET['limite'] ?? 10);
-            jsonResponse(['success' => true, 'data' => $sla->getTopViolacoes($limite)]);
+            jsonResponse(['success' => true, 'data' => $sla->getTopViolacoes($limite, $deptFilter)]);
             break;
 
         case 'compliance_tecnico':
-            jsonResponse(['success' => true, 'data' => $sla->getCompliancePorTecnico()]);
+            jsonResponse(['success' => true, 'data' => $sla->getCompliancePorTecnico($deptFilter)]);
             break;
 
         case 'regras':

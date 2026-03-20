@@ -14,8 +14,8 @@ class SprintController {
         $this->tarefa = new Tarefa();
     }
 
-    public function listar($projetoId = null) {
-        return $this->sprint->listar($projetoId);
+    public function listar($projetoId = null, $deptId = null) {
+        return $this->sprint->listar($projetoId, $deptId);
     }
 
     public function ver($id) {

@@ -13,6 +13,17 @@ if (!isLoggedIn()) {
 
 require_once __DIR__ . '/../app/controllers/TarefaController.php';
 $controller = new TarefaController();
+$deptFilter = getDeptFilter();
+
+/**
+ * Verifica se o usuário tem acesso ao projeto da tarefa.
+ */
+function verificarAcessoProjeto($projetoId, $deptFilter) {
+    if (!$deptFilter) return true;
+    $db = Database::getInstance();
+    $projDept = $db->fetchColumn("SELECT departamento_id FROM projetos WHERE id = ?", [$projetoId]);
+    return (int)$projDept === (int)$deptFilter;
+}
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -22,18 +33,37 @@ if ($method === 'POST') {
 
     switch ($action) {
         case 'criar':
+            if ($deptFilter && !verificarAcessoProjeto((int)($data['projeto_id'] ?? 0), $deptFilter)) {
+                jsonResponse(['error' => 'Acesso negado: projeto de outro departamento'], 403);
+            }
             $result = $controller->criar($data);
             jsonResponse($result);
             break;
 
         case 'atualizar':
             $id = (int)($data['id'] ?? 0);
+            if ($deptFilter) {
+                require_once __DIR__ . '/../app/models/Tarefa.php';
+                $tModel = new Tarefa();
+                $tarefa = $tModel->findById($id);
+                if ($tarefa && !verificarAcessoProjeto((int)($tarefa['projeto_id'] ?? 0), $deptFilter)) {
+                    jsonResponse(['error' => 'Acesso negado'], 403);
+                }
+            }
             $result = $controller->atualizar($id, $data);
             jsonResponse($result);
             break;
 
         case 'mover':
             $id = (int)($data['tarefa_id'] ?? 0);
+            if ($deptFilter) {
+                require_once __DIR__ . '/../app/models/Tarefa.php';
+                $tModel = new Tarefa();
+                $tarefa = $tModel->findById($id);
+                if ($tarefa && !verificarAcessoProjeto((int)($tarefa['projeto_id'] ?? 0), $deptFilter)) {
+                    jsonResponse(['error' => 'Acesso negado'], 403);
+                }
+            }
             $coluna = sanitizar($data['coluna'] ?? '');
             $posicao = (int)($data['posicao'] ?? 0);
             $result = $controller->mover($id, $coluna, $posicao);
@@ -42,6 +72,14 @@ if ($method === 'POST') {
 
         case 'deletar':
             $id = (int)($data['id'] ?? 0);
+            if ($deptFilter) {
+                require_once __DIR__ . '/../app/models/Tarefa.php';
+                $tModel = new Tarefa();
+                $tarefa = $tModel->findById($id);
+                if ($tarefa && !verificarAcessoProjeto((int)($tarefa['projeto_id'] ?? 0), $deptFilter)) {
+                    jsonResponse(['error' => 'Acesso negado'], 403);
+                }
+            }
             $result = $controller->deletar($id);
             jsonResponse($result);
             break;
@@ -62,7 +100,7 @@ if ($method === 'POST') {
 
         case 'kanban':
             $projetoId = $_GET['projeto_id'] ?? null;
-            $kanban = $controller->listarKanban($projetoId);
+            $kanban = $controller->listarKanban($projetoId, $deptFilter);
             jsonResponse($kanban);
             break;
 

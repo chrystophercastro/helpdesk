@@ -1,6 +1,6 @@
 <?php
 /**
- * HelpDesk TI — Assistente de Instalação (Setup Wizard)
+ * Oracle X — Assistente de Instalação (Setup Wizard)
  * Executa configuração inicial: testa BD, cria tabelas, configura admin e empresa.
  */
 session_start();
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (empty($errors)) {
                     // Salvar configuração do banco
                     $configContent = "<?php\n";
-                    $configContent .= "/**\n * Configuração do Banco de Dados\n * HelpDesk TI\n */\n\n";
+                    $configContent .= "/**\n * Configuração do Banco de Dados\n * Oracle X\n */\n\n";
                     $configContent .= "define('DB_HOST', " . var_export($dbHost, true) . ");\n";
                     $configContent .= "define('DB_NAME', " . var_export($dbName, true) . ");\n";
                     $configContent .= "define('DB_USER', " . var_export($dbUser, true) . ");\n";
@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $adminTelefone = trim($_POST['admin_telefone'] ?? '');
         $adminSenha    = $_POST['admin_senha'] ?? '';
         $adminSenha2   = $_POST['admin_senha2'] ?? '';
-        $empresaNome   = trim($_POST['empresa_nome'] ?? 'HelpDesk TI');
+        $empresaNome   = trim($_POST['empresa_nome'] ?? 'Oracle X');
 
         // Validações
         if (empty($adminNome))  $errors[] = 'Nome do administrador é obrigatório.';
@@ -202,7 +202,7 @@ $allReqOk = !in_array(false, array_column($requirements, 'ok'));
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instalação — HelpDesk TI</title>
+    <title>Instalação — Oracle X</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -562,7 +562,7 @@ $allReqOk = !in_array(false, array_column($requirements, 'ok'));
     <!-- Header -->
     <div class="setup-header">
         <i class="fas fa-headset logo"></i>
-        <h1>HelpDesk TI</h1>
+        <h1>Oracle X</h1>
         <p>Assistente de Instalação</p>
     </div>
 
@@ -692,7 +692,7 @@ $allReqOk = !in_array(false, array_column($requirements, 'ok'));
                 <div class="form-grid">
                     <div class="form-group col-span-2">
                         <label class="form-label">Nome da Empresa / Sistema</label>
-                        <input type="text" name="empresa_nome" class="form-input" value="<?= htmlspecialchars($_POST['empresa_nome'] ?? 'HelpDesk TI') ?>" required>
+                        <input type="text" name="empresa_nome" class="form-input" value="<?= htmlspecialchars($_POST['empresa_nome'] ?? 'Oracle X') ?>" required>
                     </div>
 
                     <div class="form-group col-span-2" style="border-top:1px solid var(--gray-200);padding-top:18px;margin-top:6px">
@@ -741,8 +741,8 @@ $allReqOk = !in_array(false, array_column($requirements, 'ok'));
                     <i class="fas fa-check"></i>
                 </div>
                 <div class="finish-text">
-                    <h3>Tudo pronto! 🎉</h3>
-                    <p>O HelpDesk TI foi instalado e configurado com sucesso.</p>
+                    <h3>Tudo pronto! ðŸŽ‰</h3>
+                    <p>O Oracle X foi instalado e configurado com sucesso.</p>
                     <p style="font-size:13px">Todas as tabelas foram criadas e seu administrador está cadastrado.</p>
                 </div>
 
@@ -781,7 +781,7 @@ $allReqOk = !in_array(false, array_column($requirements, 'ok'));
 
     <!-- Footer -->
     <div style="text-align:center;margin-top:24px;font-size:12px;color:rgba(255,255,255,0.3)">
-        HelpDesk TI &copy; <?= date('Y') ?> — Assistente de Instalação
+        Oracle X &copy; <?= date('Y') ?> — Assistente de Instalação
     </div>
 </div>
 

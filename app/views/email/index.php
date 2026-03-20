@@ -149,92 +149,125 @@
                     </button>
                     <div id="contasListItems"></div>
                 </div>
-                <!-- Formulário -->
+                <!-- Formulário Wizard -->
                 <div class="email-conta-form" id="emailContaForm" style="display:none">
-                    <h4 id="contaFormTitle">Nova Conta</h4>
-                    <input type="hidden" id="contaId" value="">
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Nome da Conta</label>
-                            <input type="text" id="contaNome" placeholder="Ex: Gmail Pessoal" class="form-control">
+                    <!-- ===== STEP 1: E-mail + Autodiscover ===== -->
+                    <div id="contaStep1">
+                        <h4 id="contaFormTitle">Nova Conta</h4>
+                        <input type="hidden" id="contaId" value="">
+                        <p style="color:#64748b;font-size:0.88rem;margin-bottom:16px">
+                            Digite seu e-mail e clique em <strong>Detectar Configurações</strong>. O sistema tentará encontrar as configurações IMAP/SMTP automaticamente, como o Outlook faz.
+                        </p>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nome da Conta</label>
+                                <input type="text" id="contaNome" placeholder="Ex: Trabalho, Pessoal..." class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Endereço de E-mail *</label>
+                                <input type="email" id="contaEmail" placeholder="seu@email.com" class="form-control">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Endereço de E-mail *</label>
-                            <input type="email" id="contaEmail" placeholder="seu@email.com" class="form-control">
+
+                        <div class="form-actions" style="margin-top:16px;gap:8px">
+                            <button class="btn btn-primary" onclick="autodiscoverEmail()" id="btnAutodiscover">
+                                <i class="fas fa-magic"></i> Detectar Configurações
+                            </button>
+                            <button class="btn btn-sm" onclick="mostrarConfigManual()" style="opacity:0.7">
+                                <i class="fas fa-cog"></i> Configurar Manualmente
+                            </button>
+                        </div>
+
+                        <!-- Resultado Autodiscover -->
+                        <div id="autodiscoverResult" style="display:none;margin-top:16px">
                         </div>
                     </div>
 
-                    <div class="form-divider">Servidor de Entrada (IMAP)</div>
-                    <div class="form-row form-row-3">
-                        <div class="form-group">
-                            <label>Host IMAP *</label>
-                            <input type="text" id="contaImapHost" placeholder="imap.gmail.com" class="form-control">
+                    <!-- ===== STEP 2: Config Servidor (auto-preenchido ou manual) ===== -->
+                    <div id="contaStep2" style="display:none">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                            <button class="btn btn-sm" onclick="voltarStep1()" title="Voltar">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <h4 style="margin:0" id="step2Title">Configurações do Servidor</h4>
                         </div>
-                        <div class="form-group">
-                            <label>Porta</label>
-                            <input type="number" id="contaImapPorta" value="993" class="form-control">
+
+                        <!-- Provider badge -->
+                        <div id="providerBadge" style="display:none;margin-bottom:12px">
                         </div>
-                        <div class="form-group">
-                            <label>Segurança</label>
-                            <select id="contaImapSeg" class="form-control">
-                                <option value="ssl" selected>SSL</option>
-                                <option value="tls">TLS</option>
-                                <option value="none">Nenhuma</option>
-                            </select>
+
+                        <div class="form-divider">Servidor de Entrada (IMAP)</div>
+                        <div class="form-row form-row-3">
+                            <div class="form-group">
+                                <label>Host IMAP *</label>
+                                <input type="text" id="contaImapHost" placeholder="imap.exemplo.com" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Porta</label>
+                                <input type="number" id="contaImapPorta" value="993" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Segurança</label>
+                                <select id="contaImapSeg" class="form-control">
+                                    <option value="ssl" selected>SSL</option>
+                                    <option value="tls">TLS</option>
+                                    <option value="none">Nenhuma</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-divider">Servidor de Saída (SMTP)</div>
+                        <div class="form-row form-row-3">
+                            <div class="form-group">
+                                <label>Host SMTP *</label>
+                                <input type="text" id="contaSmtpHost" placeholder="smtp.exemplo.com" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Porta</label>
+                                <input type="number" id="contaSmtpPorta" value="587" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Segurança</label>
+                                <select id="contaSmtpSeg" class="form-control">
+                                    <option value="tls" selected>TLS</option>
+                                    <option value="ssl">SSL</option>
+                                    <option value="none">Nenhuma</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-divider">Autenticação</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Usuário (login) *</label>
+                                <input type="text" id="contaUsuarioEmail" placeholder="seu@email.com" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Senha *</label>
+                                <input type="password" id="contaSenhaEmail" placeholder="Senha ou App Password" class="form-control">
+                            </div>
+                        </div>
+
+                        <!-- Nota do provedor -->
+                        <div id="providerNote" style="display:none;padding:10px 14px;border-radius:8px;background:#FEF3C7;color:#92400E;font-size:0.85rem;margin-bottom:12px">
+                            <i class="fas fa-info-circle"></i> <span id="providerNoteText"></span>
+                        </div>
+
+                        <div class="form-actions" style="margin-top:16px">
+                            <button class="btn" onclick="testarConexaoForm()" id="btnTestarConexao">
+                                <i class="fas fa-plug"></i> Testar Conexão
+                            </button>
+                            <button class="btn btn-primary" onclick="salvarContaForm()" id="btnSalvarConta">
+                                <i class="fas fa-save"></i> Salvar
+                            </button>
+                            <button class="btn btn-danger" onclick="excluirContaForm()" id="btnExcluirConta" style="display:none">
+                                <i class="fas fa-trash"></i> Excluir
+                            </button>
                         </div>
                     </div>
 
-                    <div class="form-divider">Servidor de Saída (SMTP)</div>
-                    <div class="form-row form-row-3">
-                        <div class="form-group">
-                            <label>Host SMTP *</label>
-                            <input type="text" id="contaSmtpHost" placeholder="smtp.gmail.com" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label>Porta</label>
-                            <input type="number" id="contaSmtpPorta" value="587" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label>Segurança</label>
-                            <select id="contaSmtpSeg" class="form-control">
-                                <option value="tls" selected>TLS</option>
-                                <option value="ssl">SSL</option>
-                                <option value="none">Nenhuma</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-divider">Autenticação</div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Usuário (login) *</label>
-                            <input type="text" id="contaUsuarioEmail" placeholder="seu@email.com" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label>Senha *</label>
-                            <input type="password" id="contaSenhaEmail" placeholder="Senha ou App Password" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="email-presets">
-                        <span class="email-preset-label">Presets:</span>
-                        <button class="btn btn-sm" onclick="presetGmail()">Gmail</button>
-                        <button class="btn btn-sm" onclick="presetOutlook()">Outlook</button>
-                        <button class="btn btn-sm" onclick="presetYahoo()">Yahoo</button>
-                    </div>
-
-                    <div class="form-actions" style="margin-top:16px">
-                        <button class="btn" onclick="testarConexaoForm()" id="btnTestarConexao">
-                            <i class="fas fa-plug"></i> Testar Conexão
-                        </button>
-                        <button class="btn btn-primary" onclick="salvarContaForm()" id="btnSalvarConta">
-                            <i class="fas fa-save"></i> Salvar
-                        </button>
-                        <button class="btn btn-danger" onclick="excluirContaForm()" id="btnExcluirConta" style="display:none">
-                            <i class="fas fa-trash"></i> Excluir
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -465,7 +498,15 @@ async function carregarPastas() {
         contarNaoLidos();
 
     } catch(e) {
-        container.innerHTML = `<div class="email-empty-msg"><i class="fas fa-exclamation-triangle" style="color:#EF4444"></i><p>${e.message}</p></div>`;
+        const isAuth = e.message && (e.message.toLowerCase().includes('autentica') || e.message.toLowerCase().includes('senha'));
+        container.innerHTML = `
+            <div class="email-empty-msg">
+                <i class="fas fa-exclamation-triangle" style="color:#EF4444;font-size:1.5rem"></i>
+                <p style="font-size:0.88rem;color:#991B1B;margin:8px 0 4px">${escapeHtml(e.message)}</p>
+                <button class="btn btn-sm btn-primary" onclick="abrirConfigContas()" style="margin-top:8px">
+                    <i class="fas fa-cog"></i> ${isAuth ? 'Corrigir Senha' : 'Configurações'}
+                </button>
+            </div>`;
     }
 }
 
@@ -937,6 +978,13 @@ function novaContaForm() {
     document.getElementById('contaUsuarioEmail').value = '';
     document.getElementById('contaSenhaEmail').value = '';
     document.getElementById('btnExcluirConta').style.display = 'none';
+    document.getElementById('autodiscoverResult').style.display = 'none';
+    document.getElementById('autodiscoverResult').innerHTML = '';
+    document.getElementById('providerBadge').style.display = 'none';
+    document.getElementById('providerNote').style.display = 'none';
+    // Mostrar step 1, esconder step 2
+    document.getElementById('contaStep1').style.display = 'block';
+    document.getElementById('contaStep2').style.display = 'none';
     document.getElementById('emailContaForm').style.display = 'block';
 }
 
@@ -958,10 +1006,191 @@ async function editarConta(contaId) {
         document.getElementById('contaUsuarioEmail').value = c.usuario_email;
         document.getElementById('contaSenhaEmail').value = '';
         document.getElementById('btnExcluirConta').style.display = 'inline-flex';
+        document.getElementById('providerBadge').style.display = 'none';
+        document.getElementById('providerNote').style.display = 'none';
+        // Edição: ir direto para step 2
+        document.getElementById('contaStep1').style.display = 'none';
+        document.getElementById('contaStep2').style.display = 'block';
+        document.getElementById('step2Title').textContent = 'Editar Conta - ' + c.nome_conta;
         document.getElementById('emailContaForm').style.display = 'block';
     } catch(e) {
         emailShowToast('Erro: ' + e.message, 'error');
     }
+}
+
+// ===== AUTODISCOVER =====
+async function autodiscoverEmail() {
+    const emailVal = document.getElementById('contaEmail').value.trim();
+    if (!emailVal || !emailVal.includes('@')) {
+        emailShowToast('Digite um endereço de e-mail válido', 'error');
+        return;
+    }
+
+    const btn = document.getElementById('btnAutodiscover');
+    const resultDiv = document.getElementById('autodiscoverResult');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Detectando...';
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = `
+        <div style="padding:20px;text-align:center;color:#64748b">
+            <i class="fas fa-spinner fa-spin fa-2x" style="margin-bottom:8px"></i>
+            <p style="margin:0">Procurando configurações para <strong>${escapeHtml(emailVal)}</strong>...</p>
+            <small>Consultando provedores conhecidos, MX, autoconfig, autodiscover...</small>
+        </div>`;
+
+    try {
+        const res = await emailApiPost('autodiscover', { email: emailVal });
+        const data = res.data;
+
+        if (data.found) {
+            const methodLabels = {
+                'known_provider': 'Provedor Conhecido',
+                'mx_lookup': 'Registro MX',
+                'mozilla_autoconfig': 'Mozilla Autoconfig',
+                'microsoft_autodiscover': 'Microsoft Autodiscover',
+                'port_probing': 'Detecção de Portas'
+            };
+            const methodLabel = methodLabels[data.method] || data.method;
+            const providerName = data.provider || 'Servidor de E-mail';
+
+            resultDiv.innerHTML = `
+                <div style="padding:16px;border-radius:10px;background:#F0FDF4;border:1px solid #BBF7D0">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                        <div style="width:36px;height:36px;border-radius:50%;background:#10B981;color:#fff;display:flex;align-items:center;justify-content:center">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div>
+                            <strong style="color:#166534;font-size:1.05rem">Configuração encontrada!</strong>
+                            <div style="color:#15803D;font-size:0.8rem">${escapeHtml(providerName)} — via ${escapeHtml(methodLabel)}</div>
+                        </div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.85rem;color:#374151">
+                        <div><i class="fas fa-download" style="color:#3B82F6;width:16px"></i> IMAP: <strong>${escapeHtml(data.config.imap_host)}:${data.config.imap_porta}</strong> (${data.config.imap_seguranca.toUpperCase()})</div>
+                        <div><i class="fas fa-upload" style="color:#F59E0B;width:16px"></i> SMTP: <strong>${escapeHtml(data.config.smtp_host)}:${data.config.smtp_porta}</strong> (${data.config.smtp_seguranca.toUpperCase()})</div>
+                    </div>
+                    ${data.note ? `<div style="margin-top:8px;padding:8px 12px;border-radius:6px;background:#FEF3C7;color:#92400E;font-size:0.82rem"><i class="fas fa-lightbulb"></i> ${escapeHtml(data.note)}</div>` : ''}
+                    <div style="margin-top:12px;display:flex;gap:8px">
+                        <button class="btn btn-primary btn-sm" onclick="aplicarAutodiscover()">
+                            <i class="fas fa-check"></i> Usar estas configurações
+                        </button>
+                        <button class="btn btn-sm" onclick="mostrarConfigManual()">
+                            <i class="fas fa-edit"></i> Editar manualmente
+                        </button>
+                    </div>
+                </div>`;
+
+            // Guardar resultado para aplicar depois
+            window._autodiscoverResult = data;
+        } else {
+            resultDiv.innerHTML = `
+                <div style="padding:16px;border-radius:10px;background:#FEF2F2;border:1px solid #FECACA">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                        <div style="width:36px;height:36px;border-radius:50%;background:#EF4444;color:#fff;display:flex;align-items:center;justify-content:center">
+                            <i class="fas fa-times"></i>
+                        </div>
+                        <div>
+                            <strong style="color:#991B1B">Configuração não encontrada</strong>
+                            <div style="color:#DC2626;font-size:0.8rem">Não foi possível detectar automaticamente</div>
+                        </div>
+                    </div>
+                    <p style="font-size:0.85rem;color:#374151;margin:0 0 12px">
+                        O domínio <strong>${escapeHtml(emailVal.split('@')[1])}</strong> não foi reconhecido. Você precisará configurar os servidores IMAP/SMTP manualmente.
+                    </p>
+                    <button class="btn btn-primary btn-sm" onclick="mostrarConfigManual()">
+                        <i class="fas fa-cog"></i> Configurar Manualmente
+                    </button>
+                </div>`;
+            window._autodiscoverResult = null;
+        }
+    } catch(e) {
+        resultDiv.innerHTML = `
+            <div style="padding:16px;border-radius:10px;background:#FEF2F2;border:1px solid #FECACA">
+                <div style="display:flex;align-items:center;gap:10px">
+                    <i class="fas fa-exclamation-triangle" style="color:#EF4444"></i>
+                    <span style="color:#991B1B">Erro: ${escapeHtml(e.message)}</span>
+                </div>
+                <button class="btn btn-sm" onclick="mostrarConfigManual()" style="margin-top:8px">
+                    <i class="fas fa-cog"></i> Configurar Manualmente
+                </button>
+            </div>`;
+        window._autodiscoverResult = null;
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-magic"></i> Detectar Configurações';
+    }
+}
+
+function aplicarAutodiscover() {
+    const data = window._autodiscoverResult;
+    if (!data || !data.config) return;
+
+    const cfg = data.config;
+    document.getElementById('contaImapHost').value = cfg.imap_host;
+    document.getElementById('contaImapPorta').value = cfg.imap_porta;
+    document.getElementById('contaImapSeg').value = cfg.imap_seguranca;
+    document.getElementById('contaSmtpHost').value = cfg.smtp_host;
+    document.getElementById('contaSmtpPorta').value = cfg.smtp_porta;
+    document.getElementById('contaSmtpSeg').value = cfg.smtp_seguranca;
+
+    // Preencher usuário com o e-mail
+    const emailVal = document.getElementById('contaEmail').value.trim();
+    document.getElementById('contaUsuarioEmail').value = emailVal;
+
+    // Auto-preencher nome da conta se vazio
+    if (!document.getElementById('contaNome').value.trim()) {
+        document.getElementById('contaNome').value = data.provider || emailVal.split('@')[1];
+    }
+
+    // Provider badge
+    if (data.provider) {
+        const badge = document.getElementById('providerBadge');
+        badge.style.display = 'block';
+        badge.innerHTML = `
+            <div style="padding:8px 14px;border-radius:8px;background:#EFF6FF;border:1px solid #BFDBFE;display:flex;align-items:center;gap:8px">
+                <i class="fas fa-check-circle" style="color:#3B82F6"></i>
+                <span style="color:#1E40AF;font-size:0.85rem">
+                    <strong>${escapeHtml(data.provider)}</strong> — configuração automática aplicada
+                </span>
+            </div>`;
+    }
+
+    // Provider note
+    if (data.note) {
+        document.getElementById('providerNote').style.display = 'block';
+        document.getElementById('providerNoteText').textContent = data.note;
+    } else {
+        document.getElementById('providerNote').style.display = 'none';
+    }
+
+    // Ir para step 2
+    document.getElementById('contaStep1').style.display = 'none';
+    document.getElementById('contaStep2').style.display = 'block';
+    document.getElementById('step2Title').textContent = 'Confirme e digite sua senha';
+
+    // Focar no campo de senha
+    setTimeout(() => document.getElementById('contaSenhaEmail').focus(), 200);
+}
+
+function mostrarConfigManual() {
+    // Preencher usuário com o e-mail se vazio
+    const emailVal = document.getElementById('contaEmail').value.trim();
+    if (emailVal && !document.getElementById('contaUsuarioEmail').value) {
+        document.getElementById('contaUsuarioEmail').value = emailVal;
+    }
+    if (emailVal && !document.getElementById('contaNome').value.trim()) {
+        document.getElementById('contaNome').value = emailVal.split('@')[1] || 'Meu E-mail';
+    }
+
+    document.getElementById('providerBadge').style.display = 'none';
+    document.getElementById('providerNote').style.display = 'none';
+    document.getElementById('contaStep1').style.display = 'none';
+    document.getElementById('contaStep2').style.display = 'block';
+    document.getElementById('step2Title').textContent = 'Configuração Manual';
+}
+
+function voltarStep1() {
+    document.getElementById('contaStep1').style.display = 'block';
+    document.getElementById('contaStep2').style.display = 'none';
 }
 
 async function salvarContaForm() {
@@ -1033,34 +1262,6 @@ async function testarConexaoForm() {
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-plug"></i> Testar Conexão';
     }
-}
-
-// Presets de provedores
-function presetGmail() {
-    document.getElementById('contaImapHost').value = 'imap.gmail.com';
-    document.getElementById('contaImapPorta').value = '993';
-    document.getElementById('contaImapSeg').value = 'ssl';
-    document.getElementById('contaSmtpHost').value = 'smtp.gmail.com';
-    document.getElementById('contaSmtpPorta').value = '587';
-    document.getElementById('contaSmtpSeg').value = 'tls';
-}
-
-function presetOutlook() {
-    document.getElementById('contaImapHost').value = 'outlook.office365.com';
-    document.getElementById('contaImapPorta').value = '993';
-    document.getElementById('contaImapSeg').value = 'ssl';
-    document.getElementById('contaSmtpHost').value = 'smtp.office365.com';
-    document.getElementById('contaSmtpPorta').value = '587';
-    document.getElementById('contaSmtpSeg').value = 'tls';
-}
-
-function presetYahoo() {
-    document.getElementById('contaImapHost').value = 'imap.mail.yahoo.com';
-    document.getElementById('contaImapPorta').value = '993';
-    document.getElementById('contaImapSeg').value = 'ssl';
-    document.getElementById('contaSmtpHost').value = 'smtp.mail.yahoo.com';
-    document.getElementById('contaSmtpPorta').value = '465';
-    document.getElementById('contaSmtpSeg').value = 'ssl';
 }
 
 // ==========================================

@@ -131,9 +131,14 @@ try {
                 $modeloParaUsar = $modeloEscolhido ?: $ia->getConfig('modelo_padrao', 'phi3:mini');
                 $maxTokens = 512;
 
+                // Modelos :cloud (thinking models) precisam de mais tokens para raciocínio interno
+                if (stripos($modeloParaUsar, ':cloud') !== false) {
+                    $maxTokens = 4096;
+                }
+
                 if ($needsTools && !$isComplex) {
                     $systemPrompt .= "\n\n" . IAActions::getToolsPrompt();
-                    $maxTokens = 1024;
+                    $maxTokens = max($maxTokens, 1024);
                 }
 
                 // Helper para flush seguro
@@ -159,8 +164,11 @@ try {
                     // Modelo gera lista de tarefas (streaming com heartbeat) → PHP executa tudo
                     // ============================================================
                     if ($isComplex) {
-                        // Fase 1: Solicitar plano ao modelo maior (melhor em seguir instruções)
-                        $plannerModel = $ia->getConfig('modelo_analise', 'llama3:latest');
+                        // Fase 1: Solicitar plano ao modelo (preferir modelo_analise, fallback para modelo escolhido pelo usuário)
+                        $plannerModel = $ia->getConfig('modelo_analise');
+                        if (!$plannerModel || $plannerModel === '') {
+                            $plannerModel = $modeloParaUsar; // Usar o modelo que o usuário selecionou na conversa
+                        }
                         $plannerInfo = $ia->getModelMeta($plannerModel);
                         $plannerLabel = $plannerInfo['label'] ?? $plannerModel;
 
@@ -175,10 +183,17 @@ try {
 
                         // Usar chatStream com acumulação (mantém heartbeat durante loading)
                         $planText = '';
+                        $thinkingText = '';
                         $totalTokens = 0;
                         $lastHeartbeat = time();
 
-                        $ia->chatStream($planMessages, function($chunk) use ($sseFlush, &$planText, &$totalTokens, &$lastHeartbeat) {
+                        // Modelos :cloud (kimi, glm) são "thinking models" que gastam tokens no raciocínio
+                        // interno antes de gerar o conteúdo. Precisam de num_predict alto.
+                        $isThinkingModel = (stripos($plannerModel, ':cloud') !== false);
+                        $plannerMaxTokens = $isThinkingModel ? 8192 : 2048;
+                        $plannerNumCtx = $isThinkingModel ? 16384 : 4096;
+
+                        $ia->chatStream($planMessages, function($chunk) use ($sseFlush, &$planText, &$thinkingText, &$totalTokens, &$lastHeartbeat) {
                             if (isset($chunk['heartbeat'])) {
                                 $now = time();
                                 if ($now - $lastHeartbeat >= 2) {
@@ -188,17 +203,23 @@ try {
                                 }
                                 return;
                             }
+                            // Capturar conteúdo (resposta visível)
                             if (isset($chunk['message']['content'])) {
                                 $planText .= $chunk['message']['content'];
+                            }
+                            // Capturar thinking (modelos cloud com raciocínio interno)
+                            if (isset($chunk['message']['thinking'])) {
+                                $thinkingText .= $chunk['message']['thinking'];
                             }
                             if (isset($chunk['done']) && $chunk['done']) {
                                 $totalTokens = ($chunk['prompt_eval_count'] ?? 0) + ($chunk['eval_count'] ?? 0);
                             }
                         }, $plannerModel, [
-                            'max_tokens' => 200,
-                            'temperature' => 0.3,
-                            'num_ctx' => 2048,
-                            'repeat_penalty' => 1.5,
+                            'max_tokens' => $plannerMaxTokens,
+                            'temperature' => 0.4,
+                            'num_ctx' => $plannerNumCtx,
+                            'repeat_penalty' => 1.2,
+                            'think' => false, // Desabilitar thinking para evitar gastar tokens no raciocínio
                         ]);
 
                         // Parsear plano (formato texto simples)
@@ -304,7 +325,9 @@ try {
                             $messages[] = ['role' => $m['role'], 'content' => $m['conteudo']];
                         }
 
-                        $ia->chatStream($messages, function($chunk) use (&$fullContent, &$totalTokens, &$lastHeartbeat, $sseFlush, $modeloParaUsar) {
+                        $thinkingShown = false;
+
+                        $ia->chatStream($messages, function($chunk) use (&$fullContent, &$totalTokens, &$lastHeartbeat, &$thinkingShown, $sseFlush, $modeloParaUsar) {
                             if (!empty($chunk['heartbeat'])) {
                                 $now = microtime(true);
                                 if ($now - $lastHeartbeat >= 2) {
@@ -314,11 +337,19 @@ try {
                                 }
                                 return;
                             }
+                            // Modelos :cloud com "thinking" — mostrar indicador enquanto pensa
+                            if (!empty($chunk['message']['thinking']) && !$thinkingShown) {
+                                echo "data: " . json_encode(['loading' => true, 'status' => 'thinking', 'model' => $modeloParaUsar]) . "\n\n";
+                                $sseFlush();
+                                $thinkingShown = true;
+                            }
                             if (isset($chunk['message']['content'])) {
                                 $content = $chunk['message']['content'];
-                                $fullContent .= $content;
-                                echo "data: " . json_encode(['content' => $content, 'done' => false]) . "\n\n";
-                                $sseFlush();
+                                if ($content !== '') { // Não enviar chunks vazios (thinking models)
+                                    $fullContent .= $content;
+                                    echo "data: " . json_encode(['content' => $content, 'done' => false]) . "\n\n";
+                                    $sseFlush();
+                                }
                             }
                             if (!empty($chunk['done'])) {
                                 $totalTokens = ($chunk['prompt_eval_count'] ?? 0) + ($chunk['eval_count'] ?? 0);
@@ -539,6 +570,9 @@ try {
                     'rapido' => 'modelo_rapido',
                     'codigo' => 'modelo_codigo',
                     'analise' => 'modelo_analise',
+                    'chamados' => 'modelo_chamados',
+                    'email' => 'modelo_email',
+                    'rede' => 'modelo_rede',
                 ];
                 if (!isset($configMap[$tarefa])) {
                     jsonResponse(['error' => 'Tarefa inválida'], 400);

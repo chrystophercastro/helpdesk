@@ -7,7 +7,7 @@
 <div class="page-header">
     <div>
         <h1 class="page-title">Sprints</h1>
-        <p class="page-subtitle">Gestão de sprints ágeis</p>
+        <p class="page-subtitle">Gestão de sprints ágeis<?php if (!isAdmin()) echo ' — Projetos do seu departamento'; ?></p>
     </div>
     <div class="page-actions">
         <select class="form-select" onchange="location.href='<?= BASE_URL ?>/index.php?page=sprints&projeto='+this.value">

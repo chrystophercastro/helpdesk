@@ -13,8 +13,8 @@ function menuActive($page, $current) {
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="sidebar-logo">
-            <i class="fas fa-headset"></i>
-            <span>HelpDesk TI</span>
+            <i class="fas fa-bolt"></i>
+            <span>Oracle X</span>
         </div>
         <button class="sidebar-toggle" id="sidebarToggle">
             <i class="fas fa-bars"></i>
@@ -68,7 +68,32 @@ function menuActive($page, $current) {
         </div>
 
         <div class="nav-section">
-            <span class="nav-section-title">Operações</span>
+            <span class="nav-section-title">Comunicação</span>            <a href="<?= BASE_URL ?>/index.php?page=posts" class="nav-link <?= menuActive('posts', $currentPage) ?>">
+                <i class="fas fa-stream" style="color:#8B5CF6"></i>
+                <span>Mural</span>
+            </a>
+            <a href="<?= BASE_URL ?>/index.php?page=chat" class="nav-link <?= menuActive('chat', $currentPage) ?>">
+                <i class="fas fa-comments" style="color:#10B981"></i>
+                <span>Chat</span>
+                <span class="nav-badge" id="badge-chat"></span>
+            </a>
+            <a href="<?= BASE_URL ?>/index.php?page=email" class="nav-link <?= menuActive('email', $currentPage) ?>">
+                <i class="fas fa-envelope"></i>
+                <span>E-mail</span>
+            </a>
+        </div>
+
+        <div class="nav-section">
+            <span class="nav-section-title">Inteligência Artificial</span>
+            <a href="<?= BASE_URL ?>/index.php?page=ia" class="nav-link <?= menuActive('ia', $currentPage) ?>">
+                <i class="fas fa-robot" style="color:#8B5CF6"></i>
+                <span>Assistente IA</span>
+            </a>
+        </div>
+
+        <?php if (isTIDept()): ?>
+        <div class="nav-section">
+            <span class="nav-section-title">Operações TI</span>
             <a href="<?= BASE_URL ?>/index.php?page=compras" class="nav-link <?= menuActive('compras', $currentPage) ?>">
                 <i class="fas fa-shopping-cart"></i>
                 <span>Compras</span>
@@ -81,6 +106,35 @@ function menuActive($page, $current) {
                 <i class="fas fa-warehouse" style="color:#8B5CF6"></i>
                 <span>Suprimentos</span>
             </a>
+        </div>
+        <?php endif; ?>
+
+        <?php
+        // Módulos com permissão individual
+        require_once __DIR__ . '/../../models/ModuloPermissao.php';
+        $temFolha = temAcessoModulo('folha_pagamento');
+        $temFinanceiro = temAcessoModulo('financeiro');
+        if ($temFolha || $temFinanceiro):
+        ?>
+        <div class="nav-section">
+            <span class="nav-section-title">Financeiro / RH</span>
+            <?php if ($temFinanceiro): ?>
+            <a href="<?= BASE_URL ?>/index.php?page=financeiro" class="nav-link <?= menuActive('financeiro', $currentPage) ?>">
+                <i class="fas fa-file-invoice-dollar" style="color:#F59E0B"></i>
+                <span>Financeiro</span>
+            </a>
+            <?php endif; ?>
+            <?php if ($temFolha): ?>
+            <a href="<?= BASE_URL ?>/index.php?page=folha-pagamento" class="nav-link <?= menuActive('folha-pagamento', $currentPage) ?>">
+                <i class="fas fa-money-check-alt" style="color:#10B981"></i>
+                <span>Folha de Pagamento</span>
+            </a>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
+
+        <div class="nav-section">
+            <span class="nav-section-title">Ferramentas</span>
             <?php if (in_array($user['tipo'], ['admin', 'tecnico'])): ?>
             <a href="<?= BASE_URL ?>/index.php?page=remoto" class="nav-link <?= menuActive('remoto', $currentPage) ?>">
                 <i class="fas fa-desktop" style="color:#3B82F6"></i>
@@ -106,14 +160,6 @@ function menuActive($page, $current) {
                 <i class="fas fa-network-wired" style="color:#D6336C"></i>
                 <span>MikroTik</span>
             </a>
-            <a href="<?= BASE_URL ?>/index.php?page=ia" class="nav-link <?= menuActive('ia', $currentPage) ?>">
-                <i class="fas fa-robot"></i>
-                <span>Assistente IA</span>
-            </a>
-            <a href="<?= BASE_URL ?>/index.php?page=email" class="nav-link <?= menuActive('email', $currentPage) ?>">
-                <i class="fas fa-envelope"></i>
-                <span>E-mail</span>
-            </a>
             <a href="<?= BASE_URL ?>/index.php?page=github" class="nav-link <?= menuActive('github', $currentPage) ?>">
                 <i class="fab fa-github"></i>
                 <span>GitHub</span>
@@ -132,6 +178,12 @@ function menuActive($page, $current) {
         <?php if (in_array($user['tipo'], ['admin', 'gestor'])): ?>
         <div class="nav-section">
             <span class="nav-section-title">Administração</span>
+            <?php if ($user['tipo'] === 'admin'): ?>
+            <a href="<?= BASE_URL ?>/index.php?page=departamentos" class="nav-link <?= menuActive('departamentos', $currentPage) ?>">
+                <i class="fas fa-building" style="color:#6366F1"></i>
+                <span>Departamentos</span>
+            </a>
+            <?php endif; ?>
             <a href="<?= BASE_URL ?>/index.php?page=usuarios" class="nav-link <?= menuActive('usuarios', $currentPage) ?>">
                 <i class="fas fa-users-cog"></i>
                 <span>Usuários</span>
@@ -168,6 +220,10 @@ function menuActive($page, $current) {
             <a href="<?= BASE_URL ?>/index.php?page=deploy" class="nav-link <?= menuActive('deploy', $currentPage) ?>">
                 <i class="fas fa-rocket" style="color:#6366F1"></i>
                 <span>Deploy Produção</span>
+            </a>
+            <a href="<?= BASE_URL ?>/index.php?page=permissoes-modulos" class="nav-link <?= menuActive('permissoes-modulos', $currentPage) ?>">
+                <i class="fas fa-shield-alt" style="color:#10B981"></i>
+                <span>Permissões Módulos</span>
             </a>
             <?php endif; ?>
         </div>

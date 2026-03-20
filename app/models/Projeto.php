@@ -20,9 +20,13 @@ class Projeto {
         );
     }
 
-    public function listar($filtros = []) {
+    public function listar($filtros = [], $deptId = null) {
         $where = "1=1";
         $params = [];
+        if ($deptId) {
+            $where .= " AND p.departamento_id = ?";
+            $params[] = $deptId;
+        }
         if (!empty($filtros['status'])) {
             $where .= " AND p.status = ?";
             $params[] = $filtros['status'];
@@ -34,11 +38,12 @@ class Projeto {
             $params[] = $busca;
         }
         return $this->db->fetchAll(
-            "SELECT p.*, u.nome as responsavel_nome,
+            "SELECT p.*, u.nome as responsavel_nome, d.sigla as departamento_sigla, d.cor as departamento_cor,
                     (SELECT COUNT(*) FROM tarefas t WHERE t.projeto_id = p.id) as total_tarefas,
                     (SELECT COUNT(*) FROM tarefas t WHERE t.projeto_id = p.id AND t.coluna = 'concluido') as tarefas_concluidas
              FROM projetos p 
              LEFT JOIN usuarios u ON p.responsavel_id = u.id 
+             LEFT JOIN departamentos d ON p.departamento_id = d.id
              WHERE {$where} ORDER BY p.criado_em DESC", $params
         );
     }
@@ -107,7 +112,9 @@ class Projeto {
         return $progresso;
     }
 
-    public function contarPorStatus() {
-        return $this->db->fetchAll("SELECT status, COUNT(*) as total FROM projetos GROUP BY status");
+    public function contarPorStatus($deptId = null) {
+        $where = $deptId ? "WHERE departamento_id = ?" : "";
+        $params = $deptId ? [$deptId] : [];
+        return $this->db->fetchAll("SELECT status, COUNT(*) as total FROM projetos {$where} GROUP BY status", $params);
     }
 }

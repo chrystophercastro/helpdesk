@@ -1,5 +1,5 @@
-/**
- * HelpDesk TI - Main JavaScript Application
+﻿/**
+ * Oracle X - Main JavaScript Application
  */
 const HelpDesk = {
     baseUrl: '',

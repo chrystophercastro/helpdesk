@@ -10,6 +10,9 @@
         <p>Configuration Management Database — Gerenciamento de Itens de Configuração</p>
     </div>
     <div class="page-header-actions">
+        <button class="btn btn-sm ia-insight-btn" onclick="iaInsight('cmdb_impact')">
+            <i class="fas fa-robot"></i> Impacto IA
+        </button>
         <button class="btn btn-primary" onclick="cmdbAbrirModalItem()"><i class="fas fa-plus"></i> Novo CI</button>
         <button class="btn btn-secondary" onclick="cmdbAbrirModalRelacao()"><i class="fas fa-link"></i> Novo Relacionamento</button>
     </div>

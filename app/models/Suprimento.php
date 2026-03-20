@@ -574,8 +574,8 @@ class Suprimento {
         $html = '
         <div style="font-family:Arial,sans-serif;max-width:700px;margin:0 auto;border:1px solid #E5E7EB;border-radius:8px;overflow:hidden">
             <div style="background:#1E293B;color:#fff;padding:20px 30px">
-                <h2 style="margin:0;font-size:20px">📋 Requisição de Compra - ' . htmlspecialchars($req['codigo']) . '</h2>
-                <p style="margin:5px 0 0;opacity:0.8;font-size:14px">HelpDesk TI - Suprimentos</p>
+                <h2 style="margin:0;font-size:20px">ðŸ“‹ Requisição de Compra - ' . htmlspecialchars($req['codigo']) . '</h2>
+                <p style="margin:5px 0 0;opacity:0.8;font-size:14px">Oracle X - Suprimentos</p>
             </div>
             <div style="padding:25px 30px">
                 <table style="width:100%;border-collapse:collapse;margin-bottom:20px">
@@ -633,12 +633,12 @@ class Suprimento {
 
         if ($req['observacoes']) {
             $html .= '<div style="margin-top:15px;padding:12px;background:#FEF3C7;border-radius:6px;font-size:13px">
-                <strong>📝 Observações:</strong> ' . nl2br(htmlspecialchars($req['observacoes'])) . '</div>';
+                <strong>ðŸ“ Observações:</strong> ' . nl2br(htmlspecialchars($req['observacoes'])) . '</div>';
         }
 
         $html .= '</div>
             <div style="background:#F8FAFC;padding:15px 30px;text-align:center;font-size:12px;color:#9CA3AF;border-top:1px solid #E5E7EB">
-                Enviado automaticamente pelo HelpDesk TI — ' . date('d/m/Y H:i') . '
+                Enviado automaticamente pelo Oracle X — ' . date('d/m/Y H:i') . '
             </div>
         </div>';
 

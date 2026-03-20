@@ -96,8 +96,8 @@ $user = currentUser();
                 <div class="ia-welcome-icon">
                     <i class="fas fa-robot"></i>
                 </div>
-                <h2>Olá, <?= htmlspecialchars(explode(' ', $user['nome'])[0]) ?>! 👋</h2>
-                <p>Sou o assistente IA do HelpDesk. Como posso ajudar?</p>
+                <h2>Olá, <?= htmlspecialchars(explode(' ', $user['nome'])[0]) ?>! ðŸ‘‹</h2>
+                <p>Sou o assistente IA do Oracle X. Como posso ajudar?</p>
                 <div class="ia-welcome-suggestions">
                     <button class="ia-suggestion" onclick="enviarSugestao('Crie um projeto chamado Migração de Servidores com 3 tarefas e um sprint')">
                         <i class="fas fa-project-diagram"></i> Criar projeto com tarefas
@@ -220,9 +220,9 @@ function renderModelList() {
 
     const tierMap = {
         'ultra-leve': { icon: 'fa-feather', badge: '⚡ Ultra-Leve', cls: 'ia-tier-ultralight' },
-        'leve': { icon: 'fa-leaf', badge: '🌿 Leve', cls: 'ia-tier-light' },
+        'leve': { icon: 'fa-leaf', badge: 'ðŸŒ¿ Leve', cls: 'ia-tier-light' },
         'medio': { icon: 'fa-bolt', badge: '⭐ Médio', cls: 'ia-tier-medium' },
-        'avancado': { icon: 'fa-brain', badge: '🧠 Avançado', cls: 'ia-tier-advanced' },
+        'avancado': { icon: 'fa-brain', badge: 'ðŸ§  Avançado', cls: 'ia-tier-advanced' },
         'desconhecido': { icon: 'fa-cube', badge: 'Outro', cls: 'ia-tier-unknown' },
     };
 
@@ -663,7 +663,7 @@ function enviarMensagem() {
                         const modelLabel = data.model_label || data.model || '';
                         let statusMsg = '<i class="fas fa-circle-notch fa-spin"></i> ';
                         if (data.is_complex) {
-                            statusMsg += '🧠 Usando <b>' + modelLabel + '</b> para tarefa complexa...';
+                            statusMsg += 'ðŸ§  Usando <b>' + modelLabel + '</b> para tarefa complexa...';
                         } else if (data.needs_tools) {
                             statusMsg += '⚡ Processando ações com <b>' + modelLabel + '</b>...';
                         } else {
@@ -678,7 +678,9 @@ function enviarMensagem() {
                         const elapsed = Math.round((Date.now() - startTime) / 1000);
                         const modelName = data.model || '';
                         if (data.status === 'planning') {
-                            typingEl.innerHTML = '<i class="fas fa-brain ia-pulse"></i> 🧠 Planejando projeto... ' + elapsed + 's';
+                            typingEl.innerHTML = '<i class="fas fa-brain ia-pulse"></i> ðŸ§  Planejando projeto... ' + elapsed + 's';
+                        } else if (data.status === 'thinking') {
+                            typingEl.innerHTML = '<i class="fas fa-brain ia-pulse"></i> Pensando... ' + elapsed + 's';
                         } else {
                             typingEl.innerHTML = '<i class="fas fa-cog fa-spin"></i> Carregando <b>' + modelName + '</b> na memória... ' + elapsed + 's';
                         }
@@ -969,9 +971,9 @@ function abrirModelos() {
 
             const tierMap = {
                 'ultra-leve': { badge: '⚡ Ultra-Leve', cls: 'ia-tier-ultralight' },
-                'leve': { badge: '🌿 Leve', cls: 'ia-tier-light' },
+                'leve': { badge: 'ðŸŒ¿ Leve', cls: 'ia-tier-light' },
                 'medio': { badge: '⭐ Médio', cls: 'ia-tier-medium' },
-                'avancado': { badge: '🧠 Avançado', cls: 'ia-tier-advanced' },
+                'avancado': { badge: 'ðŸ§  Avançado', cls: 'ia-tier-advanced' },
                 'desconhecido': { badge: 'Outro', cls: 'ia-tier-unknown' },
             };
 
@@ -1135,7 +1137,10 @@ function definirModeloTarefa(modelo) {
         { key: 'chat', label: '💬 Chat / Conversa' },
         { key: 'rapido', label: '⚡ Tarefas Rápidas' },
         { key: 'codigo', label: '💻 Código / SSH' },
-        { key: 'analise', label: '📊 Análise / Relatórios' },
+        { key: 'analise', label: '📊 Análise / Relatórios / Planner' },
+        { key: 'chamados', label: '🎫 Chamados / Suporte' },
+        { key: 'email', label: '📧 E-mail / Resumo' },
+        { key: 'rede', label: '🌐 Rede / MikroTik' },
     ];
 
     HelpDesk.showModal(

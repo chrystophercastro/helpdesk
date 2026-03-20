@@ -2,6 +2,7 @@
 /**
  * Model: SLADashboard
  * Métricas avançadas de SLA, MTTR, compliance e alertas
+ * Suporta filtro por departamento (gestor vê só sua área)
  */
 
 require_once __DIR__ . '/../../config/app.php';
@@ -13,9 +14,19 @@ class SLADashboard {
         $this->db = Database::getInstance();
     }
 
+    /**
+     * Monta cláusula WHERE para departamento
+     */
+    private function deptClause($alias = 'c', $deptId = null) {
+        if (!$deptId) return ['', []];
+        return [" AND {$alias}.departamento_id = ?", [(int)$deptId]];
+    }
+
     // ===================== OVERVIEW GERAL =====================
 
-    public function getOverview() {
+    public function getOverview($deptId = null) {
+        [$dw, $dp] = $this->deptClause('c', $deptId);
+
         // Taxa de compliance geral (resolução)
         $compliance = $this->db->fetch(
             "SELECT 
@@ -24,7 +35,8 @@ class SLADashboard {
              FROM chamados c
              INNER JOIN sla s ON c.sla_id = s.id
              WHERE c.status IN ('resolvido','fechado')
-             AND c.data_resolucao IS NOT NULL"
+             AND c.data_resolucao IS NOT NULL{$dw}",
+            $dp
         );
         $taxaResolucao = $compliance['total'] > 0 ? round(($compliance['dentro_sla'] / $compliance['total']) * 100, 1) : 100;
 
@@ -35,15 +47,19 @@ class SLADashboard {
                 SUM(CASE WHEN TIMESTAMPDIFF(MINUTE, c.data_abertura, c.data_primeira_resposta) <= s.tempo_resposta THEN 1 ELSE 0 END) as dentro_sla
              FROM chamados c
              INNER JOIN sla s ON c.sla_id = s.id
-             WHERE c.data_primeira_resposta IS NOT NULL"
+             WHERE c.data_primeira_resposta IS NOT NULL{$dw}",
+            $dp
         );
         $taxaResposta = $compResp['total'] > 0 ? round(($compResp['dentro_sla'] / $compResp['total']) * 100, 1) : 100;
 
-        // MTTR geral (em minutos)
+        // MTTR geral (em minutos) — sem alias, tabela direta
+        [$dwNoAlias, $dpNoAlias] = $this->deptClause('chamados', $deptId);
         $mttr = $this->db->fetch(
             "SELECT AVG(TIMESTAMPDIFF(MINUTE, data_abertura, data_resolucao)) as mttr
              FROM chamados 
-             WHERE status IN ('resolvido','fechado') AND data_resolucao IS NOT NULL"
+             WHERE status IN ('resolvido','fechado') AND data_resolucao IS NOT NULL" .
+             str_replace('chamados.departamento_id', 'departamento_id', $dwNoAlias),
+            $dpNoAlias
         );
 
         // MTTR último mês
@@ -51,7 +67,9 @@ class SLADashboard {
             "SELECT AVG(TIMESTAMPDIFF(MINUTE, data_abertura, data_resolucao)) as mttr
              FROM chamados 
              WHERE status IN ('resolvido','fechado') AND data_resolucao IS NOT NULL
-             AND data_resolucao >= DATE_SUB(NOW(), INTERVAL 30 DAY)"
+             AND data_resolucao >= DATE_SUB(NOW(), INTERVAL 30 DAY)" .
+             str_replace('chamados.departamento_id', 'departamento_id', $dwNoAlias),
+            $dpNoAlias
         );
 
         // Chamados abertos com SLA
@@ -62,7 +80,8 @@ class SLADashboard {
                 SUM(CASE WHEN TIMESTAMPDIFF(MINUTE, c.data_abertura, NOW()) > (s.tempo_resolucao * 0.8) AND TIMESTAMPDIFF(MINUTE, c.data_abertura, NOW()) <= s.tempo_resolucao THEN 1 ELSE 0 END) as em_risco
              FROM chamados c
              INNER JOIN sla s ON c.sla_id = s.id
-             WHERE c.status NOT IN ('resolvido','fechado','cancelado')"
+             WHERE c.status NOT IN ('resolvido','fechado','cancelado'){$dw}",
+            $dp
         );
 
         return [
@@ -79,7 +98,12 @@ class SLADashboard {
 
     // ===================== SEMÁFORO POR PRIORIDADE =====================
 
-    public function getSemaforo() {
+    public function getSemaforo($deptId = null) {
+        [$dw, $dp] = $this->deptClause('c', $deptId);
+        // Para queries sem alias
+        $deptSimple = $deptId ? " AND departamento_id = ?" : "";
+        $dpSimple = $deptId ? [(int)$deptId] : [];
+
         $prioridades = ['critica', 'alta', 'media', 'baixa'];
         $resultado = [];
 
@@ -99,16 +123,16 @@ class SLADashboard {
                     SUM(CASE WHEN TIMESTAMPDIFF(MINUTE, c.data_abertura, NOW()) <= (s.tempo_resolucao * 0.8) THEN 1 ELSE 0 END) as verde
                  FROM chamados c
                  INNER JOIN sla s ON c.sla_id = s.id
-                 WHERE c.prioridade = ? AND c.status NOT IN ('resolvido','fechado','cancelado')",
-                [$p]
+                 WHERE c.prioridade = ? AND c.status NOT IN ('resolvido','fechado','cancelado'){$dw}",
+                array_merge([$p], $dp)
             );
 
             // MTTR desta prioridade
             $mttr = $this->db->fetch(
                 "SELECT AVG(TIMESTAMPDIFF(MINUTE, data_abertura, data_resolucao)) as mttr
                  FROM chamados 
-                 WHERE prioridade = ? AND status IN ('resolvido','fechado') AND data_resolucao IS NOT NULL",
-                [$p]
+                 WHERE prioridade = ? AND status IN ('resolvido','fechado') AND data_resolucao IS NOT NULL{$deptSimple}",
+                array_merge([$p], $dpSimple)
             );
 
             // Compliance desta prioridade
@@ -118,8 +142,8 @@ class SLADashboard {
                     SUM(CASE WHEN TIMESTAMPDIFF(MINUTE, c.data_abertura, COALESCE(c.data_resolucao, c.data_fechamento)) <= s.tempo_resolucao THEN 1 ELSE 0 END) as ok
                  FROM chamados c
                  INNER JOIN sla s ON c.sla_id = s.id
-                 WHERE c.prioridade = ? AND c.status IN ('resolvido','fechado') AND c.data_resolucao IS NOT NULL",
-                [$p]
+                 WHERE c.prioridade = ? AND c.status IN ('resolvido','fechado') AND c.data_resolucao IS NOT NULL{$dw}",
+                array_merge([$p], $dp)
             );
 
             $resultado[] = [
@@ -139,7 +163,8 @@ class SLADashboard {
 
     // ===================== CHAMADOS EM RISCO =====================
 
-    public function getChamadosEmRisco($limite = 20) {
+    public function getChamadosEmRisco($limite = 20, $deptId = null) {
+        [$dw, $dp] = $this->deptClause('c', $deptId);
         return $this->db->fetchAll(
             "SELECT c.id, c.codigo, c.titulo, c.prioridade, c.status, c.data_abertura,
                     c.data_primeira_resposta, c.tecnico_id,
@@ -151,17 +176,19 @@ class SLADashboard {
              INNER JOIN sla s ON c.sla_id = s.id
              LEFT JOIN usuarios u ON c.tecnico_id = u.id
              LEFT JOIN categorias cat ON c.categoria_id = cat.id
-             WHERE c.status NOT IN ('resolvido','fechado','cancelado')
+             WHERE c.status NOT IN ('resolvido','fechado','cancelado'){$dw}
              HAVING percentual_sla >= 60
              ORDER BY percentual_sla DESC
              LIMIT ?",
-            [$limite]
+            array_merge($dp, [$limite])
         );
     }
 
     // ===================== MTTR POR DIMENSÃO =====================
 
-    public function getMTTR($dimensao = 'prioridade', $dias = 30) {
+    public function getMTTR($dimensao = 'prioridade', $dias = 30, $deptId = null) {
+        [$dw, $dp] = $this->deptClause('c', $deptId);
+
         $groupBy = match($dimensao) {
             'prioridade' => 'c.prioridade',
             'categoria' => 'cat.nome',
@@ -187,16 +214,17 @@ class SLADashboard {
              LEFT JOIN usuarios u ON c.tecnico_id = u.id
              LEFT JOIN categorias cat ON c.categoria_id = cat.id
              WHERE c.status IN ('resolvido','fechado') AND c.data_resolucao IS NOT NULL
-             AND c.data_resolucao >= DATE_SUB(NOW(), INTERVAL ? DAY)
+             AND c.data_resolucao >= DATE_SUB(NOW(), INTERVAL ? DAY){$dw}
              GROUP BY $groupBy
              ORDER BY mttr ASC",
-            [$dias]
+            array_merge([$dias], $dp)
         );
     }
 
     // ===================== TENDÊNCIA SLA (últimos N meses) =====================
 
-    public function getTendencia($meses = 6) {
+    public function getTendencia($meses = 6, $deptId = null) {
+        [$dw, $dp] = $this->deptClause('c', $deptId);
         return $this->db->fetchAll(
             "SELECT 
                 DATE_FORMAT(c.data_resolucao, '%Y-%m') as mes,
@@ -206,16 +234,17 @@ class SLADashboard {
              FROM chamados c
              INNER JOIN sla s ON c.sla_id = s.id
              WHERE c.status IN ('resolvido','fechado') AND c.data_resolucao IS NOT NULL
-             AND c.data_resolucao >= DATE_SUB(NOW(), INTERVAL ? MONTH)
+             AND c.data_resolucao >= DATE_SUB(NOW(), INTERVAL ? MONTH){$dw}
              GROUP BY DATE_FORMAT(c.data_resolucao, '%Y-%m')
              ORDER BY mes ASC",
-            [$meses]
+            array_merge([$meses], $dp)
         );
     }
 
     // ===================== TOP VIOLAÇÕES =====================
 
-    public function getTopViolacoes($limite = 10) {
+    public function getTopViolacoes($limite = 10, $deptId = null) {
+        [$dw, $dp] = $this->deptClause('c', $deptId);
         return $this->db->fetchAll(
             "SELECT c.id, c.codigo, c.titulo, c.prioridade, c.status,
                     c.data_abertura, c.data_resolucao,
@@ -227,16 +256,17 @@ class SLADashboard {
              INNER JOIN sla s ON c.sla_id = s.id
              LEFT JOIN usuarios u ON c.tecnico_id = u.id
              LEFT JOIN categorias cat ON c.categoria_id = cat.id
-             WHERE TIMESTAMPDIFF(MINUTE, c.data_abertura, COALESCE(c.data_resolucao, NOW())) > s.tempo_resolucao
+             WHERE TIMESTAMPDIFF(MINUTE, c.data_abertura, COALESCE(c.data_resolucao, NOW())) > s.tempo_resolucao{$dw}
              ORDER BY minutos_excedido DESC
              LIMIT ?",
-            [$limite]
+            array_merge($dp, [$limite])
         );
     }
 
     // ===================== SLA POR TÉCNICO =====================
 
-    public function getCompliancePorTecnico() {
+    public function getCompliancePorTecnico($deptId = null) {
+        [$dw, $dp] = $this->deptClause('c', $deptId);
         return $this->db->fetchAll(
             "SELECT u.nome as tecnico,
                     COUNT(*) as total,
@@ -246,9 +276,10 @@ class SLADashboard {
              FROM chamados c
              INNER JOIN sla s ON c.sla_id = s.id
              INNER JOIN usuarios u ON c.tecnico_id = u.id
-             WHERE c.status IN ('resolvido','fechado') AND c.data_resolucao IS NOT NULL
+             WHERE c.status IN ('resolvido','fechado') AND c.data_resolucao IS NOT NULL{$dw}
              GROUP BY u.id, u.nome
-             ORDER BY taxa DESC"
+             ORDER BY taxa DESC",
+            $dp
         );
     }
 

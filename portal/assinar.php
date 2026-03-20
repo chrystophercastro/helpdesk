@@ -95,11 +95,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $termo['status'] === 'pendente') {
             $tecnicos = $db->fetchAll("SELECT telefone FROM usuarios WHERE tipo IN ('admin','tecnico') AND ativo = 1 AND telefone IS NOT NULL");
             $msg = "✅ *TERMO ASSINADO*\n\n"
                  . "O termo *{$termo['codigo']}* foi assinado digitalmente.\n"
-                 . "👤 Usuário: *{$termo['usuario_nome']}*\n"
-                 . "📦 Ativo: *{$termo['ativo_nome']}*\n"
-                 . "🏷️ Patrimônio: *{$termo['numero_patrimonio']}*\n"
-                 . "📍 IP: {$_SERVER['REMOTE_ADDR']}\n"
-                 . "📅 " . date('d/m/Y H:i');
+                 . "ðŸ‘¤ Usuário: *{$termo['usuario_nome']}*\n"
+                 . "ðŸ“¦ Ativo: *{$termo['ativo_nome']}*\n"
+                 . "ðŸ·️ Patrimônio: *{$termo['numero_patrimonio']}*\n"
+                 . "ðŸ“ IP: {$_SERVER['REMOTE_ADDR']}\n"
+                 . "ðŸ“… " . date('d/m/Y H:i');
             foreach ($tecnicos as $tec) {
                 if (!empty($tec['telefone'])) {
                     $notificacao->sendWhatsApp($tec['telefone'], $msg);
@@ -569,7 +569,7 @@ function renderPrint($termo) {
     </style>
 </head>
 <body>
-    <button class="btn-print no-print" onclick="window.print()">🖨️ Imprimir</button>
+    <button class="btn-print no-print" onclick="window.print()">ðŸ–¨️ Imprimir</button>
 
     <div class="print-header">
         <h1>TERMO DE RESPONSABILIDADE DE EQUIPAMENTO</h1>
@@ -647,7 +647,7 @@ function renderPrint($termo) {
     </div>
 
     <div class="footer">
-        Documento gerado pelo sistema HelpDesk TI — <?= $termo['codigo'] ?> — <?= date('d/m/Y H:i') ?><br>
+        Documento gerado pelo sistema Oracle X — <?= $termo['codigo'] ?> — <?= date('d/m/Y H:i') ?><br>
         Este documento possui validade com assinaturas digitais registradas no sistema.
     </div>
 

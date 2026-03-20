@@ -135,6 +135,9 @@ $user = currentUser();
             <p>Configure e publique o sistema no servidor de produção com um clique</p>
         </div>
         <div style="display:flex;gap:8px;align-items:center">
+            <button class="btn btn-sm ia-insight-btn" onclick="iaInsight('deploy_risk')">
+                <i class="fas fa-robot"></i> Risco IA
+            </button>
             <span id="deployVersion" class="upd-version-badge" style="background:#6366F1;color:white;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:600;"></span>
         </div>
     </div>

@@ -55,6 +55,14 @@ class IA {
         $url = rtrim($this->getConfig('ollama_url', 'http://localhost:11434'), '/') . '/api/chat';
         $modelo = $modelo ?: $this->getConfig('modelo_padrao', 'llama3');
 
+        // Modelos :cloud são "thinking models" - auto-ajustar
+        $isCloudModel = (stripos($modelo, ':cloud') !== false);
+        if ($isCloudModel) {
+            if (!isset($options['max_tokens'])) $options['max_tokens'] = 4096;
+            if (!isset($options['num_ctx']))    $options['num_ctx'] = 8192;
+            if (!isset($options['think']))      $options['think'] = false;
+        }
+
         // Limitar geração para evitar resposta infinita (512 tokens ~= 60s em CPU)
         $numPredict = isset($options['max_tokens']) ? (int)$options['max_tokens'] : 512;
         $numCtx = (int)($options['num_ctx'] ?? $this->getConfig('num_ctx', '2048'));
@@ -79,6 +87,11 @@ class IA {
             'options' => $ollamaOpts,
         ];
 
+        // Modelos cloud com thinking: permitir desabilitar "think" 
+        if (isset($options['think'])) {
+            $payload['think'] = (bool)$options['think'];
+        }
+
         $start = microtime(true);
         $response = $this->httpPost($url, $payload);
         $duracao = round((microtime(true) - $start) * 1000);
@@ -102,6 +115,15 @@ class IA {
         $url = rtrim($this->getConfig('ollama_url', 'http://localhost:11434'), '/') . '/api/chat';
         $modelo = $modelo ?: $this->getConfig('modelo_padrao', 'llama3');
 
+        // Modelos :cloud são "thinking models" que gastam tokens no raciocínio interno.
+        // Auto-ajustar tokens e desabilitar thinking se não configurado explicitamente.
+        $isCloudModel = (stripos($modelo, ':cloud') !== false);
+        if ($isCloudModel) {
+            if (!isset($options['max_tokens'])) $options['max_tokens'] = 4096;
+            if (!isset($options['num_ctx']))    $options['num_ctx'] = 8192;
+            if (!isset($options['think']))      $options['think'] = false;
+        }
+
         // Limitar geração para evitar resposta infinita (512 tokens ~= 60s em CPU)
         $numPredict = isset($options['max_tokens']) ? (int)$options['max_tokens'] : 512;
         $numCtx = (int)($options['num_ctx'] ?? $this->getConfig('num_ctx', '2048'));
@@ -118,13 +140,20 @@ class IA {
             $ollamaStreamOpts['stop'] = $options['stop'];
         }
 
-        $payload = json_encode([
+        $payload = [
             'model' => $modelo,
             'messages' => $messages,
             'stream' => true,
             'keep_alive' => '30m',
             'options' => $ollamaStreamOpts,
-        ]);
+        ];
+
+        // Modelos cloud com thinking: permitir desabilitar "think" para evitar gastar tokens
+        if (isset($options['think'])) {
+            $payload['think'] = (bool)$options['think'];
+        }
+
+        $payload = json_encode($payload);
 
         // Verificar se o modelo está carregado (para enviar heartbeat enquanto carrega)
         $receivedData = false;
@@ -445,30 +474,49 @@ class IA {
      * Obter modelo configurado para cada tarefa
      */
     public function getModelosPorTarefa(): array {
+        $padrao = $this->getConfig('modelo_padrao', 'llama3');
         return [
             'chat' => [
-                'modelo' => $this->getConfig('modelo_padrao', 'llama3'),
+                'modelo' => $padrao,
                 'label' => 'Chat / Conversa',
                 'descricao' => 'Modelo principal para conversas e assistência geral',
                 'icone' => 'fa-comments',
             ],
             'rapido' => [
-                'modelo' => $this->getConfig('modelo_rapido', 'llama3'),
+                'modelo' => $this->getConfig('modelo_rapido', $padrao),
                 'label' => 'Tarefas Rápidas',
-                'descricao' => 'Classificação de chamados, respostas curtas, tags',
+                'descricao' => 'Perguntas rápidas, respostas curtas',
                 'icone' => 'fa-bolt',
             ],
             'codigo' => [
-                'modelo' => $this->getConfig('modelo_codigo', $this->getConfig('modelo_padrao', 'llama3')),
+                'modelo' => $this->getConfig('modelo_codigo', $padrao),
                 'label' => 'Código / SSH',
                 'descricao' => 'Análise de código, comandos SSH, troubleshooting',
                 'icone' => 'fa-terminal',
             ],
             'analise' => [
-                'modelo' => $this->getConfig('modelo_analise', $this->getConfig('modelo_padrao', 'llama3')),
-                'label' => 'Análise / Relatórios',
-                'descricao' => 'Relatórios semanais, diagnósticos complexos',
+                'modelo' => $this->getConfig('modelo_analise', $padrao),
+                'label' => 'Análise / Relatórios / Planner',
+                'descricao' => 'Relatórios semanais, diagnósticos, planejamento de projetos',
                 'icone' => 'fa-chart-bar',
+            ],
+            'chamados' => [
+                'modelo' => $this->getConfig('modelo_chamados', $padrao),
+                'label' => 'Chamados / Suporte',
+                'descricao' => 'Classificação e sugestão de resposta em chamados',
+                'icone' => 'fa-ticket-alt',
+            ],
+            'email' => [
+                'modelo' => $this->getConfig('modelo_email', $padrao),
+                'label' => 'E-mail / Resumo',
+                'descricao' => 'Análise e resumo de e-mails',
+                'icone' => 'fa-envelope',
+            ],
+            'rede' => [
+                'modelo' => $this->getConfig('modelo_rede', $padrao),
+                'label' => 'Rede / MikroTik',
+                'descricao' => 'Assistente de rede, análise MikroTik',
+                'icone' => 'fa-network-wired',
             ],
         ];
     }
@@ -742,11 +790,12 @@ class IA {
     public function classificarChamado($titulo, $descricao) {
         $categorias = ['hardware', 'software', 'rede', 'email', 'impressora', 'acesso', 'telefonia', 'outro'];
         $prioridades = ['baixa', 'media', 'alta', 'critica'];
+        $modelo = $this->getConfig('modelo_chamados', $this->getConfig('modelo_rapido', null));
 
         $resp = $this->chat([
             ['role' => 'system', 'content' => "Você é um classificador de chamados de TI. Analise o chamado e retorne APENAS um JSON com: {\"categoria\": \"...\", \"prioridade\": \"...\", \"resumo\": \"...\"}.\nCategorias: " . implode(', ', $categorias) . "\nPrioridades: " . implode(', ', $prioridades) . "\nO resumo deve ter no máximo 1 frase."],
             ['role' => 'user', 'content' => "Título: {$titulo}\nDescrição: {$descricao}"],
-        ], null, ['max_tokens' => 200, 'temperature' => 0.1]);
+        ], $modelo, ['max_tokens' => 200, 'temperature' => 0.1]);
 
         $json = json_decode($resp['content'], true);
         if (!$json) {
@@ -772,10 +821,11 @@ class IA {
             }
         }
 
+        $modelo = $this->getConfig('modelo_chamados', $this->getConfig('modelo_rapido', null));
         $resp = $this->chat([
             ['role' => 'system', 'content' => 'Você é um técnico de suporte de TI. Sugira uma resposta profissional e empática para este chamado. A resposta deve ser direta, oferecer uma solução ou próximo passo claro. Responda em português.'],
             ['role' => 'user', 'content' => $contexto],
-        ], null, ['max_tokens' => 512, 'temperature' => 0.5]);
+        ], $modelo, ['max_tokens' => 512, 'temperature' => 0.5]);
 
         return $resp['content'];
     }

@@ -1,7 +1,7 @@
 <?php
 /**
  * Configurações Gerais do Sistema
- * HelpDesk TI
+ * Oracle X
  */
 
 // Fuso horário
@@ -113,9 +113,11 @@ function calcularPrioridade($impacto, $urgencia) {
 
 /**
  * Gerar código do chamado
+ * @param string $sigla Sigla do departamento (ex: TI, RH, FIN). Default: HD
  */
-function gerarCodigoChamado() {
-    return 'HD-' . date('Y') . '-' . str_pad(rand(1, 99999), 5, '0', STR_PAD_LEFT);
+function gerarCodigoChamado($sigla = 'HD') {
+    $sigla = strtoupper(trim($sigla)) ?: 'HD';
+    return $sigla . '-' . date('Y') . '-' . str_pad(rand(1, 99999), 5, '0', STR_PAD_LEFT);
 }
 
 /**
@@ -201,6 +203,10 @@ function isAjax() {
  * Resposta JSON
  */
 function jsonResponse($data, $statusCode = 200) {
+    // Limpar qualquer saída PHP prévia (warnings/notices) que corromperia o JSON
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
     http_response_code($statusCode);
     header('Content-Type: application/json; charset=utf-8');
     $json = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
@@ -270,6 +276,71 @@ function currentUser() {
         'email' => $_SESSION['usuario_email'] ?? '',
         'telefone' => $_SESSION['usuario_telefone'] ?? '',
         'tipo' => $_SESSION['usuario_tipo'] ?? '',
-        'avatar' => $_SESSION['usuario_avatar'] ?? ''
+        'avatar' => $_SESSION['usuario_avatar'] ?? '',
+        'departamento_id' => $_SESSION['usuario_departamento_id'] ?? null
     ];
+}
+
+function isAdmin() {
+    return ($_SESSION['usuario_tipo'] ?? '') === 'admin';
+}
+
+function isGestor() {
+    return ($_SESSION['usuario_tipo'] ?? '') === 'gestor';
+}
+
+function getUserDeptId() {
+    // Auto-fill departamento_id na sessão se ausente (sessões anteriores à atualização)
+    if (!isset($_SESSION['usuario_departamento_id']) && isset($_SESSION['usuario_id'])) {
+        $db = Database::getInstance();
+        $row = $db->fetch("SELECT departamento_id FROM usuarios WHERE id = ?", [$_SESSION['usuario_id']]);
+        $_SESSION['usuario_departamento_id'] = $row['departamento_id'] ?? null;
+    }
+    return $_SESSION['usuario_departamento_id'] ?? null;
+}
+
+/**
+ * Retorna a sigla do departamento do usuário logado.
+ */
+function getUserDeptSigla() {
+    if (!isset($_SESSION['usuario_departamento_sigla']) && isset($_SESSION['usuario_id'])) {
+        $db = Database::getInstance();
+        $row = $db->fetch(
+            "SELECT d.sigla FROM departamentos d INNER JOIN usuarios u ON u.departamento_id = d.id WHERE u.id = ?",
+            [$_SESSION['usuario_id']]
+        );
+        $_SESSION['usuario_departamento_sigla'] = $row['sigla'] ?? null;
+    }
+    return $_SESSION['usuario_departamento_sigla'] ?? null;
+}
+
+/**
+ * Verifica se o usuário pertence ao departamento de TI.
+ */
+function isTIDept() {
+    if (isAdmin()) return true;
+    return getUserDeptSigla() === 'TI';
+}
+
+/**
+ * Retorna o departamento_id para filtros.
+ * Admin: null (vê tudo). Gestor: seu departamento.
+ */
+function getDeptFilter() {
+    if (isAdmin()) return null;
+    return getUserDeptId();
+}
+
+/**
+ * Retorna tempo relativo em português (ex: "5min atrás", "2h atrás").
+ */
+function timeAgo($datetime) {
+    $now = new DateTime();
+    $past = new DateTime($datetime);
+    $diff = $now->getTimestamp() - $past->getTimestamp();
+    if ($diff < 60) return 'Agora';
+    if ($diff < 3600) return floor($diff / 60) . 'min atrás';
+    if ($diff < 86400) return floor($diff / 3600) . 'h atrás';
+    if ($diff < 604800) return floor($diff / 86400) . 'd atrás';
+    return $past->format('d/m/Y');
 }

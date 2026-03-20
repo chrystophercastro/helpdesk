@@ -40,7 +40,12 @@ foreach ($porCanal as $pc) $canalMap[$pc['canal']] = $pc['total'];
         <h1 class="dash-title">Dashboard</h1>
         <p class="dash-subtitle">
             <i class="far fa-calendar-alt"></i>
-            <?= date('d/m/Y') ?> — Visão geral do sistema
+            <?= date('d/m/Y') ?> — 
+            <?php if (!isAdmin() && getDeptFilter()): ?>
+                Visão do seu departamento
+            <?php else: ?>
+                Visão geral do sistema
+            <?php endif; ?>
         </p>
     </div>
     <div class="dash-header-right">
@@ -55,6 +60,9 @@ foreach ($porCanal as $pc) $canalMap[$pc['canal']] = $pc['total'];
                 <span class="dash-today-label">Resolvidos hoje</span>
             </div>
         </div>
+        <button class="btn btn-sm ia-insight-btn" onclick="iaInsight('dashboard_briefing')">
+            <i class="fas fa-robot"></i> Briefing IA
+        </button>
         <button class="btn btn-primary" onclick="HelpDesk.openModal('novoChamado')">
             <i class="fas fa-plus"></i> Novo Chamado
         </button>
@@ -144,6 +152,48 @@ foreach ($porCanal as $pc) $canalMap[$pc['canal']] = $pc['total'];
         <div class="dash-kpi-spark"><i class="fas fa-receipt"></i></div>
     </div>
 </div>
+
+<!-- Row: Departamentos -->
+<?php $porDept = $stats['chamados']['por_departamento'] ?? []; ?>
+<?php if (!empty($porDept)): ?>
+<div class="dash-card" style="margin-bottom:24px">
+    <div class="dash-card-header">
+        <h3><i class="fas fa-building"></i> Chamados por Departamento</h3>
+        <a href="<?= BASE_URL ?>/index.php?page=departamentos" class="dash-card-link">Gerenciar <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="dash-card-body">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;">
+            <?php foreach ($porDept as $dp): ?>
+            <a href="<?= BASE_URL ?>/index.php?page=chamados&departamento_id=<?= $dp['id'] ?>" class="dash-dept-card" style="text-decoration:none;display:block;padding:16px;border-radius:12px;background:<?= $dp['cor'] ?>08;border:1px solid <?= $dp['cor'] ?>20;transition:all 0.2s;">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                    <div style="width:36px;height:36px;border-radius:10px;background:<?= $dp['cor'] ?>;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;">
+                        <i class="<?= htmlspecialchars($dp['icone']) ?>"></i>
+                    </div>
+                    <div>
+                        <span style="font-size:13px;font-weight:700;color:var(--gray-800);display:block;"><?= htmlspecialchars($dp['sigla']) ?></span>
+                        <span style="font-size:11px;color:var(--gray-500);"><?= htmlspecialchars($dp['nome']) ?></span>
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center;">
+                    <div>
+                        <span style="font-size:18px;font-weight:700;color:#F59E0B;display:block;"><?= (int)$dp['abertos'] ?></span>
+                        <span style="font-size:10px;color:var(--gray-500);font-weight:600;">Abertos</span>
+                    </div>
+                    <div>
+                        <span style="font-size:18px;font-weight:700;color:#3B82F6;display:block;"><?= (int)$dp['em_andamento'] ?></span>
+                        <span style="font-size:10px;color:var(--gray-500);font-weight:600;">Andamento</span>
+                    </div>
+                    <div>
+                        <span style="font-size:18px;font-weight:700;color:#10B981;display:block;"><?= (int)$dp['resolvidos'] ?></span>
+                        <span style="font-size:10px;color:var(--gray-500);font-weight:600;">Resolvidos</span>
+                    </div>
+                </div>
+            </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 
 <!-- Row: Evolução + Prioridades/Canais -->
 <div class="dash-grid-2-1">

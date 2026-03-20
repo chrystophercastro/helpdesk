@@ -32,12 +32,21 @@ if ($method === 'POST') {
             if ($exists) {
                 jsonResponse(['error' => 'Email já cadastrado'], 400);
             }
+            // Gestor: forçar departamento_id do seu departamento
+            $deptFilter = getDeptFilter();
+            if ($deptFilter) {
+                $data['departamento_id'] = $deptFilter;
+                // Gestor não pode criar admin
+                if (($data['tipo'] ?? '') === 'admin') {
+                    $data['tipo'] = 'tecnico';
+                }
+            }
             $campos = [
                 'nome' => sanitizar($data['nome']),
                 'email' => sanitizar($data['email']),
                 'senha' => password_hash($data['senha'], PASSWORD_BCRYPT, ['cost' => 12]),
                 'tipo' => sanitizar($data['tipo'] ?? 'tecnico'),
-                'departamento' => sanitizar($data['departamento'] ?? ''),
+                'departamento_id' => !empty($data['departamento_id']) ? (int)$data['departamento_id'] : null,
                 'telefone' => sanitizar($data['telefone'] ?? ''),
                 'ativo' => 1
             ];
@@ -51,6 +60,15 @@ if ($method === 'POST') {
             if ($id !== (int)$_SESSION['usuario_id']) {
                 requireRole(['admin', 'gestor']);
             }
+            // Gestor: verificar que o usuário pertence ao seu departamento
+            $deptFilter = getDeptFilter();
+            if ($deptFilter && $id !== (int)$_SESSION['usuario_id']) {
+                $db = Database::getInstance();
+                $targetUser = $db->fetch("SELECT departamento_id FROM usuarios WHERE id = ?", [$id]);
+                if (!$targetUser || (int)($targetUser['departamento_id'] ?? 0) !== (int)$deptFilter) {
+                    jsonResponse(['error' => 'Sem permissão para editar este usuário'], 403);
+                }
+            }
             $update = [
                 'nome' => sanitizar($data['nome'] ?? ''),
                 'email' => sanitizar($data['email'] ?? ''),
@@ -58,8 +76,21 @@ if ($method === 'POST') {
             ];
             // Only admin/gestor can change tipo/departamento
             if (in_array($_SESSION['usuario_tipo'], ['admin', 'gestor'])) {
-                if (isset($data['tipo'])) $update['tipo'] = sanitizar($data['tipo']);
-                if (isset($data['departamento'])) $update['departamento'] = sanitizar($data['departamento']);
+                if (isset($data['tipo'])) {
+                    // Gestor não pode promover a admin
+                    if ($deptFilter && $data['tipo'] === 'admin') {
+                        $data['tipo'] = 'tecnico';
+                    }
+                    $update['tipo'] = sanitizar($data['tipo']);
+                }
+                if (isset($data['departamento_id'])) {
+                    // Gestor: forçar seu próprio departamento
+                    if ($deptFilter) {
+                        $update['departamento_id'] = (int)$deptFilter;
+                    } else {
+                        $update['departamento_id'] = !empty($data['departamento_id']) ? (int)$data['departamento_id'] : null;
+                    }
+                }
             }
             if (!empty($data['senha'])) {
                 $update['senha'] = password_hash($data['senha'], PASSWORD_BCRYPT, ['cost' => 12]);
@@ -101,14 +132,26 @@ if ($method === 'POST') {
             break;
 
         case 'toggle':
-            requireRole(['admin', 'gestor']);            $id = (int)($data['id'] ?? 0);
+            requireRole(['admin', 'gestor']);
+            $id = (int)($data['id'] ?? 0);
             $db = Database::getInstance();
-            $user = $db->fetch("SELECT ativo FROM usuarios WHERE id = ?", [$id]);
-            if ($user) {
-                $db->update('usuarios', ['ativo' => $user['ativo'] ? 0 : 1], 'id = ?', [$id]);
+            // Gestor: verificar que o usuário pertence ao seu departamento
+            $deptFilter = getDeptFilter();
+            if ($deptFilter) {
+                $targetUser = $db->fetch("SELECT departamento_id, ativo FROM usuarios WHERE id = ?", [$id]);
+                if (!$targetUser || (int)($targetUser['departamento_id'] ?? 0) !== (int)$deptFilter) {
+                    jsonResponse(['error' => 'Sem permissão'], 403);
+                }
+                $db->update('usuarios', ['ativo' => $targetUser['ativo'] ? 0 : 1], 'id = ?', [$id]);
                 jsonResponse(['success' => true]);
             } else {
-                jsonResponse(['error' => 'Usuário não encontrado'], 404);
+                $user = $db->fetch("SELECT ativo FROM usuarios WHERE id = ?", [$id]);
+                if ($user) {
+                    $db->update('usuarios', ['ativo' => $user['ativo'] ? 0 : 1], 'id = ?', [$id]);
+                    jsonResponse(['success' => true]);
+                } else {
+                    jsonResponse(['error' => 'Usuário não encontrado'], 404);
+                }
             }
             break;
 
@@ -121,13 +164,30 @@ if ($method === 'POST') {
         case 'ver':
             $id = (int)($_GET['id'] ?? 0);
             $db = Database::getInstance();
-            $user = $db->fetch("SELECT id, nome, email, tipo, departamento, telefone, ativo, ultimo_login FROM usuarios WHERE id = ?", [$id]);
+            $user = $db->fetch(
+                "SELECT u.id, u.nome, u.email, u.tipo, u.departamento_id, u.telefone, u.ativo, u.ultimo_login,
+                        d.nome as departamento_nome, d.sigla as departamento_sigla, d.cor as departamento_cor
+                 FROM usuarios u
+                 LEFT JOIN departamentos d ON d.id = u.departamento_id
+                 WHERE u.id = ?", [$id]
+            );
+            // Gestor: só pode ver usuários do seu departamento
+            $deptFilter = getDeptFilter();
+            if ($deptFilter && $user && (int)($user['departamento_id'] ?? 0) !== (int)$deptFilter) {
+                jsonResponse(['error' => 'Sem permissão'], 403);
+            }
             jsonResponse($user ?: ['error' => 'Usuário não encontrado']);
             break;
 
         case 'listar':
             requireRole(['admin', 'gestor']);
-            $usuarios = $model->listar(['busca' => $_GET['busca'] ?? '']);
+            $filtros = ['busca' => $_GET['busca'] ?? ''];
+            // Gestor: filtrar por seu departamento
+            $deptFilter = getDeptFilter();
+            if ($deptFilter) {
+                $filtros['departamento_id'] = $deptFilter;
+            }
+            $usuarios = $model->listar($filtros);
             jsonResponse($usuarios);
             break;
 

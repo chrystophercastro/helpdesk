@@ -78,6 +78,419 @@ class Email {
         return $this->db->delete('email_contas', 'id = ? AND usuario_id = ?', [$contaId, $usuarioId]);
     }
 
+    // ==========================================
+    //  AUTODISCOVER - Detectar configurações
+    // ==========================================
+
+    /**
+     * Base de provedores conhecidos (domínio -> config)
+     */
+    private function getKnownProviders() {
+        return [
+            // Google
+            'gmail.com' => ['imap' => 'imap.gmail.com', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'smtp.gmail.com', 'smtp_port' => 587, 'smtp_sec' => 'tls', 'provider' => 'Gmail', 'note' => 'Use uma Senha de App (App Password) do Google.'],
+            'googlemail.com' => ['imap' => 'imap.gmail.com', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'smtp.gmail.com', 'smtp_port' => 587, 'smtp_sec' => 'tls', 'provider' => 'Gmail'],
+            // Microsoft
+            'outlook.com' => ['imap' => 'outlook.office365.com', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'smtp.office365.com', 'smtp_port' => 587, 'smtp_sec' => 'tls', 'provider' => 'Outlook'],
+            'hotmail.com' => ['imap' => 'outlook.office365.com', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'smtp.office365.com', 'smtp_port' => 587, 'smtp_sec' => 'tls', 'provider' => 'Outlook'],
+            'live.com' => ['imap' => 'outlook.office365.com', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'smtp.office365.com', 'smtp_port' => 587, 'smtp_sec' => 'tls', 'provider' => 'Outlook'],
+            'msn.com' => ['imap' => 'outlook.office365.com', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'smtp.office365.com', 'smtp_port' => 587, 'smtp_sec' => 'tls', 'provider' => 'Outlook'],
+            'outlook.com.br' => ['imap' => 'outlook.office365.com', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'smtp.office365.com', 'smtp_port' => 587, 'smtp_sec' => 'tls', 'provider' => 'Outlook'],
+            'hotmail.com.br' => ['imap' => 'outlook.office365.com', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'smtp.office365.com', 'smtp_port' => 587, 'smtp_sec' => 'tls', 'provider' => 'Outlook'],
+            // Yahoo
+            'yahoo.com' => ['imap' => 'imap.mail.yahoo.com', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'smtp.mail.yahoo.com', 'smtp_port' => 465, 'smtp_sec' => 'ssl', 'provider' => 'Yahoo', 'note' => 'Use uma App Password do Yahoo.'],
+            'yahoo.com.br' => ['imap' => 'imap.mail.yahoo.com', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'smtp.mail.yahoo.com', 'smtp_port' => 465, 'smtp_sec' => 'ssl', 'provider' => 'Yahoo'],
+            // iCloud
+            'icloud.com' => ['imap' => 'imap.mail.me.com', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'smtp.mail.me.com', 'smtp_port' => 587, 'smtp_sec' => 'tls', 'provider' => 'iCloud', 'note' => 'Use uma App-Specific Password da Apple.'],
+            'me.com' => ['imap' => 'imap.mail.me.com', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'smtp.mail.me.com', 'smtp_port' => 587, 'smtp_sec' => 'tls', 'provider' => 'iCloud'],
+            'mac.com' => ['imap' => 'imap.mail.me.com', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'smtp.mail.me.com', 'smtp_port' => 587, 'smtp_sec' => 'tls', 'provider' => 'iCloud'],
+            // Zoho
+            'zoho.com' => ['imap' => 'imap.zoho.com', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'smtp.zoho.com', 'smtp_port' => 465, 'smtp_sec' => 'ssl', 'provider' => 'Zoho'],
+            'zohomail.com' => ['imap' => 'imap.zoho.com', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'smtp.zoho.com', 'smtp_port' => 465, 'smtp_sec' => 'ssl', 'provider' => 'Zoho'],
+            // UOL / BOL / Terra
+            'uol.com.br' => ['imap' => 'imap.uol.com.br', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'smtps.uol.com.br', 'smtp_port' => 587, 'smtp_sec' => 'tls', 'provider' => 'UOL'],
+            'bol.com.br' => ['imap' => 'imap.bol.com.br', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'smtps.bol.com.br', 'smtp_port' => 587, 'smtp_sec' => 'tls', 'provider' => 'BOL'],
+            'terra.com.br' => ['imap' => 'imap.terra.com.br', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'smtp.terra.com.br', 'smtp_port' => 587, 'smtp_sec' => 'tls', 'provider' => 'Terra'],
+            // GoDaddy
+            'secureserver.net' => ['imap' => 'imap.secureserver.net', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'smtpout.secureserver.net', 'smtp_port' => 465, 'smtp_sec' => 'ssl', 'provider' => 'GoDaddy'],
+            // Locaweb
+            'locaweb.com.br' => ['imap' => 'email-ssl.com.br', 'imap_port' => 993, 'imap_sec' => 'ssl', 'smtp' => 'email-ssl.com.br', 'smtp_port' => 465, 'smtp_sec' => 'ssl', 'provider' => 'Locaweb'],
+        ];
+    }
+
+    /**
+     * Autodiscover: detecta configurações IMAP/SMTP a partir do e-mail.
+     * 1. Verifica base de provedores conhecidos
+     * 2. Tenta MX lookup e mapear para provedores conhecidos via MX
+     * 3. Tenta Mozilla ISPDB (autoconfig)
+     * 4. Tenta Microsoft Autodiscover
+     * 5. Tenta padrões comuns (mail.dominio, imap.dominio)
+     */
+    public function autodiscover($emailAddress) {
+        $parts = explode('@', $emailAddress);
+        if (count($parts) !== 2) {
+            throw new \Exception('Endereço de e-mail inválido');
+        }
+        $domain = strtolower(trim($parts[1]));
+
+        // ===== ETAPA 1: Base de provedores conhecidos =====
+        $known = $this->getKnownProviders();
+        if (isset($known[$domain])) {
+            $cfg = $known[$domain];
+            return [
+                'found' => true,
+                'method' => 'known_provider',
+                'provider' => $cfg['provider'] ?? ucfirst(explode('.', $domain)[0]),
+                'note' => $cfg['note'] ?? null,
+                'config' => [
+                    'imap_host' => $cfg['imap'],
+                    'imap_porta' => $cfg['imap_port'],
+                    'imap_seguranca' => $cfg['imap_sec'],
+                    'smtp_host' => $cfg['smtp'],
+                    'smtp_porta' => $cfg['smtp_port'],
+                    'smtp_seguranca' => $cfg['smtp_sec'],
+                ]
+            ];
+        }
+
+        // ===== ETAPA 2: MX Lookup → mapear para provedor =====
+        $mxResult = $this->discoverViaMX($domain);
+        if ($mxResult) return $mxResult;
+
+        // ===== ETAPA 3: Mozilla ISPDB (autoconfig) =====
+        $mozResult = $this->discoverViaMozilla($domain);
+        if ($mozResult) return $mozResult;
+
+        // ===== ETAPA 4: Microsoft Autodiscover =====
+        $msResult = $this->discoverViaMicrosoft($domain, $emailAddress);
+        if ($msResult) return $msResult;
+
+        // ===== ETAPA 5: Probing de padrões comuns =====
+        $probeResult = $this->discoverViaProbing($domain);
+        if ($probeResult) return $probeResult;
+
+        // Nenhuma configuração encontrada
+        return [
+            'found' => false,
+            'method' => 'none',
+            'provider' => null,
+            'note' => 'Não foi possível detectar as configurações automaticamente. Configure manualmente.',
+            'config' => [
+                'imap_host' => '',
+                'imap_porta' => 993,
+                'imap_seguranca' => 'ssl',
+                'smtp_host' => '',
+                'smtp_porta' => 587,
+                'smtp_seguranca' => 'tls',
+            ]
+        ];
+    }
+
+    /**
+     * Descobrir via MX record → mapear para provedor conhecido
+     */
+    private function discoverViaMX($domain) {
+        $mxHosts = [];
+        if (!@getmxrr($domain, $mxHosts)) return null;
+        if (empty($mxHosts)) return null;
+
+        $mx = strtolower($mxHosts[0]);
+
+        // Mapeamento MX → provedor
+        $mxMap = [
+            'google.com'          => 'gmail.com',
+            'googlemail.com'      => 'gmail.com',
+            'outlook.com'         => 'outlook.com',
+            'microsoft.com'       => 'outlook.com',
+            'protection.outlook'  => 'outlook.com',
+            'pphosted.com'        => 'outlook.com', // Proofpoint (Office 365)
+            'yahoo.com'           => 'yahoo.com',
+            'yahoodns.net'        => 'yahoo.com',
+            'zoho.com'            => 'zoho.com',
+            'icloud.com'          => 'icloud.com',
+            'me.com'              => 'icloud.com',
+            'secureserver.net'    => 'secureserver.net',
+            'locaweb.com.br'      => 'locaweb.com.br',
+            'uol.com.br'          => 'uol.com.br',
+            'terra.com.br'        => 'terra.com.br',
+        ];
+
+        $known = $this->getKnownProviders();
+        foreach ($mxMap as $mxPattern => $providerDomain) {
+            if (strpos($mx, $mxPattern) !== false && isset($known[$providerDomain])) {
+                $cfg = $known[$providerDomain];
+                return [
+                    'found' => true,
+                    'method' => 'mx_lookup',
+                    'provider' => $cfg['provider'] ?? ucfirst($providerDomain),
+                    'note' => $cfg['note'] ?? "Detectado via MX: {$mx}",
+                    'config' => [
+                        'imap_host' => $cfg['imap'],
+                        'imap_porta' => $cfg['imap_port'],
+                        'imap_seguranca' => $cfg['imap_sec'],
+                        'smtp_host' => $cfg['smtp'],
+                        'smtp_porta' => $cfg['smtp_port'],
+                        'smtp_seguranca' => $cfg['smtp_sec'],
+                    ]
+                ];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Descobrir via Mozilla ISPDB (autoconfig)
+     */
+    private function discoverViaMozilla($domain) {
+        $urls = [
+            "https://autoconfig.{$domain}/mail/config-v1.1.xml",
+            "https://{$domain}/.well-known/autoconfig/mail/config-v1.1.xml",
+            "https://autoconfig.thunderbird.net/v1.1/{$domain}",
+        ];
+
+        foreach ($urls as $url) {
+            $xml = $this->httpGet($url, 5);
+            if (!$xml) continue;
+
+            $config = $this->parseMozillaAutoconfig($xml);
+            if ($config) {
+                return [
+                    'found' => true,
+                    'method' => 'mozilla_autoconfig',
+                    'provider' => $config['provider'] ?? ucfirst(explode('.', $domain)[0]),
+                    'note' => 'Configuração detectada via autoconfig.',
+                    'config' => $config['settings']
+                ];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Parser do XML Mozilla Autoconfig
+     */
+    private function parseMozillaAutoconfig($xmlString) {
+        libxml_use_internal_errors(true);
+        $xml = @simplexml_load_string($xmlString);
+        if (!$xml) return null;
+
+        $result = ['provider' => null, 'settings' => [
+            'imap_host' => '', 'imap_porta' => 993, 'imap_seguranca' => 'ssl',
+            'smtp_host' => '', 'smtp_porta' => 587, 'smtp_seguranca' => 'tls',
+        ]];
+
+        // Provider name
+        if (isset($xml->emailProvider)) {
+            $provider = $xml->emailProvider;
+            $result['provider'] = (string)($provider->displayName ?? $provider->displayShortName ?? null);
+
+            // IMAP
+            foreach ($provider->incomingServer as $server) {
+                if ((string)$server['type'] === 'imap') {
+                    $result['settings']['imap_host'] = (string)$server->hostname;
+                    $result['settings']['imap_porta'] = (int)$server->port;
+                    $ssl = strtolower((string)$server->socketType);
+                    $result['settings']['imap_seguranca'] = ($ssl === 'ssl' || $ssl === 'starttls') ? ($ssl === 'starttls' ? 'tls' : 'ssl') : 'none';
+                    break;
+                }
+            }
+
+            // SMTP
+            foreach ($provider->outgoingServer as $server) {
+                if ((string)$server['type'] === 'smtp') {
+                    $result['settings']['smtp_host'] = (string)$server->hostname;
+                    $result['settings']['smtp_porta'] = (int)$server->port;
+                    $ssl = strtolower((string)$server->socketType);
+                    $result['settings']['smtp_seguranca'] = ($ssl === 'ssl' || $ssl === 'starttls') ? ($ssl === 'starttls' ? 'tls' : 'ssl') : 'none';
+                    break;
+                }
+            }
+        }
+
+        if (empty($result['settings']['imap_host'])) return null;
+        return $result;
+    }
+
+    /**
+     * Descobrir via Microsoft Autodiscover
+     */
+    private function discoverViaMicrosoft($domain, $email) {
+        $urls = [
+            "https://{$domain}/autodiscover/autodiscover.xml",
+            "https://autodiscover.{$domain}/autodiscover/autodiscover.xml",
+        ];
+
+        $postBody = '<?xml version="1.0" encoding="utf-8"?>
+<Autodiscover xmlns="http://schemas.microsoft.com/exchange/autodiscover/outlook/requestschema/2006">
+  <Request>
+    <EMailAddress>' . htmlspecialchars($email) . '</EMailAddress>
+    <AcceptableResponseSchema>http://schemas.microsoft.com/exchange/autodiscover/outlook/responseschema/2006a</AcceptableResponseSchema>
+  </Request>
+</Autodiscover>';
+
+        foreach ($urls as $url) {
+            $response = $this->httpPost($url, $postBody, 'text/xml', 5);
+            if (!$response) continue;
+
+            $config = $this->parseMicrosoftAutodiscover($response);
+            if ($config) {
+                return [
+                    'found' => true,
+                    'method' => 'microsoft_autodiscover',
+                    'provider' => 'Microsoft Exchange',
+                    'note' => 'Configuração detectada via Autodiscover.',
+                    'config' => $config
+                ];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Parser do XML Microsoft Autodiscover
+     */
+    private function parseMicrosoftAutodiscover($xmlString) {
+        libxml_use_internal_errors(true);
+        $xml = @simplexml_load_string($xmlString);
+        if (!$xml) return null;
+
+        $ns = $xml->getNamespaces(true);
+        $result = [
+            'imap_host' => '', 'imap_porta' => 993, 'imap_seguranca' => 'ssl',
+            'smtp_host' => '', 'smtp_porta' => 587, 'smtp_seguranca' => 'tls',
+        ];
+
+        // Tentar parsear protocols
+        $protocols = $xml->xpath('//Protocol') ?: $xml->xpath('//*[local-name()="Protocol"]');
+        foreach ($protocols as $proto) {
+            $type = strtoupper((string)($proto->Type ?? ''));
+            if ($type === 'IMAP') {
+                $result['imap_host'] = (string)($proto->Server ?? '');
+                $result['imap_porta'] = (int)($proto->Port ?? 993);
+                $ssl = strtoupper((string)($proto->SSL ?? 'on'));
+                $result['imap_seguranca'] = ($ssl === 'ON' || $ssl === '1') ? 'ssl' : 'none';
+            }
+            if ($type === 'SMTP') {
+                $result['smtp_host'] = (string)($proto->Server ?? '');
+                $result['smtp_porta'] = (int)($proto->Port ?? 587);
+                $ssl = strtoupper((string)($proto->SSL ?? 'on'));
+                $result['smtp_seguranca'] = ($ssl === 'ON' || $ssl === '1') ? 'tls' : 'none';
+            }
+        }
+
+        if (empty($result['imap_host'])) return null;
+        return $result;
+    }
+
+    /**
+     * Descobrir via probing de portas comuns
+     */
+    private function discoverViaProbing($domain) {
+        $candidates = [
+            "mail.{$domain}", "imap.{$domain}", "smtp.{$domain}",
+            "mx.{$domain}", "email.{$domain}",
+        ];
+
+        foreach ($candidates as $host) {
+            // Testar IMAP 993 (SSL)
+            if ($this->testPort($host, 993, 3)) {
+                // Encontrou IMAP, agora testar SMTP
+                $smtpHost = str_replace('imap.', 'smtp.', $host);
+                $smtpPort = 587;
+                $smtpSec = 'tls';
+
+                // Testar variações de SMTP
+                if ($this->testPort($smtpHost, 587, 2)) {
+                    // smtp.domain:587 ok
+                } elseif ($this->testPort($host, 587, 2)) {
+                    $smtpHost = $host;
+                } elseif ($this->testPort($smtpHost, 465, 2)) {
+                    $smtpPort = 465;
+                    $smtpSec = 'ssl';
+                } elseif ($this->testPort($host, 465, 2)) {
+                    $smtpHost = $host;
+                    $smtpPort = 465;
+                    $smtpSec = 'ssl';
+                } else {
+                    $smtpHost = $host;
+                }
+
+                return [
+                    'found' => true,
+                    'method' => 'port_probing',
+                    'provider' => null,
+                    'note' => "Servidor detectado: {$host}. Verifique se as configurações estão corretas.",
+                    'config' => [
+                        'imap_host' => $host,
+                        'imap_porta' => 993,
+                        'imap_seguranca' => 'ssl',
+                        'smtp_host' => $smtpHost,
+                        'smtp_porta' => $smtpPort,
+                        'smtp_seguranca' => $smtpSec,
+                    ]
+                ];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Testar se uma porta está aberta (timeout curto)
+     */
+    private function testPort($host, $port, $timeout = 3) {
+        $fp = @fsockopen($host, $port, $errno, $errstr, $timeout);
+        if ($fp) {
+            fclose($fp);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * HTTP GET com timeout
+     */
+    private function httpGet($url, $timeout = 5) {
+        $ctx = stream_context_create([
+            'http' => [
+                'method' => 'GET',
+                'timeout' => $timeout,
+                'header' => "User-Agent: HelpDesk-Autodiscover/1.0\r\n",
+                'ignore_errors' => true,
+            ],
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+            ]
+        ]);
+        $result = @file_get_contents($url, false, $ctx);
+        return $result ?: null;
+    }
+
+    /**
+     * HTTP POST com timeout
+     */
+    private function httpPost($url, $body, $contentType = 'text/xml', $timeout = 5) {
+        $ctx = stream_context_create([
+            'http' => [
+                'method' => 'POST',
+                'timeout' => $timeout,
+                'header' => "Content-Type: {$contentType}\r\nUser-Agent: HelpDesk-Autodiscover/1.0\r\n",
+                'content' => $body,
+                'ignore_errors' => true,
+            ],
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+            ]
+        ]);
+        $result = @file_get_contents($url, false, $ctx);
+        return $result ?: null;
+    }
+
     /**
      * Testar conexão IMAP
      */
@@ -122,6 +535,10 @@ class Email {
      */
     private function imapConnect($conta, $folder = 'INBOX') {
         $senha = $this->decriptarSenha($conta['senha_email']);
+        if (empty($senha)) {
+            throw new \Exception('Senha de e-mail não pôde ser descriptografada. Reconfigure a conta e salve a senha novamente.');
+        }
+
         $mailbox = $this->buildImapString($conta['imap_host'], $conta['imap_porta'], $conta['imap_seguranca'], $folder);
 
         $imap = @imap_open($mailbox, $conta['usuario_email'], $senha, 0, 1, [
@@ -130,7 +547,21 @@ class Email {
 
         if (!$imap) {
             $erros = imap_errors() ?: [];
-            throw new \Exception('Conexão IMAP falhou: ' . implode('; ', $erros));
+            $alerts = imap_alerts() ?: [];
+            $allErrors = array_merge($erros, $alerts);
+            $errMsg = implode('; ', $allErrors);
+
+            // Diagnosticar tipo de erro
+            $errLower = strtolower($errMsg);
+            if (strpos($errLower, 'authentication') !== false || strpos($errLower, 'login') !== false) {
+                throw new \Exception('Falha de autenticação no servidor ' . $conta['imap_host'] . '. Verifique usuário e senha nas configurações da conta.');
+            } elseif (strpos($errLower, 'connect') !== false || strpos($errLower, 'timeout') !== false) {
+                throw new \Exception('Não foi possível conectar ao servidor ' . $conta['imap_host'] . ':' . $conta['imap_porta'] . '. Verifique o host e porta.');
+            } elseif (strpos($errLower, 'certificate') !== false || strpos($errLower, 'ssl') !== false) {
+                throw new \Exception('Erro de certificado SSL no servidor ' . $conta['imap_host'] . '. Tente alterar a segurança nas configurações.');
+            }
+
+            throw new \Exception('Conexão IMAP falhou (' . $conta['imap_host'] . '): ' . ($errMsg ?: 'erro desconhecido'));
         }
 
         return $imap;
@@ -149,7 +580,14 @@ class Email {
         $imap = @imap_open($mailbox, $conta['usuario_email'], $senha, 0, 1, [
             'DISABLE_AUTHENTICATOR' => 'GSSAPI'
         ]);
-        if (!$imap) throw new \Exception('Conexão IMAP falhou');
+        if (!$imap) {
+            $erros = imap_errors() ?: [];
+            $errLower = strtolower(implode(' ', $erros));
+            if (strpos($errLower, 'authentication') !== false || strpos($errLower, 'login') !== false) {
+                throw new \Exception('Falha de autenticação. Verifique a senha da conta nas configurações.');
+            }
+            throw new \Exception('Conexão IMAP falhou: ' . (implode('; ', $erros) ?: 'verifique as configurações da conta'));
+        }
 
         $folders = imap_list($imap, $mailbox, '*');
         imap_close($imap);

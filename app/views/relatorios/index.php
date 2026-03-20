@@ -7,7 +7,13 @@
 <div class="page-header">
     <div>
         <h1 class="page-title">Relatórios</h1>
-        <p class="page-subtitle">Análises e métricas do HelpDesk</p>
+        <p class="page-subtitle">
+            <?php if (!isAdmin()): ?>
+                <i class="fas fa-filter" style="margin-right:4px;color:var(--primary)"></i> Relatórios do seu departamento
+            <?php else: ?>
+                Análises e métricas do HelpDesk
+            <?php endif; ?>
+        </p>
     </div>
     <div class="page-actions">
         <form class="inline-form" method="GET">
@@ -17,6 +23,9 @@
             <input type="date" name="data_fim" class="form-input" value="<?= $_GET['data_fim'] ?? date('Y-m-t') ?>">
             <button type="submit" class="btn btn-primary"><i class="fas fa-filter"></i> Filtrar</button>
         </form>
+        <button class="btn btn-sm ia-insight-btn" onclick="iaInsight('relatorios_narrator', {de: document.querySelector('input[name=data_inicio]')?.value, ate: document.querySelector('input[name=data_fim]')?.value})">
+            <i class="fas fa-robot"></i> Narrar Relatório
+        </button>
     </div>
 </div>
 

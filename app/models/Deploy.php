@@ -500,7 +500,7 @@ class Deploy
             $dbPort = $dbOverrides['DB_PORT'] ?? (defined('DB_PORT') ? DB_PORT : 3306);
 
             $dbContent = "<?php\n";
-            $dbContent .= "/**\n * Configuração do Banco de Dados\n * HelpDesk TI — Produção (gerado por Deploy)\n */\n\n";
+            $dbContent .= "/**\n * Configuração do Banco de Dados\n * Oracle X — Produção (gerado por Deploy)\n */\n\n";
             $dbContent .= "define('DB_HOST', " . var_export($dbHost, true) . ");\n";
             $dbContent .= "define('DB_NAME', " . var_export($dbName, true) . ");\n";
             $dbContent .= "define('DB_USER', " . var_export($dbUser, true) . ");\n";

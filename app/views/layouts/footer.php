@@ -127,6 +127,24 @@
     // Init
     notifPollCount();
     setInterval(notifPollCount, 30000);
+
+    // Chat unread badge polling
+    function chatPollBadge() {
+        fetch('<?= BASE_URL ?>/api/chat.php?action=nao_lidas')
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    const badge = document.getElementById('badge-chat');
+                    if (badge) {
+                        const c = data.data.total;
+                        if (c > 0) { badge.textContent = c > 99 ? '99+' : c; badge.style.display = ''; }
+                        else { badge.style.display = 'none'; }
+                    }
+                }
+            }).catch(() => {});
+    }
+    chatPollBadge();
+    setInterval(chatPollBadge, 15000);
 })();
 </script>
 
@@ -145,110 +163,8 @@
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- Floating AI Button (global) -->
-<?php if (isset($_GET['page']) && $_GET['page'] !== 'ia'): ?>
-<button class="ia-floating-btn" onclick="toggleFloatingAI()" title="Assistente IA" id="iaFloatingBtn">
-    <i class="fas fa-robot"></i>
-</button>
-<div class="ia-floating-panel" id="iaFloatingPanel">
-    <div class="ia-floating-header">
-        <i class="fas fa-robot"></i>
-        <span>Assistente IA — Pergunta Rápida</span>
-        <button class="ia-floating-close" onclick="toggleFloatingAI()">
-            <i class="fas fa-times"></i>
-        </button>
-    </div>
-    <div class="ia-floating-messages" id="iaFloatingMessages">
-        <div class="ia-message ia-assistant" style="max-width:100%">
-            <div class="ia-avatar ia-avatar-ai"><i class="fas fa-robot"></i></div>
-            <div class="ia-bubble" style="font-size:13px">
-                <div class="ia-content">Olá! Faça uma pergunta rápida sobre TI, rede, servidores ou chamados.</div>
-            </div>
-        </div>
-    </div>
-    <div class="ia-floating-input-wrap">
-        <input type="text" id="iaFloatingInput" placeholder="Pergunte algo..."
-               onkeydown="if(event.key==='Enter')enviarPerguntaRapida()">
-        <button onclick="enviarPerguntaRapida()"><i class="fas fa-paper-plane"></i></button>
-    </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script>
-function toggleFloatingAI() {
-    const panel = document.getElementById('iaFloatingPanel');
-    panel.classList.toggle('open');
-    if (panel.classList.contains('open')) {
-        document.getElementById('iaFloatingInput').focus();
-    }
-}
-
-function floatingAiRender(text) {
-    if (typeof marked !== 'undefined') {
-        try { return marked.parse(text); } catch(e) {}
-    }
-    return escapeHtmlFloat(text).replace(/\n/g, '<br>');
-}
-
-function enviarPerguntaRapida() {
-    const input = document.getElementById('iaFloatingInput');
-    const msg = input.value.trim();
-    if (!msg) return;
-    input.value = '';
-
-    const messagesDiv = document.getElementById('iaFloatingMessages');
-
-    // User message
-    messagesDiv.innerHTML += `
-        <div class="ia-message ia-user" style="max-width:100%;align-self:flex-end">
-            <div class="ia-bubble" style="font-size:13px"><div class="ia-content">${escapeHtmlFloat(msg)}</div></div>
-        </div>`;
-    messagesDiv.innerHTML += `
-        <div class="ia-message ia-assistant" style="max-width:100%" id="floatLoading">
-            <div class="ia-avatar ia-avatar-ai"><i class="fas fa-robot"></i></div>
-            <div class="ia-bubble"><div class="ia-typing-indicator"><span></span><span></span><span></span></div></div>
-        </div>`;
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
-    const baseUrl = document.getElementById('baseUrl').value;
-    const token = document.getElementById('csrfToken').value;
-
-    fetch(baseUrl + '/api/ia.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'pergunta_rapida', pergunta: msg, csrf_token: token })
-    })
-    .then(r => r.json())
-    .then(resp => {
-        const loading = document.getElementById('floatLoading');
-        if (loading) loading.remove();
-
-        const content = resp.success ? resp.data.content : ('Erro: ' + (resp.error || 'IA offline'));
-        messagesDiv.innerHTML += `
-            <div class="ia-message ia-assistant" style="max-width:100%">
-                <div class="ia-avatar ia-avatar-ai"><i class="fas fa-robot"></i></div>
-                <div class="ia-bubble" style="font-size:13px"><div class="ia-content">${floatingAiRender(content)}</div></div>
-            </div>`;
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    })
-    .catch(() => {
-        const loading = document.getElementById('floatLoading');
-        if (loading) loading.remove();
-        messagesDiv.innerHTML += `
-            <div class="ia-message ia-assistant" style="max-width:100%">
-                <div class="ia-avatar ia-avatar-ai"><i class="fas fa-robot"></i></div>
-                <div class="ia-bubble" style="font-size:13px"><div class="ia-content">❌ Erro ao conectar com a IA</div></div>
-            </div>`;
-    });
-}
-
-function escapeHtmlFloat(str) {
-    if (!str) return '';
-    const d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
-}
-</script>
-<?php endif; ?>
+<!-- IA Insights Component -->
+<script src="<?= BASE_URL ?>/assets/js/ia-insights.js"></script>
 
 <!-- CSRF Token -->
 <input type="hidden" id="csrfToken" value="<?= gerarCSRFToken() ?>">

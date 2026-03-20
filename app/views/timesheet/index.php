@@ -11,6 +11,9 @@ $isGestor = in_array($_SESSION['usuario_tipo'], ['admin', 'gestor']);
         <p>Registro e acompanhamento de horas trabalhadas</p>
     </div>
     <div class="page-header-actions">
+        <button class="btn btn-sm ia-insight-btn" onclick="iaInsight('timesheet_productivity')">
+            <i class="fas fa-robot"></i> Produtividade IA
+        </button>
         <button class="btn btn-success" id="tsTimerBtn" onclick="tsToggleTimer()">
             <i class="fas fa-play"></i> Iniciar Timer
         </button>

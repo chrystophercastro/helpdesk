@@ -177,6 +177,112 @@ class NotificacaoInterna {
         ]);
     }
 
+    public function notificarChamadoAtualizado($chamado, $campo, $valorNovo) {
+        // Notificar técnico atribuído (se houver) e admins
+        $destinatarios = [];
+        if (!empty($chamado['tecnico_id'])) {
+            $destinatarios[] = $chamado['tecnico_id'];
+        }
+        $admins = $this->db->fetchAll("SELECT id FROM usuarios WHERE tipo = 'admin' AND ativo = 1");
+        foreach ($admins as $a) {
+            if (!in_array($a['id'], $destinatarios)) {
+                $destinatarios[] = $a['id'];
+            }
+        }
+
+        $labels = [
+            'status' => 'Status', 'prioridade' => 'Prioridade', 'tecnico_id' => 'Técnico',
+            'categoria_id' => 'Categoria', 'titulo' => 'Título', 'descricao' => 'Descrição',
+            'urgencia' => 'Urgência', 'impacto' => 'Impacto'
+        ];
+        $campoLabel = $labels[$campo] ?? $campo;
+        $codigo = $chamado['codigo'] ?? '#' . $chamado['id'];
+
+        // Se é atribuição de técnico, usar método específico
+        if ($campo === 'tecnico_id' && !empty($valorNovo)) {
+            $this->notificarChamadoAtribuido($chamado['id'], (int)$valorNovo, $chamado['titulo'] ?? $codigo);
+            return;
+        }
+
+        $usuarioAtual = $_SESSION['usuario_id'] ?? 0;
+        foreach ($destinatarios as $uid) {
+            if ($uid == $usuarioAtual) continue; // Não notificar quem fez a ação
+            if (!$this->deveNotificar($uid, 'chamado_atualizado')) continue;
+            $this->criar([
+                'usuario_id' => $uid,
+                'tipo' => 'chamado',
+                'titulo' => "$campoLabel atualizado: $codigo",
+                'mensagem' => ucfirst($campoLabel) . ' alterado para: ' . ucfirst($valorNovo),
+                'icone' => 'fa-sync',
+                'link' => '/index.php?page=chamados&action=ver&id=' . $chamado['id'],
+                'referencia_tipo' => 'chamado',
+                'referencia_id' => $chamado['id'],
+            ]);
+        }
+    }
+
+    public function notificarChamadoFechado($chamado) {
+        $destinatarios = [];
+        if (!empty($chamado['tecnico_id'])) {
+            $destinatarios[] = $chamado['tecnico_id'];
+        }
+        $admins = $this->db->fetchAll("SELECT id FROM usuarios WHERE tipo = 'admin' AND ativo = 1");
+        foreach ($admins as $a) {
+            if (!in_array($a['id'], $destinatarios)) {
+                $destinatarios[] = $a['id'];
+            }
+        }
+
+        $codigo = $chamado['codigo'] ?? '#' . $chamado['id'];
+        $usuarioAtual = $_SESSION['usuario_id'] ?? 0;
+        foreach ($destinatarios as $uid) {
+            if ($uid == $usuarioAtual) continue;
+            if (!$this->deveNotificar($uid, 'chamado_fechado')) continue;
+            $this->criar([
+                'usuario_id' => $uid,
+                'tipo' => 'success',
+                'titulo' => "Chamado fechado: $codigo",
+                'mensagem' => $chamado['titulo'] ?? '',
+                'icone' => 'fa-check-circle',
+                'link' => '/index.php?page=chamados&action=ver&id=' . $chamado['id'],
+                'referencia_tipo' => 'chamado',
+                'referencia_id' => $chamado['id'],
+            ]);
+        }
+    }
+
+    public function notificarComentarioChamado($chamado, $autorNome, $tipo = 'comentario') {
+        if ($tipo === 'interno') return; // Não notificar notas internas
+
+        $destinatarios = [];
+        if (!empty($chamado['tecnico_id'])) {
+            $destinatarios[] = $chamado['tecnico_id'];
+        }
+        $admins = $this->db->fetchAll("SELECT id FROM usuarios WHERE tipo = 'admin' AND ativo = 1");
+        foreach ($admins as $a) {
+            if (!in_array($a['id'], $destinatarios)) {
+                $destinatarios[] = $a['id'];
+            }
+        }
+
+        $codigo = $chamado['codigo'] ?? '#' . $chamado['id'];
+        $usuarioAtual = $_SESSION['usuario_id'] ?? 0;
+        foreach ($destinatarios as $uid) {
+            if ($uid == $usuarioAtual) continue;
+            if (!$this->deveNotificar($uid, 'chamado_atualizado')) continue;
+            $this->criar([
+                'usuario_id' => $uid,
+                'tipo' => 'chamado',
+                'titulo' => "Novo comentário: $codigo",
+                'mensagem' => "Por $autorNome",
+                'icone' => 'fa-comment',
+                'link' => '/index.php?page=chamados&action=ver&id=' . $chamado['id'],
+                'referencia_tipo' => 'chamado',
+                'referencia_id' => $chamado['id'],
+            ]);
+        }
+    }
+
     public function notificarSistema($usuarioId, $titulo, $mensagem = '', $link = null) {
         if (!$this->deveNotificar($usuarioId, 'sistema')) return;
         $this->criar([

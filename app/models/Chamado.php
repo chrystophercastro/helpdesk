@@ -18,13 +18,15 @@ class Chamado {
                     u.nome as tecnico_nome,
                     cat.nome as categoria_nome, cat.cor as categoria_cor,
                     sl.nome as sla_nome, sl.tempo_resposta, sl.tempo_resolucao,
-                    inv.nome as ativo_nome, inv.numero_patrimonio
+                    inv.nome as ativo_nome, inv.numero_patrimonio,
+                    dep.nome as departamento_nome, dep.sigla as departamento_sigla, dep.cor as departamento_cor, dep.icone as departamento_icone
              FROM chamados c
              LEFT JOIN solicitantes s ON c.solicitante_id = s.id
              LEFT JOIN usuarios u ON c.tecnico_id = u.id
              LEFT JOIN categorias cat ON c.categoria_id = cat.id
              LEFT JOIN sla sl ON c.sla_id = sl.id
              LEFT JOIN inventario inv ON c.ativo_id = inv.id
+             LEFT JOIN departamentos dep ON c.departamento_id = dep.id
              WHERE c.id = ?", [$id]
         );
     }
@@ -80,6 +82,10 @@ class Chamado {
             $where .= " AND c.telefone_solicitante = ?";
             $params[] = $filtros['telefone'];
         }
+        if (!empty($filtros['departamento_id'])) {
+            $where .= " AND c.departamento_id = ?";
+            $params[] = (int)$filtros['departamento_id'];
+        }
         if (!empty($filtros['busca'])) {
             $where .= " AND (c.titulo LIKE ? OR c.codigo LIKE ? OR c.descricao LIKE ? OR s.nome LIKE ?)";
             $busca = '%' . $filtros['busca'] . '%';
@@ -111,11 +117,13 @@ class Chamado {
         $sql = "SELECT c.*, 
                     s.nome as solicitante_nome,
                     u.nome as tecnico_nome,
-                    cat.nome as categoria_nome, cat.cor as categoria_cor
+                    cat.nome as categoria_nome, cat.cor as categoria_cor,
+                    dep.nome as departamento_nome, dep.sigla as departamento_sigla, dep.cor as departamento_cor
                 FROM chamados c
                 LEFT JOIN solicitantes s ON c.solicitante_id = s.id
                 LEFT JOIN usuarios u ON c.tecnico_id = u.id
                 LEFT JOIN categorias cat ON c.categoria_id = cat.id
+                LEFT JOIN departamentos dep ON c.departamento_id = dep.id
                 WHERE {$where}
                 ORDER BY {$ordem}
                 LIMIT {$limite} OFFSET {$offset}";
@@ -154,6 +162,10 @@ class Chamado {
         if (!empty($filtros['urgencia'])) {
             $where .= " AND urgencia = ?";
             $params[] = $filtros['urgencia'];
+        }
+        if (!empty($filtros['departamento_id'])) {
+            $where .= " AND departamento_id = ?";
+            $params[] = (int)$filtros['departamento_id'];
         }
         if (!empty($filtros['sla_vencido'])) {
             $where .= " AND (sla_resposta_vencido = 1 OR sla_resolucao_vencido = 1)";
@@ -236,42 +248,74 @@ class Chamado {
     }
 
     // Estatísticas
-    public function contarPorStatus() {
-        return $this->db->fetchAll("SELECT status, COUNT(*) as total FROM chamados GROUP BY status");
+    public function contarPorStatus($deptId = null) {
+        $where = "1=1";
+        $params = [];
+        if ($deptId) {
+            $where .= " AND departamento_id = ?";
+            $params[] = (int)$deptId;
+        }
+        return $this->db->fetchAll("SELECT status, COUNT(*) as total FROM chamados WHERE {$where} GROUP BY status", $params);
     }
 
-    public function contarPorCategoria() {
+    public function contarPorCategoria($deptId = null) {
+        $where = "1=1";
+        $params = [];
+        if ($deptId) {
+            $where .= " AND c.departamento_id = ?";
+            $params[] = (int)$deptId;
+        }
         return $this->db->fetchAll(
             "SELECT cat.nome, cat.cor, COUNT(*) as total 
              FROM chamados c 
              LEFT JOIN categorias cat ON c.categoria_id = cat.id 
-             GROUP BY c.categoria_id ORDER BY total DESC"
+             WHERE {$where}
+             GROUP BY c.categoria_id ORDER BY total DESC", $params
         );
     }
 
-    public function contarPorTecnico() {
+    public function contarPorTecnico($deptId = null) {
+        $where = "1=1";
+        $params = [];
+        if ($deptId) {
+            $where .= " AND c.departamento_id = ?";
+            $params[] = (int)$deptId;
+        }
         return $this->db->fetchAll(
             "SELECT u.nome, COUNT(*) as total, 
                     SUM(CASE WHEN c.status = 'resolvido' OR c.status = 'fechado' THEN 1 ELSE 0 END) as resolvidos
              FROM chamados c 
              INNER JOIN usuarios u ON c.tecnico_id = u.id 
-             GROUP BY c.tecnico_id ORDER BY total DESC"
+             WHERE {$where}
+             GROUP BY c.tecnico_id ORDER BY total DESC", $params
         );
     }
 
-    public function tempoMedioResolucao() {
+    public function tempoMedioResolucao($deptId = null) {
+        $where = "data_resolucao IS NOT NULL AND status IN ('resolvido','fechado')";
+        $params = [];
+        if ($deptId) {
+            $where .= " AND departamento_id = ?";
+            $params[] = (int)$deptId;
+        }
         return $this->db->fetch(
             "SELECT AVG(TIMESTAMPDIFF(HOUR, data_abertura, data_resolucao)) as horas
-             FROM chamados WHERE data_resolucao IS NOT NULL AND status IN ('resolvido','fechado')"
+             FROM chamados WHERE {$where}", $params
         );
     }
 
-    public function chamadosPorMes($ano = null) {
+    public function chamadosPorMes($ano = null, $deptId = null) {
         $ano = $ano ?: date('Y');
+        $where = "YEAR(data_abertura) = ?";
+        $params = [$ano];
+        if ($deptId) {
+            $where .= " AND departamento_id = ?";
+            $params[] = (int)$deptId;
+        }
         return $this->db->fetchAll(
             "SELECT MONTH(data_abertura) as mes, COUNT(*) as total 
-             FROM chamados WHERE YEAR(data_abertura) = ? GROUP BY MONTH(data_abertura) ORDER BY mes",
-            [$ano]
+             FROM chamados WHERE {$where} GROUP BY MONTH(data_abertura) ORDER BY mes",
+            $params
         );
     }
 
@@ -284,6 +328,18 @@ class Chamado {
              LEFT JOIN categorias cat ON c.categoria_id = cat.id
              WHERE c.telefone_solicitante = ? AND c.codigo = ?",
             [$telefone, $codigo]
+        );
+    }
+
+    public function buscarPorCodigo($codigo) {
+        return $this->db->fetch(
+            "SELECT c.*, s.nome as solicitante_nome, u.nome as tecnico_nome, cat.nome as categoria_nome
+             FROM chamados c
+             LEFT JOIN solicitantes s ON c.solicitante_id = s.id
+             LEFT JOIN usuarios u ON c.tecnico_id = u.id
+             LEFT JOIN categorias cat ON c.categoria_id = cat.id
+             WHERE c.codigo = ?",
+            [$codigo]
         );
     }
 

@@ -5,17 +5,20 @@
 require_once __DIR__ . '/../models/Chamado.php';
 require_once __DIR__ . '/../models/Solicitante.php';
 require_once __DIR__ . '/../models/Notificacao.php';
+require_once __DIR__ . '/../models/NotificacaoInterna.php';
 require_once __DIR__ . '/../models/Database.php';
 
 class ChamadoController {
     private $chamado;
     private $solicitante;
     private $notificacao;
+    private $notificacaoInterna;
 
     public function __construct() {
         $this->chamado = new Chamado();
         $this->solicitante = new Solicitante();
         $this->notificacao = new Notificacao();
+        $this->notificacaoInterna = new NotificacaoInterna();
     }
 
     public function listar() {
@@ -24,6 +27,7 @@ class ChamadoController {
             'prioridade' => $_GET['prioridade'] ?? '',
             'tecnico_id' => $_GET['tecnico_id'] ?? '',
             'categoria_id' => $_GET['categoria_id'] ?? '',
+            'departamento_id' => $_GET['departamento_id'] ?? '',
             'busca' => $_GET['busca'] ?? '',
             'data_inicio' => $_GET['data_inicio'] ?? '',
             'data_fim' => $_GET['data_fim'] ?? '',
@@ -33,6 +37,12 @@ class ChamadoController {
             'sla_vencido' => $_GET['sla_vencido'] ?? '',
             'ordem' => $_GET['ordem'] ?? 'recentes',
         ];
+
+        // Gestor: forçar filtro do seu departamento
+        $deptFilter = getDeptFilter();
+        if ($deptFilter) {
+            $filtros['departamento_id'] = $deptFilter;
+        }
 
         $porPagina = (int)($_GET['por_pagina'] ?? 25);
         if ($porPagina < 10) $porPagina = 10;
@@ -57,6 +67,12 @@ class ChamadoController {
     public function ver($id) {
         $chamado = $this->chamado->findById($id);
         if (!$chamado) return null;
+
+        // Gestor: só pode ver chamados do seu departamento
+        $deptFilter = getDeptFilter();
+        if ($deptFilter && (int)($chamado['departamento_id'] ?? 0) !== (int)$deptFilter) {
+            return null;
+        }
 
         $chamado['comentarios'] = $this->chamado->getComentarios($id);
         $chamado['historico'] = $this->chamado->getHistorico($id);
@@ -113,10 +129,26 @@ class ChamadoController {
             $sla = $db->fetch("SELECT id FROM sla WHERE prioridade = ? AND ativo = 1 LIMIT 1", [$prioridade]);
         }
 
-        $codigo = gerarCodigoChamado();
+        // Departamento
+        $departamentoId = !empty($dados['departamento_id']) ? (int)$dados['departamento_id'] : null;
+
+        // Se tem categoria mas não tem departamento, herdar do cadastro da categoria
+        if (!$departamentoId && $categoriaId) {
+            $catDept = $db->fetchColumn("SELECT departamento_id FROM categorias WHERE id = ?", [$categoriaId]);
+            if ($catDept) $departamentoId = (int)$catDept;
+        }
+
+        // Buscar sigla do departamento para o código
+        $sigla = 'HD';
+        if ($departamentoId) {
+            $deptSigla = $db->fetchColumn("SELECT sigla FROM departamentos WHERE id = ?", [$departamentoId]);
+            if ($deptSigla) $sigla = $deptSigla;
+        }
+
+        $codigo = gerarCodigoChamado($sigla);
         // Garantir código único
         while ($this->chamado->findByCodigo($codigo)) {
-            $codigo = gerarCodigoChamado();
+            $codigo = gerarCodigoChamado($sigla);
         }
 
         $chamadoData = [
@@ -124,6 +156,7 @@ class ChamadoController {
             'titulo' => sanitizar($dados['titulo']),
             'descricao' => sanitizar($dados['descricao']),
             'categoria_id' => $categoriaId,
+            'departamento_id' => $departamentoId,
             'prioridade' => $prioridade,
             'urgencia' => $urgencia,
             'impacto' => $impacto,
@@ -171,6 +204,12 @@ class ChamadoController {
         $chamadoData['codigo'] = $codigo;
         $this->notificacao->notificarNovoChamado($chamadoData, $solicitanteData);
 
+        // Notificação interna (bell icon)
+        $this->notificacaoInterna->notificarNovoChamado($chamadoData);
+        if (!empty($tecnicoId)) {
+            $this->notificacaoInterna->notificarChamadoAtribuido($id, $tecnicoId, $chamadoData['titulo']);
+        }
+
         return ['success' => true, 'id' => $id, 'codigo' => $codigo];
     }
 
@@ -198,6 +237,9 @@ class ChamadoController {
 
                 $this->chamado->registrarHistorico($id, $usuarioId, $campo, $valorAnterior, $valorNovo);
                 $this->notificacao->notificarAtualizacaoChamado($chamadoAtual, $campo, $valorNovo);
+
+                // Notificação interna (bell icon)
+                $this->notificacaoInterna->notificarChamadoAtualizado($chamadoAtual, $campo, $valorNovo);
             }
         }
 
@@ -216,6 +258,8 @@ class ChamadoController {
             }
             if ($dados['status'] === 'fechado' && $chamadoAtual['status'] !== 'fechado') {
                 $update['data_fechamento'] = date('Y-m-d H:i:s');
+                // Notificação interna de fechamento
+                $this->notificacaoInterna->notificarChamadoFechado($chamadoAtual);
             }
             if (in_array($dados['status'], ['em_analise', 'em_atendimento']) && !$chamadoAtual['data_primeira_resposta']) {
                 $update['data_primeira_resposta'] = date('Y-m-d H:i:s');
@@ -290,6 +334,9 @@ class ChamadoController {
         $tipo = $comentarioData['tipo'] ?? 'comentario';
         $conteudo = $comentarioData['conteudo'] ?? '';
         $this->notificacao->notificarComentarioChamado($chamado, $autorNome, $tipo, $conteudo);
+
+        // Notificação interna (bell icon)
+        $this->notificacaoInterna->notificarComentarioChamado($chamado, $autorNome, $tipo);
 
         return ['success' => true, 'id' => $id];
     }

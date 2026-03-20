@@ -20,9 +20,17 @@ class Sprint {
         );
     }
 
-    public function listar($projetoId = null) {
-        $where = $projetoId ? "WHERE s.projeto_id = ?" : "";
-        $params = $projetoId ? [$projetoId] : [];
+    public function listar($projetoId = null, $deptId = null) {
+        $where = "1=1";
+        $params = [];
+        if ($projetoId) {
+            $where .= " AND s.projeto_id = ?";
+            $params[] = $projetoId;
+        }
+        if ($deptId) {
+            $where .= " AND p.departamento_id = ?";
+            $params[] = $deptId;
+        }
         return $this->db->fetchAll(
             "SELECT s.*, p.nome as projeto_nome,
                     (SELECT COUNT(*) FROM tarefas t WHERE t.sprint_id = s.id) as total_tarefas,
@@ -31,7 +39,7 @@ class Sprint {
                     (SELECT COALESCE(SUM(t.pontos),0) FROM tarefas t WHERE t.sprint_id = s.id AND t.coluna = 'concluido') as pontos_concluidos
              FROM sprints s 
              LEFT JOIN projetos p ON s.projeto_id = p.id 
-             {$where} ORDER BY s.data_inicio DESC", $params
+             WHERE {$where} ORDER BY s.data_inicio DESC", $params
         );
     }
 

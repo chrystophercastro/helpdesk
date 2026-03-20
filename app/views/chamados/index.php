@@ -107,6 +107,23 @@ $ordensDisponiveis = [
             <!-- Linha principal de filtros -->
             <div class="chamados-filters-row">
                 <div class="chamados-filter-item">
+                    <?php if (!isAdmin() && getDeptFilter()): ?>
+                    <select name="departamento_id" class="form-select" disabled style="opacity:0.7">
+                        <?php foreach (($departamentosLista ?? []) as $dep): ?>
+                        <option value="<?= $dep['id'] ?>" selected><?= htmlspecialchars($dep['sigla'] . ' - ' . $dep['nome']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <input type="hidden" name="departamento_id" value="<?= getDeptFilter() ?>">
+                    <?php else: ?>
+                    <select name="departamento_id" class="form-select" onchange="this.form.submit()">
+                        <option value="">Todos Departamentos</option>
+                        <?php foreach (($departamentosLista ?? []) as $dep): ?>
+                        <option value="<?= $dep['id'] ?>" <?= ($filtros['departamento_id'] ?? '') == $dep['id'] ? 'selected' : '' ?>><?= htmlspecialchars($dep['sigla'] . ' - ' . $dep['nome']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <?php endif; ?>
+                </div>
+                <div class="chamados-filter-item">
                     <select name="status" class="form-select" onchange="this.form.submit()">
                         <option value="">Todos os Status</option>
                         <?php foreach ($statusList as $key => $s): ?>
@@ -220,6 +237,10 @@ $ordensDisponiveis = [
         <!-- Filtros ativos (chips) -->
         <?php if ($temFiltros): ?>
         <div class="chamados-active-filters">
+            <?php if (!empty($filtros['departamento_id'])): ?>
+                <?php $depNome = ''; foreach (($departamentosLista ?? []) as $dep) { if ($dep['id'] == $filtros['departamento_id']) { $depNome = $dep['sigla'] . ' - ' . $dep['nome']; break; } } ?>
+                <span class="filter-chip" style="background:#EDE9FE;color:#6366F1"><?= $depNome ?: 'Depto #'.$filtros['departamento_id'] ?> <a href="javascript:void(0)" onclick="removerFiltro('departamento_id')"><i class="fas fa-times"></i></a></span>
+            <?php endif; ?>
             <?php if (!empty($filtros['status'])): ?>
                 <span class="filter-chip"><?= $statusList[$filtros['status']]['label'] ?? $filtros['status'] ?> <a href="javascript:void(0)" onclick="removerFiltro('status')"><i class="fas fa-times"></i></a></span>
             <?php endif; ?>
@@ -282,6 +303,7 @@ $ordensDisponiveis = [
             <thead>
                 <tr>
                     <th>Código</th>
+                    <th>Depto</th>
                     <th>Título</th>
                     <th>Solicitante</th>
                     <th>Categoria</th>
@@ -296,7 +318,7 @@ $ordensDisponiveis = [
             <tbody>
                 <?php if (empty($chamados)): ?>
                 <tr>
-                    <td colspan="10" class="text-center py-4">
+                    <td colspan="11" class="text-center py-4">
                         <div class="empty-state-sm">
                             <i class="fas fa-ticket-alt"></i>
                             <p>Nenhum chamado encontrado</p>
@@ -322,6 +344,15 @@ $ordensDisponiveis = [
                         <span class="code-badge"><?= $c['codigo'] ?></span>
                         <?php if ($slaVencido): ?>
                             <span class="sla-badge-sm" title="SLA vencido"><i class="fas fa-exclamation-triangle"></i></span>
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <?php if (!empty($c['departamento_sigla'])): ?>
+                        <span class="tag" style="background:<?= $c['departamento_cor'] ?? '#6366F1' ?>15;color:<?= $c['departamento_cor'] ?? '#6366F1' ?>;border:1px solid <?= $c['departamento_cor'] ?? '#6366F1' ?>30;font-weight:700;font-size:11px">
+                            <?= htmlspecialchars($c['departamento_sigla']) ?>
+                        </span>
+                        <?php else: ?>
+                        <span class="text-muted">—</span>
                         <?php endif; ?>
                     </td>
                     <td>

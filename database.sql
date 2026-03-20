@@ -1,5 +1,5 @@
--- ============================================================
--- HelpDesk TI - Sistema Completo
+﻿-- ============================================================
+-- Oracle X - Sistema Completo
 -- Banco de Dados MySQL/MariaDB
 -- ============================================================
 
@@ -499,7 +499,7 @@ INSERT INTO `sla` (`nome`, `prioridade`, `tempo_resposta`, `tempo_resolucao`) VA
 
 -- Configurações padrão
 INSERT INTO `configuracoes` (`chave`, `valor`, `descricao`) VALUES
-('empresa_nome', 'HelpDesk TI', 'Nome da empresa'),
+('empresa_nome', 'Oracle X', 'Nome da empresa'),
 ('empresa_logo', '', 'Logo da empresa'),
 ('evolution_api_url', 'http://localhost:8080', 'URL da Evolution API'),
 ('evolution_api_key', '', 'API Key da Evolution API'),
