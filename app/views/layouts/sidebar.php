@@ -89,6 +89,12 @@ function menuActive($page, $current) {
                 <i class="fas fa-robot" style="color:#8B5CF6"></i>
                 <span>Assistente IA</span>
             </a>
+            <?php if (in_array($user['tipo'], ['admin', 'tecnico'])): ?>
+            <a href="<?= BASE_URL ?>/index.php?page=chatbot" class="nav-link <?= menuActive('chatbot', $currentPage) ?>">
+                <i class="fas fa-headset" style="color:#06B6D4"></i>
+                <span>Chatbot</span>
+            </a>
+            <?php endif; ?>
         </div>
 
         <?php if (isTIDept()): ?>

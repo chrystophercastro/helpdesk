@@ -14,6 +14,7 @@ if (!isLoggedIn()) {
 
 require_once __DIR__ . '/../app/models/IA.php';
 require_once __DIR__ . '/../app/models/IAActions.php';
+require_once __DIR__ . '/../app/models/IADev.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 $userId = $_SESSION['usuario_id'];
@@ -115,6 +116,37 @@ try {
                 $systemPrompt = $ia->getConfig($systemPromptKey, $ia->getConfig('system_prompt'));
 
                 // ============================================================
+                // DEV MODE - Override system prompt and model
+                // ============================================================
+                $isDevMode = !empty($data['dev_mode']);
+                $devProjetoId = $data['dev_projeto_id'] ?? null;
+                $devProjeto = null;
+                $devExtraOptions = [];
+
+                if ($isDevMode && $devProjetoId) {
+                    $iaDev = new IADev();
+                    $devProjeto = $iaDev->findProjeto($devProjetoId);
+                    if ($devProjeto) {
+                        $systemPrompt = $iaDev->getDevSystemPrompt($devProjeto);
+                        // Use code model for dev mode (only if it exists on the server)
+                        $devModeloCodigo = trim($ia->getConfig('modelo_codigo', ''));
+                        if ($devModeloCodigo) {
+                            // Validar se o modelo existe antes de usar
+                            $modelsCheck = $ia->checkConnection();
+                            $modelNames = array_column($modelsCheck['models'] ?? [], 'name');
+                            if (in_array($devModeloCodigo, $modelNames)) {
+                                $modeloEscolhido = $devModeloCodigo;
+                            }
+                            // Se não existe, mantém o modelo que o usuário selecionou na conversa
+                        }
+                        $devExtraOptions = [
+                            'num_ctx' => 8192,
+                            'temperature' => 0.3,
+                        ];
+                    }
+                }
+
+                // ============================================================
                 // ROTEAMENTO INTELIGENTE DE MODELOS
                 // ============================================================
                 $needsTools = preg_match('/\b(cri[aeo]|crie|fa[çz]a|gere|list[aeo]|mostr[aeo]|abr[aeiou]|fech[aeo]|atualiz|exclui|delet|edit[aeo]|tarefa|chamado|ticket|projeto|sprint|inventar|compra|conhecimento|rede|ssh|servidor|equipamento|patrimoni|artigo|base de conhecimento|monitor|ping|backup|status|estat[ií]stica)\b/iu', $mensagem);
@@ -126,6 +158,12 @@ try {
                     // "crie/criar/monte/faça/gere/estruture um projeto" = sempre complexo
                     || preg_match('/\b(cri[ae]r?|fa[çz](?:a|er)|gere|mont[ae]r?|estrutur[ae]r?|inici[ae]r?|organiz[ae]r?|planej[ae]r?|quero|preciso)\b.{0,30}\bprojeto\b/iu', $mensagem)
                 );
+
+                // Dev mode: skip tools/complex, use code model with higher limits
+                if ($isDevMode && $devProjeto) {
+                    $needsTools = false;
+                    $isComplex = false;
+                }
 
                 // Modelo para usar
                 $modeloParaUsar = $modeloEscolhido ?: $ia->getConfig('modelo_padrao', 'phi3:mini');
@@ -139,6 +177,11 @@ try {
                 if ($needsTools && !$isComplex) {
                     $systemPrompt .= "\n\n" . IAActions::getToolsPrompt();
                     $maxTokens = max($maxTokens, 1024);
+                }
+
+                // Dev mode: higher token limits for code generation
+                if ($isDevMode && $devProjeto) {
+                    $maxTokens = (stripos($modeloParaUsar, ':cloud') !== false) ? 8192 : 4096;
                 }
 
                 // Helper para flush seguro
@@ -354,7 +397,7 @@ try {
                             if (!empty($chunk['done'])) {
                                 $totalTokens = ($chunk['prompt_eval_count'] ?? 0) + ($chunk['eval_count'] ?? 0);
                             }
-                        }, $modeloParaUsar, ['max_tokens' => $maxTokens]);
+                        }, $modeloParaUsar, array_merge(['max_tokens' => $maxTokens], $devExtraOptions));
 
                         $duracao = round((microtime(true) - $start) * 1000);
 

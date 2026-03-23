@@ -5,6 +5,7 @@
  */
 $user = currentUser();
 ?>
+<link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/ia-dev.css">
 
 <div class="page-header">
     <div class="page-header-left">
@@ -12,6 +13,17 @@ $user = currentUser();
         <p class="page-subtitle">Chat inteligente multi-modelo — Llama 3, Phi-3, Gemma 2, Qwen, DeepSeek, Mistral</p>
     </div>
     <div class="page-header-right">
+        <?php if (in_array($user['tipo'], ['admin', 'tecnico'])): ?>
+        <div class="ia-mode-toggle">
+            <button class="ia-mode-btn active" data-mode="chat" onclick="toggleDevMode(false)">
+                <i class="fas fa-comments"></i> Chat
+            </button>
+            <button class="ia-mode-btn" data-mode="dev" onclick="toggleDevMode(true)">
+                <i class="fas fa-code"></i> Dev
+                <span class="ia-dev-approval-badge" id="iaDevApprovalBadge" style="display:none">0</span>
+            </button>
+        </div>
+        <?php endif; ?>
         <div id="iaStatusBadge" class="ia-status-badge offline">
             <span class="ia-status-dot"></span>
             <span id="iaStatusText">Verificando...</span>
@@ -28,7 +40,7 @@ $user = currentUser();
 </div>
 
 <!-- Layout do Chat -->
-<div class="ia-layout">
+<div class="ia-layout" id="iaLayout">
     <!-- Sidebar: Conversas -->
     <div class="ia-sidebar" id="iaSidebar">
         <div class="ia-sidebar-header">
@@ -140,6 +152,70 @@ $user = currentUser();
             </div>
         </div>
     </div>
+
+    <!-- Dev Panel (hidden by default) -->
+    <?php if (in_array($user['tipo'], ['admin', 'tecnico'])): ?>
+    <div class="ia-dev-panel" id="iaDevPanel" style="display:none">
+        <!-- Panel Header -->
+        <div class="ia-dev-panel-header">
+            <div class="ia-dev-panel-title">
+                <i class="fas fa-code"></i>
+                <span>Dev Mode</span>
+                <span class="ia-dev-version-badge">v2</span>
+            </div>
+        </div>
+
+        <!-- Project Selector -->
+        <div class="ia-dev-project-section">
+            <div class="ia-dev-project-selector">
+                <select id="iaDevProjectSelect" class="ia-dev-project-select" onchange="onDevProjectChange(this)">
+                    <option value="">Carregando projetos...</option>
+                </select>
+                <button class="btn-icon ia-dev-new-btn" onclick="novoProjeto()" title="Novo Projeto">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div id="iaDevProjectInfo" class="ia-dev-project-info" style="display:none"></div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="ia-dev-stats-bar" id="iaDevStatsBar">
+            <div class="ia-dev-stat"><i class="fas fa-spinner fa-spin"></i></div>
+        </div>
+
+        <!-- Safety Lock Indicator -->
+        <div class="ia-dev-safety-bar">
+            <i class="fas fa-shield-alt"></i> Proteção de módulos ativos
+        </div>
+
+        <!-- Tabs -->
+        <div class="ia-dev-tabs">
+            <button class="ia-dev-tab active" data-tab="arquivos" onclick="switchDevTab('arquivos', this)">
+                <i class="fas fa-file-code"></i> Arquivos
+            </button>
+            <button class="ia-dev-tab" data-tab="estrutura" onclick="switchDevTab('estrutura', this)">
+                <i class="fas fa-folder-tree"></i> Estrutura
+            </button>
+            <button class="ia-dev-tab" data-tab="aprovacoes" onclick="switchDevTab('aprovacoes', this)">
+                <i class="fas fa-check-circle"></i> Aprovações
+                <span class="ia-dev-approval-badge tab-badge" id="iaDevApprovalTabBadge" style="display:none">0</span>
+            </button>
+        </div>
+
+        <!-- Tab Panes -->
+        <div class="ia-dev-tab-panes">
+            <div class="ia-dev-tab-pane active" id="iaDevTab_arquivos">
+                <div id="iaDevFileList" class="ia-dev-file-list"></div>
+            </div>
+            <div class="ia-dev-tab-pane" id="iaDevTab_estrutura">
+                <div id="iaDevStructureTree" class="ia-dev-structure-tree"></div>
+            </div>
+            <div class="ia-dev-tab-pane" id="iaDevTab_aprovacoes">
+                <div id="iaDevApprovalList" class="ia-dev-approval-list"></div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -631,14 +707,17 @@ function enviarMensagem() {
         fetch(baseUrl + '/api/ia.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+            body: JSON.stringify(Object.assign({
                 action: 'enviar_stream',
                 mensagem: msg,
                 conversa_id: conversaId || '',
-                contexto: 'geral',
+                contexto: (typeof iaDevMode !== 'undefined' && iaDevMode) ? 'dev' : 'geral',
                 modelo: iaModeloSelecionado || '',
                 csrf_token: token
-            })
+            }, (typeof iaDevMode !== 'undefined' && iaDevMode && iaDevProjeto) ? {
+                dev_mode: true,
+                dev_projeto_id: iaDevProjeto.id
+            } : {}))
         }).then(response => {
             if (!response.ok) throw new Error('HTTP ' + response.status);
 
@@ -842,6 +921,12 @@ function finalizarStream(content, startTime, tokens, duracaoMs) {
         } catch(e) {
             el.innerHTML = escapeHtml(cleanContent).replace(/\n/g, '<br>');
         }
+
+        // Dev Mode: render file cards from stream content
+        if (typeof renderDevFileCards === 'function') {
+            renderDevFileCards(el, content);
+        }
+
         el.removeAttribute('id');
 
         // Marcar painel de execução como completo (se existir)
@@ -1176,3 +1261,8 @@ function escapeHtml(text) {
     return d.innerHTML;
 }
 </script>
+
+<?php if (in_array($user['tipo'], ['admin', 'tecnico'])): ?>
+<script>window.iaDevUserTipo = '<?= $user['tipo'] ?>';</script>
+<script src="<?= BASE_URL ?>/assets/js/ia-dev.js"></script>
+<?php endif; ?>

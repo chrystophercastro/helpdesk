@@ -22,7 +22,7 @@ $validPages = [
     'dashboard', 'chamados', 'projetos', 'kanban', 'sprints', 'posts', 'chat',
     'compras', 'inventario', 'suprimentos', 'senhas', 'rede', 'ssh', 'ia', 'proxmox', 'email', 'ad', 'usuarios', 'base-conhecimento',
     'relatorios', 'configuracoes', 'perfil', 'mikrotik', 'github', 'notificacoes', 'monitor', 'calendario', 'sla', 'contratos', 'cmdb', 'timesheet', 'automacoes', 'atualizacao', 'remoto', 'deploy', 'departamentos',
-    'folha-pagamento', 'financeiro', 'permissoes-modulos'
+    'folha-pagamento', 'financeiro', 'permissoes-modulos', 'chatbot'
 ];
 
 if (!in_array($page, $validPages)) {
@@ -197,6 +197,11 @@ switch ($page) {
 
     case 'chat':
         $pageTitle = 'Chat - Oracle X';
+        break;
+
+    case 'chatbot':
+        requireRole(['admin', 'tecnico']);
+        $pageTitle = 'Chatbot - Oracle X';
         break;
 
     case 'compras':

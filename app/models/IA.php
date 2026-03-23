@@ -202,7 +202,11 @@ class IA {
             throw new \Exception("Erro na conexão com Ollama: {$error}");
         }
         if ($httpCode !== 200 && $httpCode !== 0) {
-            throw new \Exception("Ollama retornou HTTP {$httpCode}");
+            $msg = "Ollama retornou HTTP {$httpCode}";
+            if ($httpCode === 404) {
+                $msg = "Modelo '{$modelo}' não encontrado no Ollama (HTTP 404). Verifique se o modelo está instalado.";
+            }
+            throw new \Exception($msg);
         }
     }
 

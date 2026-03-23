@@ -1,0 +1,61 @@
+## BASE DE DADOS DISPONÍVEL (PGSQL)
+Banco: `dw` | Driver: PGSQL
+Máximo de linhas por consulta: 30000
+
+### Tabelas e Colunas:
+- **atributos**: codigo (character varying), descricao (character varying)
+- **categorias**: codigo (integer), codigopai (character varying), descricao (character varying)
+- **clientes**: status (character varying), situacao (character varying), codigo (character varying), nome (character varying), email (character varying), cpf (character varying), tipopessoa (character varying), estrangeiro (character varying), sexo (character varying), datanascimento (character varying), celular (character varying), endereco (character varying), numero (character varying), complemento (character varying), bairro (character varying), cidade (character varying), estado (character varying), cep (character varying), saldopontos (integer), datacadastro (character varying), dataatualizacao (character varying)
+- **clstrib**: codigo (character varying), descricao (character varying), ncm (character varying), cest (character varying), sittrib (character varying), codenquad (character varying), aliquotadec (character varying), tributacao (character varying)
+- **colecoes**: codigo (character varying), descricao (character varying)
+- **condicao_pagto**: codigo (character varying), descricao (character varying)
+- **departamento**: codigo (character varying), descricao (character varying)
+- **epc**: codigo (character varying), tamanho (character varying), cor (character varying), codigo_rfid (text), sku (text)
+- **estoque**: codigo (character varying), loja (character varying), quantidade (integer)
+- **fornecedores**: codigo (integer), fantansia (character varying), razaoSocial (character varying), CNPJ (character varying)
+- **grade**: codigo (character varying), descricao (character varying), tipo (character varying)
+- **grade_posicao**: NUM_GRADT (character varying), POSICAO (character varying), TAM_GRAT (character varying)
+- **grade_produto**: codigo (character varying), grade (character varying)
+- **grupos**: codigo (character varying), descricao (character varying)
+- **inventario_epc**: epc (text)
+- **keys**: id (integer), user (character varying), pass (character varying), plataforma (character varying)
+- **linhas**: codigo (character varying), descricao (character varying)
+- **lojas**: codigo (character varying), descricao (character varying), cgccnpj (character varying), inscricaoestadual (character varying), razaosocial (character varying), nomefantasia (character varying), email (character varying), endereco (character varying), bairro (character varying), estado (character varying), cidade (character varying), telefone (character varying), celular (character varying), telefonecobranca (character varying), tabelapreco (character varying)
+- **marcas**: codigo (character varying), descricao (character varying)
+- **prodtrib**: codigo (character varying), ncm (character varying), cest (character varying), descricao (character varying), clastrib (character varying)
+- **produto_auxiliar**: codigo (character varying), referencia (character varying), marca (character varying)
+- **produtos**: codigo (text), descricao (text), narrativa (text), departamento (text), grupo (text), subgrupo (text), linha (text), marca (text), colecao (text), unidademedida (text), fornecedor (double precision), reffornecedor (text), composicao (text), ativo (text), observacao (text), datacadastro (timestamp without time zone), altura (double precision), largura (double precision), comprimento (double precision), peso (double precision)
+- **produtos_categorias**: codigo (character varying), codcategoria (integer)
+- **produtos_sku**: status (character varying), codigo (character varying), sku (character varying), codigotamanho (character varying), tamanho (character varying), codigocor (character varying), cor (character varying), descricao (character varying), narrativa (character varying), unidademedida (character varying), composicao (character varying), observacao (character varying), departamento (character varying), grupo (character varying), subgrupo (character varying), linha (character varying), marca (character varying), colecao (character varying), fornecedor (integer), altura (numeric), largura (numeric), comprimento (numeric), peso (numeric)
+- **produtos_tamanho**: codigo (character varying), posicao (character varying), tamanho (character varying)
+- **servicos**: id (integer), nome (character varying), ativo (integer), time (integer), classe (character varying), metodo (character varying)
+- **subgrupos**: codigo (character varying), descricao (character varying)
+- **tabpreco**: codigo (character varying), tabpreco (integer), precocusto (numeric), precovarejo (numeric)
+- **tabpreco_p**: codigo (integer), descricao (character varying)
+- **venda_header**: situacaovenda (character varying), clientecodigo (character varying), clientenome (character varying), clientefantasia (character varying), clienteemail (character varying), cpfcnpj (character varying), clientepessoa (character varying), clientesexo (character varying), clientenascimento (character varying), clientetelefone (character varying), clienteendereco (character varying), clientenumero (character varying), clientecomplemento (character varying), clientebairro (character varying), clientecidade (character varying), clienteestado (character varying), clientecep (character varying), idloja (character varying), datacompra (character varying), codigotransportadora (integer), fantasiatransportadora (character varying), controle (integer), terminal (integer), idcompra (character varying), nomeloja (character varying), nomefantasialoja (character varying), codigovendedor (integer), nomevendedor (character varying), subtotal (numeric), totaldesconto (numeric), totalfrete (numeric), totalseguro (numeric), totaloutrasdespesas (numeric), totalicmsvalorst (numeric), totalfcpvalorst (numeric), totalipi (numeric), total (numeric), fidelidadepontos (numeric), fidelidadevalor (numeric), dataat (character varying), integracaonopedido (character varying), tipoloja (character varying), operacaoproduto (character varying), tiponota (character varying), modelo (character varying), modelodescricao (character varying), quantidadetotalproduto (numeric), numero (numeric)
+- **venda_itens**: situacaovenda (character varying), idcompra (character varying), seriepedido (integer), numeropedido (integer), controleitem (integer), idproduto (character varying), nomeproduto (character varying), quantidadeproduto (integer), precounitario (integer), desconto (integer), acrescimo (integer), frete (integer), seguro (integer), outrasdespesas (integer), icmsvlrst (integer), fcpvalorst (integer), ipivalor (integer), precocusto (integer), precoliquido (integer), transacao (character varying), codigocategoria (character varying), categoriaproduto (character varying), codigosubcategoria (character varying), subcategoriaproduto (character varying), corproduto (character varying), tamanhoproduto (character varying), idloja (character varying), lojanome (character varying), lojafantasia (character varying), datacompra (character varying), controle (integer), terminal (integer), vendedorcontrole (integer), vendedornome (character varying), codigo (character varying), codigolinha (character varying), linhaproduto (character varying), codigocolecao (character varying), colecaoproduto (character varying), codigomarca (integer), marca (character varying), referenciafornecedor (character varying), fidelidadepontos (integer), fidelidadevalor (integer), dataatualizacao (character varying), participafidelidade (character varying), numero (integer)
+
+### Relacionamentos entre Tabelas (JOINs obrigatórios):
+- `produtos_sku.departamento` → `departamento.codigo` (JOIN departamento ON departamento.codigo = produtos_sku.departamento → use departamento.descricao para exibir o nome)
+- `produtos_sku.subgrupo` → `grupos.codigo` (JOIN grupos ON grupos.codigo = produtos_sku.subgrupo → use grupos.descricao para exibir o nome)
+- `produtos_sku.linha` → `linhas.codigo` (JOIN linhas ON linhas.codigo = produtos_sku.linha → use linhas.descricao para exibir o nome)
+
+### REGRAS DE CONSULTA SQL (PGSQL):
+- Quando o usuário fizer uma pergunta que requer dados, gere uma query SQL
+- Envolva a query SQL entre marcadores: ```sql
+SELECT...
+```
+- Use APENAS SELECT (nunca INSERT, UPDATE, DELETE, DROP, ALTER)
+- **SEMPRE use os JOINs definidos acima** para trazer NOMES ao invés de IDs/códigos
+- NUNCA retorne IDs ou códigos numéricos sozinhos. Sempre traga o nome/descrição legível via JOIN
+- Use aliases claros (ex: c.nome AS cliente, p.nome AS produto)
+- Limite os resultados com LIMIT 30000
+- Use aspas duplas (") para nomes com maiúsculas/espaços
+- Strings usam aspas simples (')
+- NÃO explique a query SQL na resposta. NÃO mostre detalhes técnicos ao usuário
+- Após gerar o SQL, AGUARDE os resultados. Diga algo breve antes do SQL como 'Vou consultar!'
+- Se a pergunta não requer dados do banco, responda normalmente sem SQL
+- NUNCA invente dados. Se não encontrar, diga que não há registros
+- NUNCA termine a query SQL com ponto e vírgula (;)
+- Gere queries SIMPLES e EFICIENTES. Use COUNT, SUM, GROUP BY quando apropriado
+- Para perguntas sobre quantidade, use COUNT(*) ou SUM()

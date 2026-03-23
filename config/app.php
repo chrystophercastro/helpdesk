@@ -13,6 +13,14 @@ require_once __DIR__ . '/../app/models/Database.php';
 // Caminhos
 define('BASE_PATH', dirname(__DIR__));
 define('BASE_URL', '/helpdesk');
+
+// URL completa detectada automaticamente (protocolo + domínio + base)
+if (!defined('FULL_BASE_URL')) {
+    $__scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https' : 'http';
+    $__host = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? 'localhost';
+    define('FULL_BASE_URL', $__scheme . '://' . $__host . BASE_URL);
+}
+
 define('UPLOAD_PATH', BASE_PATH . '/uploads');
 define('UPLOAD_URL', BASE_URL . '/uploads');
 define('UPLOAD_MAX_SIZE', 10 * 1024 * 1024); // 10MB
