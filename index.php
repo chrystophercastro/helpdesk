@@ -22,7 +22,7 @@ $validPages = [
     'dashboard', 'chamados', 'projetos', 'kanban', 'sprints', 'posts', 'chat',
     'compras', 'inventario', 'suprimentos', 'senhas', 'rede', 'ssh', 'ia', 'proxmox', 'email', 'ad', 'usuarios', 'base-conhecimento',
     'relatorios', 'configuracoes', 'perfil', 'mikrotik', 'github', 'notificacoes', 'monitor', 'calendario', 'sla', 'contratos', 'cmdb', 'timesheet', 'automacoes', 'atualizacao', 'remoto', 'deploy', 'departamentos',
-    'folha-pagamento', 'financeiro', 'permissoes-modulos', 'chatbot'
+    'folha-pagamento', 'financeiro', 'permissoes-modulos', 'chatbot', 'airflow'
 ];
 
 if (!in_array($page, $validPages)) {
@@ -290,6 +290,11 @@ switch ($page) {
     case 'monitor':
         requireRole(['admin', 'tecnico']);
         $pageTitle = 'Monitor NOC - Oracle X';
+        break;
+
+    case 'airflow':
+        requireRole(['admin', 'tecnico']);
+        $pageTitle = 'Apache Airflow - Oracle X';
         break;
 
     case 'calendario':

@@ -178,6 +178,10 @@ function menuActive($page, $current) {
                 <i class="fas fa-heartbeat" style="color:#EF4444"></i>
                 <span>Monitor NOC</span>
             </a>
+            <a href="<?= BASE_URL ?>/index.php?page=airflow" class="nav-link <?= menuActive('airflow', $currentPage) ?>">
+                <i class="fas fa-wind" style="color:#017CEE"></i>
+                <span>Airflow</span>
+            </a>
             <?php endif; ?>
         </div>
 
