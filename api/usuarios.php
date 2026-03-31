@@ -131,6 +131,15 @@ if ($method === 'POST') {
             jsonResponse(['success' => true]);
             break;
 
+        case 'salvar_tema':
+            $tema = in_array($data['tema'] ?? '', ['light', 'dark']) ? $data['tema'] : 'light';
+            $userId = $_SESSION['usuario_id'];
+            $db = Database::getInstance();
+            $db->update('usuarios', ['tema' => $tema], 'id = ?', [$userId]);
+            $_SESSION['usuario_tema'] = $tema;
+            jsonResponse(['success' => true, 'tema' => $tema]);
+            break;
+
         case 'toggle':
             requireRole(['admin', 'gestor']);
             $id = (int)($data['id'] ?? 0);

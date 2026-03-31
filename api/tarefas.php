@@ -84,6 +84,24 @@ if ($method === 'POST') {
             jsonResponse($result);
             break;
 
+        case 'comentar':
+            $tarefaId = (int)($data['tarefa_id'] ?? 0);
+            $conteudo = trim($data['conteudo'] ?? '');
+            if (!$tarefaId || !$conteudo) {
+                jsonResponse(['error' => 'Tarefa e conteúdo são obrigatórios'], 400);
+            }
+            if ($deptFilter) {
+                require_once __DIR__ . '/../app/models/Tarefa.php';
+                $tModel = new Tarefa();
+                $tarefa = $tModel->findById($tarefaId);
+                if ($tarefa && !verificarAcessoProjeto((int)($tarefa['projeto_id'] ?? 0), $deptFilter)) {
+                    jsonResponse(['error' => 'Acesso negado'], 403);
+                }
+            }
+            $result = $controller->comentar($tarefaId, $conteudo);
+            jsonResponse($result);
+            break;
+
         default:
             jsonResponse(['error' => 'Ação inválida'], 400);
     }
@@ -95,6 +113,10 @@ if ($method === 'POST') {
             require_once __DIR__ . '/../app/models/Tarefa.php';
             $tarefaModel = new Tarefa();
             $tarefa = $tarefaModel->findById($id);
+            if ($tarefa) {
+                $tarefa['comentarios'] = $tarefaModel->getComentarios($id);
+                $tarefa['tags'] = $tarefaModel->getTags($id);
+            }
             jsonResponse($tarefa ?: ['error' => 'Tarefa não encontrada']);
             break;
 

@@ -2,6 +2,93 @@
 </main><!-- /.main-content -->
 </div><!-- /.app-container -->
 
+<!-- ── Sidebar Toggle & Section Collapse ── -->
+<script>
+(function(){
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    // Toggle sidebar collapse (desktop)
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            localStorage.setItem('sidebar_collapsed', sidebar.classList.contains('collapsed') ? '1' : '0');
+        });
+        // Restore state
+        if (localStorage.getItem('sidebar_collapsed') === '1') {
+            sidebar.classList.add('collapsed');
+        }
+    }
+
+    // Section collapse/expand with persistence
+    window.toggleSection = function(btn) {
+        const section = btn.closest('.nav-section');
+        section.classList.toggle('open');
+        // Save state
+        const states = JSON.parse(localStorage.getItem('sidebar_sections') || '{}');
+        const key = section.getAttribute('data-section');
+        states[key] = section.classList.contains('open');
+        localStorage.setItem('sidebar_sections', JSON.stringify(states));
+    };
+
+    // Restore section states
+    (function restoreSections() {
+        const states = JSON.parse(localStorage.getItem('sidebar_sections') || '{}');
+        document.querySelectorAll('.nav-section').forEach(section => {
+            const key = section.getAttribute('data-section');
+            if (key && states.hasOwnProperty(key)) {
+                if (states[key]) section.classList.add('open');
+                else section.classList.remove('open');
+            }
+        });
+    })();
+
+    // Mobile sidebar
+    window.openMobileSidebar = function() {
+        sidebar.classList.add('mobile-open');
+        if (overlay) overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    };
+    window.closeMobileSidebar = function() {
+        sidebar.classList.remove('mobile-open');
+        if (overlay) overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    };
+
+    // Close mobile sidebar on nav-link click
+    document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 768) closeMobileSidebar();
+        });
+    });
+
+    // User dropdown
+    const userBtn = document.getElementById('userMenuBtn');
+    const userDrop = document.getElementById('userDropdown');
+    if (userBtn && userDrop) {
+        userBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userDrop.classList.toggle('active');
+        });
+        document.addEventListener('click', function(e) {
+            if (!userBtn.contains(e.target) && !userDrop.contains(e.target)) {
+                userDrop.classList.remove('active');
+            }
+        });
+    }
+
+    // Keyboard shortcut: Ctrl+K or Cmd+K to focus search
+    document.addEventListener('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            const searchInput = document.getElementById('globalSearch');
+            if (searchInput) searchInput.focus();
+        }
+    });
+})();
+</script>
+
 <!-- Notification System Script -->
 <script>
 (function() {

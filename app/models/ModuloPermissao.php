@@ -124,24 +124,198 @@ class ModuloPermissao {
     }
 
     /**
-     * Módulos disponíveis
+     * Módulos disponíveis — completo
+     * Grupos: core (sem gate), ia, operacoes, ferramentas, financeiro, gestao, admin
      */
     public static function getModulosDisponiveis() {
         return [
+            // ── Inteligência Artificial ──
+            'chatbot' => [
+                'nome' => 'Chatbot',
+                'descricao' => 'Chatbot com IA para atendimento',
+                'icone' => 'fa-headset',
+                'cor' => '#06B6D4',
+                'grupo' => 'ia'
+            ],
+            // ── Operações TI ──
+            'compras' => [
+                'nome' => 'Compras',
+                'descricao' => 'Requisições de compras de TI',
+                'icone' => 'fa-shopping-cart',
+                'cor' => '#F59E0B',
+                'grupo' => 'operacoes'
+            ],
+            'inventario' => [
+                'nome' => 'Inventário',
+                'descricao' => 'Gestão de ativos e patrimônio',
+                'icone' => 'fa-boxes',
+                'cor' => '#8B5CF6',
+                'grupo' => 'operacoes'
+            ],
+            'suprimentos' => [
+                'nome' => 'Suprimentos',
+                'descricao' => 'Controle de suprimentos de TI',
+                'icone' => 'fa-warehouse',
+                'cor' => '#8B5CF6',
+                'grupo' => 'operacoes'
+            ],
+            // ── Ferramentas ──
+            'remoto' => [
+                'nome' => 'Acesso Remoto',
+                'descricao' => 'Controle remoto de desktops',
+                'icone' => 'fa-desktop',
+                'cor' => '#3B82F6',
+                'grupo' => 'ferramentas'
+            ],
+            'senhas' => [
+                'nome' => 'Cofre de Senhas',
+                'descricao' => 'Gerenciamento seguro de credenciais',
+                'icone' => 'fa-key',
+                'cor' => '#EF4444',
+                'grupo' => 'ferramentas'
+            ],
+            'rede' => [
+                'nome' => 'Gestão de Rede',
+                'descricao' => 'Dispositivos e topologia de rede',
+                'icone' => 'fa-server',
+                'cor' => '#3B82F6',
+                'grupo' => 'ferramentas'
+            ],
+            'ssh' => [
+                'nome' => 'Terminal SSH',
+                'descricao' => 'Acesso SSH a servidores',
+                'icone' => 'fa-terminal',
+                'cor' => '#10B981',
+                'grupo' => 'ferramentas'
+            ],
+            'proxmox' => [
+                'nome' => 'Proxmox VE',
+                'descricao' => 'Gerenciamento de virtualização',
+                'icone' => 'fa-cloud',
+                'cor' => '#E97521',
+                'grupo' => 'ferramentas'
+            ],
+            'mikrotik' => [
+                'nome' => 'MikroTik',
+                'descricao' => 'Gestão de roteadores MikroTik',
+                'icone' => 'fa-network-wired',
+                'cor' => '#D6336C',
+                'grupo' => 'ferramentas'
+            ],
+            'github' => [
+                'nome' => 'GitHub',
+                'descricao' => 'Repositórios e CI/CD',
+                'icone' => 'fab fa-github',
+                'cor' => '#6E40C9',
+                'grupo' => 'ferramentas'
+            ],
+            'cmdb' => [
+                'nome' => 'CMDB',
+                'descricao' => 'Base de dados de configuração',
+                'icone' => 'fa-sitemap',
+                'cor' => '#06B6D4',
+                'grupo' => 'ferramentas'
+            ],
+            'monitor' => [
+                'nome' => 'Monitor NOC',
+                'descricao' => 'Monitoramento de infraestrutura',
+                'icone' => 'fa-heartbeat',
+                'cor' => '#EF4444',
+                'grupo' => 'ferramentas'
+            ],
+            'airflow' => [
+                'nome' => 'Airflow',
+                'descricao' => 'Orquestração de workflows',
+                'icone' => 'fa-wind',
+                'cor' => '#017CEE',
+                'grupo' => 'ferramentas'
+            ],
+            // ── Financeiro / RH ──
             'folha_pagamento' => [
                 'nome' => 'Folha de Pagamento',
                 'descricao' => 'Gestão de colaboradores e folha (CLT/PJ)',
                 'icone' => 'fa-money-check-alt',
                 'cor' => '#10B981',
-                'departamento' => 'RH'
+                'grupo' => 'financeiro'
             ],
             'financeiro' => [
                 'nome' => 'Financeiro',
                 'descricao' => 'Notas fiscais, boletos, contas a pagar, SEFAZ',
                 'icone' => 'fa-file-invoice-dollar',
                 'cor' => '#F59E0B',
-                'departamento' => 'FIN'
-            ]
+                'grupo' => 'financeiro'
+            ],
+            // ── Gestão / Admin ──
+            'sla' => [
+                'nome' => 'SLA Dashboard',
+                'descricao' => 'Gestão de acordos de nível de serviço',
+                'icone' => 'fa-tachometer-alt',
+                'cor' => '#F59E0B',
+                'grupo' => 'gestao'
+            ],
+            'contratos' => [
+                'nome' => 'Contratos',
+                'descricao' => 'Gestão de contratos e fornecedores',
+                'icone' => 'fa-file-contract',
+                'cor' => '#8B5CF6',
+                'grupo' => 'gestao'
+            ],
+            'automacoes' => [
+                'nome' => 'Automações',
+                'descricao' => 'Regras e automações do sistema',
+                'icone' => 'fa-robot',
+                'cor' => '#10B981',
+                'grupo' => 'gestao'
+            ],
+            'usuarios' => [
+                'nome' => 'Usuários',
+                'descricao' => 'Gestão de usuários do sistema',
+                'icone' => 'fa-users-cog',
+                'cor' => '#3B82F6',
+                'grupo' => 'admin'
+            ],
+            'relatorios' => [
+                'nome' => 'Relatórios',
+                'descricao' => 'Relatórios gerenciais',
+                'icone' => 'fa-chart-bar',
+                'cor' => '#8B5CF6',
+                'grupo' => 'gestao'
+            ],
+            'departamentos' => [
+                'nome' => 'Departamentos',
+                'descricao' => 'Gestão de departamentos',
+                'icone' => 'fa-building',
+                'cor' => '#6366F1',
+                'grupo' => 'admin'
+            ],
+            'ad' => [
+                'nome' => 'Active Directory',
+                'descricao' => 'Integração com AD/LDAP',
+                'icone' => 'fa-network-wired',
+                'cor' => '#3B82F6',
+                'grupo' => 'admin'
+            ],
+            'configuracoes' => [
+                'nome' => 'Configurações',
+                'descricao' => 'Configurações gerais do sistema',
+                'icone' => 'fa-cog',
+                'cor' => '#64748B',
+                'grupo' => 'admin'
+            ],
+            'atualizacao' => [
+                'nome' => 'Atualização',
+                'descricao' => 'Atualização do sistema',
+                'icone' => 'fa-cloud-upload-alt',
+                'cor' => '#F59E0B',
+                'grupo' => 'admin'
+            ],
+            'deploy' => [
+                'nome' => 'Deploy',
+                'descricao' => 'Deploy em ambiente de produção',
+                'icone' => 'fa-rocket',
+                'cor' => '#6366F1',
+                'grupo' => 'admin'
+            ],
         ];
     }
 }

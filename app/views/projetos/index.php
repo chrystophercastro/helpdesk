@@ -13,9 +13,11 @@ $totalProjetos = count($projetos);
 $projetosAtivos = 0;
 $projetosConcluidos = 0;
 $projetosAtrasados = 0;
+$projetosCancelados = 0;
 foreach ($projetos as $p) {
-    if (in_array($p['status'], ['em_desenvolvimento', 'em_testes'])) $projetosAtivos++;
+    if (in_array($p['status'], ['em_desenvolvimento', 'em_testes', 'planejamento'])) $projetosAtivos++;
     if ($p['status'] === 'concluido') $projetosConcluidos++;
+    if ($p['status'] === 'cancelado') $projetosCancelados++;
     if ($p['prazo'] && strtotime($p['prazo']) < time() && !in_array($p['status'], ['concluido', 'cancelado'])) $projetosAtrasados++;
 }
 ?>
@@ -38,6 +40,23 @@ foreach ($projetos as $p) {
         <div class="proj-summary-icon" style="background: #fee2e2; color: #dc2626;"><i class="fas fa-exclamation-triangle"></i></div>
         <div class="proj-summary-info"><span class="proj-summary-value"><?= $projetosAtrasados ?></span><span class="proj-summary-label">Atrasados</span></div>
     </div>
+    <div class="proj-summary-card">
+        <div class="proj-summary-icon" style="background: #f1f5f9; color: #64748b;"><i class="fas fa-ban"></i></div>
+        <div class="proj-summary-info"><span class="proj-summary-value"><?= $projetosCancelados ?></span><span class="proj-summary-label">Cancelados</span></div>
+    </div>
+</div>
+
+<!-- Tabs: Ativos / Concluídos / Cancelados -->
+<div class="proj-tabs">
+    <button class="proj-tab active" data-tab="ativos" onclick="projSwitchTab('ativos')">
+        <i class="fas fa-rocket"></i> Ativos <span class="proj-tab-count"><?= $projetosAtivos ?></span>
+    </button>
+    <button class="proj-tab" data-tab="concluidos" onclick="projSwitchTab('concluidos')">
+        <i class="fas fa-check-circle"></i> Concluídos <span class="proj-tab-count"><?= $projetosConcluidos ?></span>
+    </button>
+    <button class="proj-tab" data-tab="cancelados" onclick="projSwitchTab('cancelados')">
+        <i class="fas fa-ban"></i> Cancelados <span class="proj-tab-count"><?= $projetosCancelados ?></span>
+    </button>
 </div>
 
 <!-- Filtros -->
@@ -93,10 +112,15 @@ foreach ($projetos as $p) {
         $atrasado = ($p['prazo'] && strtotime($p['prazo']) < time() && !in_array($p['status'], ['concluido', 'cancelado']));
         $progresso = (int)($p['progresso'] ?? 0);
         $progressClass = $progresso >= 80 ? 'proj-prog-high' : ($progresso >= 40 ? 'proj-prog-mid' : 'proj-prog-low');
+        // Tab group
+        $tabGroup = 'ativos';
+        if ($p['status'] === 'concluido') $tabGroup = 'concluidos';
+        elseif ($p['status'] === 'cancelado') $tabGroup = 'cancelados';
     ?>
     <div class="proj-card <?= $atrasado ? 'proj-card-late' : '' ?>"
          data-status="<?= $p['status'] ?>" data-prioridade="<?= $p['prioridade'] ?>"
          data-nome="<?= htmlspecialchars(strtolower($p['nome']), ENT_QUOTES, 'UTF-8', false) ?>"
+         data-tab-group="<?= $tabGroup ?>"
          onclick="window.location='<?= BASE_URL ?>/index.php?page=projetos&action=ver&id=<?= $p['id'] ?>'">
 
         <div class="proj-card-top">
@@ -147,12 +171,75 @@ foreach ($projetos as $p) {
 
 <script>
 HelpDesk.modals = HelpDesk.modals || {};
-HelpDesk.modals.novoProjeto = function() {
-    let tecOpts = '<option value="">Selecione</option>';
-    <?php foreach ($tecnicos as $t): ?>
-    tecOpts += '<option value="<?= $t['id'] ?>"><?= addslashes($t['nome']) ?></option>';
-    <?php endforeach; ?>
 
+// Build TECNICOS for user picker on index page
+const TECNICOS_INDEX = [
+    <?php foreach ($tecnicos as $t): ?>
+    {id:<?= $t['id'] ?>, nome:'<?= addslashes($t['nome']) ?>', email:'<?= addslashes($t['email'] ?? '') ?>'},
+    <?php endforeach; ?>
+];
+
+// Global User Picker (shared)
+if (typeof UserPicker === 'undefined') {
+    var UserPicker = {
+        _overlay: null, _callback: null, _currentValue: null, _users: [],
+        open(users, currentValue, callback) {
+            this._users = users || TECNICOS_INDEX;
+            this._callback = callback;
+            this._currentValue = String(currentValue || '');
+            this._render();
+        },
+        _render() {
+            let ov = document.getElementById('userPickerOverlay');
+            if (ov) ov.remove();
+            ov = document.createElement('div');
+            ov.id = 'userPickerOverlay';
+            ov.className = 'user-picker-overlay';
+            document.body.appendChild(ov);
+            const self = this;
+            ov.onclick = (e) => { if (e.target === ov) self.close(); };
+            let listHtml = '';
+            this._users.forEach(u => {
+                const sel = String(u.id) === self._currentValue ? 'selected' : '';
+                const initials = (u.nome || '?').substring(0,2).toUpperCase();
+                listHtml += `<div class="user-picker-item ${sel}" data-id="${u.id}" data-nome="${(u.nome||'').replace(/"/g,'&quot;')}" data-search="${(u.nome||'').toLowerCase()} ${(u.email||'').toLowerCase()}">
+                    <div class="user-picker-avatar">${initials}</div>
+                    <div class="user-picker-info"><div class="user-picker-name">${u.nome||'—'}</div>${u.email ? '<div class="user-picker-email">'+u.email+'</div>' : ''}</div>
+                    <div class="user-picker-check"><i class="fas fa-check"></i></div>
+                </div>`;
+            });
+            ov.innerHTML = `<div class="user-picker-modal">
+                <div class="user-picker-search"><input type="text" id="userPickerSearch" placeholder="Buscar usuário..." autocomplete="off"></div>
+                <div class="user-picker-list" id="userPickerList">
+                    <div class="user-picker-none" data-id="" data-nome=""><i class="fas fa-user-slash"></i> Sem responsável</div>
+                    ${listHtml}
+                </div>
+            </div>`;
+            requestAnimationFrame(() => ov.classList.add('open'));
+            setTimeout(() => document.getElementById('userPickerSearch')?.focus(), 100);
+            document.getElementById('userPickerSearch').addEventListener('input', function() {
+                const q = this.value.toLowerCase();
+                document.querySelectorAll('#userPickerList .user-picker-item').forEach(item => {
+                    item.style.display = (!q || item.dataset.search.includes(q)) ? '' : 'none';
+                });
+            });
+            document.querySelectorAll('#userPickerList .user-picker-item, #userPickerList .user-picker-none').forEach(item => {
+                item.addEventListener('click', () => {
+                    if (self._callback) self._callback(item.dataset.id || '', item.dataset.nome || '');
+                    self.close();
+                });
+            });
+            ov._keyHandler = (e) => { if (e.key === 'Escape') self.close(); };
+            document.addEventListener('keydown', ov._keyHandler);
+        },
+        close() {
+            const ov = document.getElementById('userPickerOverlay');
+            if (ov) { document.removeEventListener('keydown', ov._keyHandler); ov.classList.remove('open'); setTimeout(() => ov.remove(), 250); }
+        }
+    };
+}
+
+HelpDesk.modals.novoProjeto = function() {
     const html = `
     <form id="formNovoProjeto" class="form-grid">
         <div class="form-group col-span-2">
@@ -165,7 +252,12 @@ HelpDesk.modals.novoProjeto = function() {
         </div>
         <div class="form-group">
             <label class="form-label">Responsável</label>
-            <select name="responsavel_id" class="form-select">${tecOpts}</select>
+            <input type="hidden" name="responsavel_id" id="novoProjetoResponsavelId" value="">
+            <div class="nt-user-pick" id="novoProjetoResponsavelBtn" style="padding:8px 12px; border:1px solid var(--gray-200); border-radius:var(--radius); cursor:pointer;"
+                 onclick="UserPicker.open(TECNICOS_INDEX, document.getElementById('novoProjetoResponsavelId').value, function(id,nome){ document.getElementById('novoProjetoResponsavelId').value=id; var btn=document.getElementById('novoProjetoResponsavelBtn'); btn.querySelector('.nt-user-name').textContent=nome||'Selecione...'; var av=btn.querySelector('.nt-user-avatar-sm'); av.innerHTML=nome?nome.substring(0,2).toUpperCase():'<i class=\\'fas fa-user-plus\\' style=\\'font-size:10px\\'></i>'; })">
+                <span class="nt-user-avatar-sm"><i class="fas fa-user-plus" style="font-size:10px"></i></span>
+                <span class="nt-user-name">Selecione...</span>
+            </div>
         </div>
         <div class="form-group">
             <label class="form-label">Prioridade</label>
@@ -207,18 +299,49 @@ function submitNovoProjeto() {
         });
 }
 
-// Filtro JS client-side
+// ===== TABS: Ativos / Concluídos / Cancelados =====
+let currentProjTab = 'ativos';
+function projSwitchTab(tab) {
+    currentProjTab = tab;
+    document.querySelectorAll('.proj-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+    filtrarProjetos();
+}
+
+// Filtro JS client-side (with tabs)
 function filtrarProjetos() {
     const status = document.getElementById('projStatusFilter').value.toLowerCase();
     const prioridade = document.getElementById('projPrioridadeFilter').value.toLowerCase();
     const busca = document.getElementById('projBuscaInput').value.toLowerCase();
+    let count = 0;
     document.querySelectorAll('.proj-card').forEach(card => {
+        const matchTab = card.dataset.tabGroup === currentProjTab;
         const matchStatus = !status || card.dataset.status === status;
         const matchPri = !prioridade || card.dataset.prioridade === prioridade;
         const matchBusca = !busca || card.dataset.nome.includes(busca);
-        card.style.display = (matchStatus && matchPri && matchBusca) ? '' : 'none';
+        const show = matchTab && matchStatus && matchPri && matchBusca;
+        card.style.display = show ? '' : 'none';
+        if (show) count++;
     });
+    // Show empty state
+    let empty = document.getElementById('projTabEmpty');
+    if (count === 0) {
+        if (!empty) {
+            empty = document.createElement('div');
+            empty.id = 'projTabEmpty';
+            empty.className = 'empty-state';
+            const grid = document.querySelector('.proj-grid');
+            if (grid) grid.parentNode.insertBefore(empty, grid.nextSibling);
+        }
+        const labels = {ativos:'ativos',concluidos:'concluídos',cancelados:'cancelados'};
+        empty.innerHTML = `<i class="fas fa-folder-open"></i><h3>Nenhum projeto ${labels[currentProjTab]}</h3><p>Não há projetos nesta categoria.</p>`;
+        empty.style.display = '';
+    } else if (empty) {
+        empty.style.display = 'none';
+    }
 }
+
+// Apply initial tab filter on load
+document.addEventListener('DOMContentLoaded', () => filtrarProjetos());
 
 document.getElementById('projBuscaInput')?.addEventListener('input', filtrarProjetos);
 </script>

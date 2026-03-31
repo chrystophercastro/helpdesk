@@ -41,12 +41,16 @@ if (!isAdmin()) {
 .perm-search:focus{outline:none;border-color:var(--primary)}
 .perm-count{font-size:12px;color:var(--gray-400);margin-bottom:8px}
 
-@media(max-width:768px){.perm-modules{grid-template-columns:1fr}}
+.perm-grupo{margin-bottom:32px}
+.perm-grupo-title{font-size:18px;font-weight:700;color:var(--text-primary,#1E293B);margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--border,#E2E8F0)}
+.perm-grupo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:20px}
+
+@media(max-width:768px){.perm-modules{grid-template-columns:1fr}.perm-grupo-grid{grid-template-columns:1fr}}
 </style>
 
 <div class="perm-header">
     <h1><i class="fas fa-shield-alt"></i> Permissões de Módulos</h1>
-    <p>Gerencie o acesso individual dos usuários aos módulos Financeiro e Folha de Pagamento</p>
+    <p>Gerencie o acesso individual dos usuários a cada módulo do sistema. Admin sempre tem acesso total.</p>
 </div>
 
 <div class="perm-modules" id="permModules">
@@ -63,9 +67,34 @@ function showToast(msg, type = 'info') {
     }
 }
 
+// Full module metadata – matches ModuloPermissao::getModulosDisponiveis()
 const moduloMeta = {
-    folha_pagamento: { nome: 'Folha de Pagamento', icone: 'fas fa-money-check-alt', cor: '#10B981', desc: 'Gestão de folha de pagamento (RH)' },
-    financeiro: { nome: 'Financeiro', icone: 'fas fa-file-invoice-dollar', cor: '#F59E0B', desc: 'Notas Fiscais, Contas a Pagar, SEFAZ' }
+    chatbot:          { nome: 'Chatbot',             icone: 'fas fa-headset',            cor: '#06B6D4',  grupo: 'Inteligência Artificial' },
+    compras:          { nome: 'Compras',             icone: 'fas fa-shopping-cart',       cor: '#F59E0B',  grupo: 'Operações TI' },
+    inventario:       { nome: 'Inventário',          icone: 'fas fa-boxes',               cor: '#8B5CF6',  grupo: 'Operações TI' },
+    suprimentos:      { nome: 'Suprimentos',         icone: 'fas fa-warehouse',           cor: '#8B5CF6',  grupo: 'Operações TI' },
+    remoto:           { nome: 'Acesso Remoto',       icone: 'fas fa-desktop',             cor: '#3B82F6',  grupo: 'Ferramentas' },
+    senhas:           { nome: 'Cofre de Senhas',     icone: 'fas fa-key',                 cor: '#EF4444',  grupo: 'Ferramentas' },
+    rede:             { nome: 'Gestão de Rede',      icone: 'fas fa-server',              cor: '#3B82F6',  grupo: 'Ferramentas' },
+    ssh:              { nome: 'Terminal SSH',         icone: 'fas fa-terminal',            cor: '#10B981',  grupo: 'Ferramentas' },
+    proxmox:          { nome: 'Proxmox VE',          icone: 'fas fa-cloud',               cor: '#E97521',  grupo: 'Ferramentas' },
+    mikrotik:         { nome: 'MikroTik',            icone: 'fas fa-network-wired',       cor: '#D6336C',  grupo: 'Ferramentas' },
+    github:           { nome: 'GitHub',              icone: 'fab fa-github',              cor: '#6E40C9',  grupo: 'Ferramentas' },
+    cmdb:             { nome: 'CMDB',                icone: 'fas fa-sitemap',             cor: '#06B6D4',  grupo: 'Ferramentas' },
+    monitor:          { nome: 'Monitor NOC',         icone: 'fas fa-heartbeat',           cor: '#EF4444',  grupo: 'Ferramentas' },
+    airflow:          { nome: 'Airflow',             icone: 'fas fa-wind',                cor: '#017CEE',  grupo: 'Ferramentas' },
+    folha_pagamento:  { nome: 'Folha de Pagamento',  icone: 'fas fa-money-check-alt',     cor: '#10B981',  grupo: 'Financeiro / RH' },
+    financeiro:       { nome: 'Financeiro',          icone: 'fas fa-file-invoice-dollar',  cor: '#F59E0B',  grupo: 'Financeiro / RH' },
+    sla:              { nome: 'SLA Dashboard',       icone: 'fas fa-tachometer-alt',       cor: '#F59E0B',  grupo: 'Gestão' },
+    contratos:        { nome: 'Contratos',           icone: 'fas fa-file-contract',        cor: '#8B5CF6',  grupo: 'Gestão' },
+    automacoes:       { nome: 'Automações',          icone: 'fas fa-robot',                cor: '#10B981',  grupo: 'Gestão' },
+    usuarios:         { nome: 'Usuários',            icone: 'fas fa-users-cog',            cor: '#3B82F6',  grupo: 'Administração' },
+    relatorios:       { nome: 'Relatórios',          icone: 'fas fa-chart-bar',            cor: '#8B5CF6',  grupo: 'Gestão' },
+    departamentos:    { nome: 'Departamentos',       icone: 'fas fa-building',             cor: '#6366F1',  grupo: 'Administração' },
+    ad:               { nome: 'Active Directory',    icone: 'fas fa-network-wired',        cor: '#3B82F6',  grupo: 'Administração' },
+    configuracoes:    { nome: 'Configurações',       icone: 'fas fa-cog',                  cor: '#64748B',  grupo: 'Administração' },
+    atualizacao:      { nome: 'Atualização',         icone: 'fas fa-cloud-upload-alt',     cor: '#F59E0B',  grupo: 'Administração' },
+    deploy:           { nome: 'Deploy',              icone: 'fas fa-rocket',               cor: '#6366F1',  grupo: 'Administração' }
 };
 
 async function permCarregar() {
@@ -76,17 +105,28 @@ async function permCarregar() {
         if (!jm.success) return;
         const modulos = Object.keys(jm.data);
 
-        let html = '';
+        // Group modules by grupo
+        const grupos = {};
         for (const modulo of modulos) {
-            const meta = moduloMeta[modulo] || { nome: modulo, icone: 'fas fa-puzzle-piece', cor: '#6B7280', desc: '' };
-            const ru = await fetch(PERM_API + '?action=listar_usuarios&modulo=' + modulo);
-            const ju = await ru.json();
-            const usuarios = ju.data || [];
+            const meta = moduloMeta[modulo] || { nome: modulo, icone: 'fas fa-puzzle-piece', cor: '#6B7280', grupo: 'Outros' };
+            const grupo = meta.grupo || 'Outros';
+            if (!grupos[grupo]) grupos[grupo] = [];
+            grupos[grupo].push(modulo);
+        }
+
+        let html = '';
+        for (const [grupo, mods] of Object.entries(grupos)) {
+            html += `<div class="perm-grupo"><h2 class="perm-grupo-title">${grupo}</h2><div class="perm-grupo-grid">`;
+            for (const modulo of mods) {
+                const meta = moduloMeta[modulo] || { nome: modulo, icone: 'fas fa-puzzle-piece', cor: '#6B7280' };
+                const ru = await fetch(PERM_API + '?action=listar_usuarios&modulo=' + modulo);
+                const ju = await ru.json();
+                const usuarios = ju.data || [];
 
             const usersHtml = usuarios.map(u => {
                 const initials = (u.nome || 'XX').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
-                const temAcesso = !!u.nivel_acesso;
-                const nivel = u.nivel_acesso || 'leitura';
+                const temAcesso = !!u.acesso;
+                const nivel = u.acesso || 'leitura';
                 const isAdmin = u.tipo === 'admin';
 
                 return `<div class="perm-user-row" data-nome="${(u.nome || '').toLowerCase()}">
@@ -111,22 +151,23 @@ async function permCarregar() {
                 </div>`;
             }).join('');
 
-            const ativos = usuarios.filter(u => u.nivel_acesso).length;
+            const ativos = usuarios.filter(u => u.acesso).length;
 
             html += `<div class="perm-module-card">
                 <div class="perm-module-header">
                     <div class="perm-module-icon" style="background:${meta.cor}"><i class="${meta.icone}"></i></div>
                     <div class="perm-module-info">
                         <h3>${meta.nome}</h3>
-                        <p>${meta.desc}</p>
+                        <p>${ativos} de ${usuarios.length} com acesso</p>
                     </div>
                 </div>
                 <div class="perm-module-body">
                     <input type="text" class="perm-search" placeholder="Filtrar usuários..." oninput="permFiltrar(this)">
-                    <div class="perm-count">${ativos} de ${usuarios.length} usuários com acesso</div>
                     ${usersHtml}
                 </div>
             </div>`;
+            }
+            html += '</div></div>'; // close perm-grupo-grid + perm-grupo
         }
 
         container.innerHTML = html;

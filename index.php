@@ -11,6 +11,7 @@ if (!file_exists(__DIR__ . '/config/.installed')) {
 }
 
 require_once __DIR__ . '/config/app.php';
+require_once __DIR__ . '/app/models/ModuloPermissao.php';
 
 requireLogin();
 
@@ -200,12 +201,12 @@ switch ($page) {
         break;
 
     case 'chatbot':
-        requireRole(['admin', 'tecnico']);
+        requireModulo('chatbot');
         $pageTitle = 'Chatbot - Oracle X';
         break;
 
     case 'compras':
-        if (!isTIDept()) { setFlash('danger', 'Acesso restrito ao departamento de TI.'); header('Location: ' . BASE_URL . '/index.php?page=dashboard'); exit; }
+        requireModulo('compras');
         require_once __DIR__ . '/app/controllers/CompraController.php';
         $controller = new CompraController();
         if ($action === 'ver' && isset($_GET['id'])) {
@@ -218,7 +219,7 @@ switch ($page) {
         break;
 
     case 'inventario':
-        if (!isTIDept()) { setFlash('danger', 'Acesso restrito ao departamento de TI.'); header('Location: ' . BASE_URL . '/index.php?page=dashboard'); exit; }
+        requireModulo('inventario');
         require_once __DIR__ . '/app/models/Inventario.php';
         $inventarioModel = new Inventario();
         if ($action === 'ver' && isset($_GET['id'])) {
@@ -250,23 +251,23 @@ switch ($page) {
         break;
 
     case 'suprimentos':
-        if (!isTIDept()) { setFlash('danger', 'Acesso restrito ao departamento de TI.'); header('Location: ' . BASE_URL . '/index.php?page=dashboard'); exit; }
+        requireModulo('suprimentos');
         require_once __DIR__ . '/app/models/Suprimento.php';
         $pageTitle = 'Suprimentos de TI - Oracle X';
         break;
 
     case 'senhas':
-        requireRole(['admin', 'tecnico']);
+        requireModulo('senhas');
         $pageTitle = 'Cofre de Senhas - Oracle X';
         break;
 
     case 'rede':
-        requireRole(['admin', 'tecnico']);
+        requireModulo('rede');
         $pageTitle = 'Gestão de Rede - Oracle X';
         break;
 
     case 'ssh':
-        requireRole(['admin', 'tecnico']);
+        requireModulo('ssh');
         $pageTitle = 'Terminal SSH - Oracle X';
         break;
 
@@ -279,7 +280,7 @@ switch ($page) {
         break;
 
     case 'github':
-        requireRole(['admin', 'tecnico']);
+        requireModulo('github');
         $pageTitle = 'GitHub - Oracle X';
         break;
 
@@ -288,12 +289,12 @@ switch ($page) {
         break;
 
     case 'monitor':
-        requireRole(['admin', 'tecnico']);
+        requireModulo('monitor');
         $pageTitle = 'Monitor NOC - Oracle X';
         break;
 
     case 'airflow':
-        requireRole(['admin', 'tecnico']);
+        requireModulo('airflow');
         $pageTitle = 'Apache Airflow - Oracle X';
         break;
 
@@ -302,17 +303,17 @@ switch ($page) {
         break;
 
     case 'sla':
-        requireRole(['admin', 'gestor']);
+        requireModulo('sla');
         $pageTitle = 'SLA Dashboard - Oracle X';
         break;
 
     case 'contratos':
-        requireRole(['admin', 'gestor']);
+        requireModulo('contratos');
         $pageTitle = 'Contratos e Fornecedores - Oracle X';
         break;
 
     case 'cmdb':
-        requireRole(['admin', 'gestor', 'tecnico']);
+        requireModulo('cmdb');
         $pageTitle = 'CMDB - Oracle X';
         break;
 
@@ -321,33 +322,31 @@ switch ($page) {
         break;
 
     case 'automacoes':
-        requireRole(['admin', 'gestor']);
+        requireModulo('automacoes');
         $pageTitle = 'Automações - Oracle X';
         break;
 
     case 'atualizacao':
-        requireRole(['admin']);
+        requireModulo('atualizacao');
         $pageTitle = 'Atualização do Sistema - Oracle X';
         break;
 
     case 'deploy':
-        requireRole(['admin']);
+        requireModulo('deploy');
         $pageTitle = 'Deploy — Produção - Oracle X';
         break;
 
     case 'departamentos':
-        requireRole(['admin']);
+        requireModulo('departamentos');
         $pageTitle = 'Departamentos - Oracle X';
         break;
 
     case 'folha-pagamento':
-        require_once __DIR__ . '/app/models/ModuloPermissao.php';
         requireModulo('folha_pagamento');
         $pageTitle = 'Folha de Pagamento - Oracle X';
         break;
 
     case 'financeiro':
-        require_once __DIR__ . '/app/models/ModuloPermissao.php';
         requireModulo('financeiro');
         $pageTitle = 'Financeiro - Oracle X';
         break;
@@ -358,22 +357,22 @@ switch ($page) {
         break;
 
     case 'remoto':
-        requireRole(['admin', 'tecnico']);
+        requireModulo('remoto');
         $pageTitle = 'Acesso Remoto - Oracle X';
         break;
 
     case 'proxmox':
-        requireRole(['admin', 'tecnico']);
+        requireModulo('proxmox');
         $pageTitle = 'Proxmox VE - Oracle X';
         break;
 
     case 'ad':
-        requireRole(['admin']);
+        requireModulo('ad');
         $pageTitle = 'Active Directory - Oracle X';
         break;
 
     case 'usuarios':
-        requireRole(['admin', 'gestor']);
+        requireModulo('usuarios');
         require_once __DIR__ . '/app/models/Usuario.php';
         require_once __DIR__ . '/app/models/Departamento.php';
         $usuarioModel = new Usuario();
@@ -415,7 +414,7 @@ switch ($page) {
         break;
 
     case 'relatorios':
-        requireRole(['admin', 'gestor']);
+        requireModulo('relatorios');
         require_once __DIR__ . '/app/controllers/DashboardController.php';
         $controller = new DashboardController();
         $deptFilter = getDeptFilter();
@@ -468,7 +467,7 @@ switch ($page) {
         break;
 
     case 'configuracoes':
-        requireRole(['admin']);
+        requireModulo('configuracoes');
         $db = Database::getInstance();
         $configuracoes = $db->fetchAll("SELECT * FROM configuracoes ORDER BY chave");
         $categorias = $db->fetchAll("SELECT c.*, d.nome as departamento_nome, d.sigla as departamento_sigla, d.cor as departamento_cor FROM categorias c LEFT JOIN departamentos d ON c.departamento_id = d.id ORDER BY c.tipo, c.nome");

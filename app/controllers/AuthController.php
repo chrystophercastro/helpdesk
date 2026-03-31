@@ -34,6 +34,7 @@ class AuthController {
                 $db = Database::getInstance();
                 $dept = $db->fetch("SELECT sigla FROM departamentos WHERE id = ?", [$user['departamento_id'] ?? 0]);
                 $_SESSION['usuario_departamento_sigla'] = $dept['sigla'] ?? null;
+                $_SESSION['usuario_tema'] = $user['tema'] ?? 'light';
 
                 // Log
                 $db = Database::getInstance();

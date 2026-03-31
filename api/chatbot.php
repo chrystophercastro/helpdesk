@@ -121,6 +121,51 @@ try {
                 jsonResponse(['success' => true, 'data' => $chatbot->getErrosRecentes($limite)]);
                 break;
 
+            // ---- LOGS DATASYSTEM ----
+            case 'datasystem_logs':
+                $limite = (int) ($_GET['limite'] ?? 100);
+                $filtro = $_GET['filtro'] ?? 'all';
+                $logs = $chatbot->getDataSystemLogs($limite, $filtro);
+                $stats = $chatbot->getDataSystemLogStats();
+                jsonResponse(['success' => true, 'data' => $logs, 'stats' => $stats]);
+                break;
+
+            // ---- FONTES DE DADOS (MULTI-FONTE) ----
+            case 'fontes':
+                $fontes = $chatbot->listarFontesDados();
+                jsonResponse(['success' => true, 'data' => $fontes]);
+                break;
+
+            case 'fonte':
+                $fonteId = (int) ($_GET['id'] ?? 0);
+                if (!$fonteId) jsonResponse(['error' => 'ID obrigatório'], 400);
+                $fonte = $chatbot->getFonteDados($fonteId);
+                if (!$fonte) jsonResponse(['error' => 'Fonte não encontrada'], 404);
+                // Não expor senha
+                $fonte['db_pass'] = !empty($fonte['db_pass']) ? '********' : '';
+                $fonte['api_key'] = !empty($fonte['api_key']) ? '********' : '';
+                $fonte['api_auth_pass'] = !empty($fonte['api_auth_pass']) ? '********' : '';
+                jsonResponse(['success' => true, 'data' => $fonte]);
+                break;
+
+            case 'fonte_schema':
+                $fonteId = (int) ($_GET['id'] ?? 0);
+                if (!$fonteId) jsonResponse(['error' => 'ID obrigatório'], 400);
+                try {
+                    $schema = $chatbot->getFonteSchema($fonteId);
+                    jsonResponse(['success' => true, 'data' => $schema]);
+                } catch (Exception $e) {
+                    jsonResponse(['error' => $e->getMessage()], 400);
+                }
+                break;
+
+            case 'fonte_relacionamentos':
+                $fonteId = (int) ($_GET['id'] ?? 0);
+                if (!$fonteId) jsonResponse(['error' => 'ID obrigatório'], 400);
+                $rels = $chatbot->getFonteRelacionamentos($fonteId);
+                jsonResponse(['success' => true, 'data' => $rels]);
+                break;
+
             default:
                 jsonResponse(['error' => 'Ação desconhecida: ' . $action], 400);
         }
@@ -221,6 +266,12 @@ try {
                 jsonResponse(['success' => true, 'message' => 'Logs limpos']);
                 break;
 
+            // ---- LIMPAR LOGS DATASYSTEM ----
+            case 'limpar_datasystem_logs':
+                $chatbot->clearDataSystemLogs();
+                jsonResponse(['success' => true, 'message' => 'Logs DataSystem limpos']);
+                break;
+
             // ---- SALVAR RELACIONAMENTOS DO DB ----
             case 'save_relationships':
                 $relationships = $data['relationships'] ?? [];
@@ -233,6 +284,110 @@ try {
             case 'n8n_webhook':
                 $result = $chatbot->processarWebhookN8N($data);
                 jsonResponse(['success' => true, 'data' => $result]);
+                break;
+
+            // ---- FONTES DE DADOS: CRIAR ----
+            case 'criar_fonte':
+                $campos = ['nome', 'alias', 'tipo'];
+                foreach ($campos as $c) {
+                    if (empty($data[$c])) jsonResponse(['error' => "Campo '{$c}' é obrigatório"], 400);
+                }
+                try {
+                    $fonteData = [
+                        'nome' => $data['nome'],
+                        'alias' => $data['alias'],
+                        'tipo' => $data['tipo'],
+                        'ativo' => (int)($data['ativo'] ?? 1),
+                        'db_host' => $data['db_host'] ?? null,
+                        'db_port' => $data['db_port'] ?? null,
+                        'db_name' => $data['db_name'] ?? null,
+                        'db_user' => $data['db_user'] ?? null,
+                        'db_pass' => $data['db_pass'] ?? null,
+                        'descricao' => $data['descricao'] ?? null,
+                        'tabelas_permitidas' => $data['tabelas_permitidas'] ?? null,
+                        'max_rows' => (int)($data['max_rows'] ?? 50),
+                        'api_url' => $data['api_url'] ?? null,
+                        'api_auth_tipo' => $data['api_auth_tipo'] ?? 'none',
+                        'api_key' => $data['api_key'] ?? null,
+                        'api_auth_header' => $data['api_auth_header'] ?? 'Authorization',
+                        'api_auth_user' => $data['api_auth_user'] ?? null,
+                        'api_auth_pass' => $data['api_auth_pass'] ?? null,
+                        'api_endpoints' => $data['api_endpoints'] ?? null,
+                        'api_descricao' => $data['api_descricao'] ?? null,
+                        'api_template' => $data['api_template'] ?? null,
+                    ];
+                    // Tratar endpoints JSON string
+                    if (is_string($fonteData['api_endpoints'])) {
+                        $parsed = json_decode($fonteData['api_endpoints'], true);
+                        if (is_array($parsed)) $fonteData['api_endpoints'] = json_encode($parsed, JSON_UNESCAPED_UNICODE);
+                    }
+                    $id = $chatbot->criarFonteDados($fonteData);
+                    jsonResponse(['success' => true, 'message' => 'Fonte criada', 'id' => $id]);
+                } catch (Exception $e) {
+                    jsonResponse(['error' => $e->getMessage()], 400);
+                }
+                break;
+
+            // ---- FONTES DE DADOS: ATUALIZAR ----
+            case 'atualizar_fonte':
+                $fonteId = (int)($data['id'] ?? 0);
+                if (!$fonteId) jsonResponse(['error' => 'ID obrigatório'], 400);
+                try {
+                    $fonteData = [];
+                    $camposPermitidos = ['nome','alias','tipo','ativo','db_host','db_port','db_name','db_user','db_pass',
+                        'descricao','tabelas_permitidas','max_rows','api_url','api_auth_tipo','api_key',
+                        'api_auth_header','api_auth_user','api_auth_pass','api_endpoints','api_descricao','api_template','ordem'];
+                    foreach ($camposPermitidos as $c) {
+                        if (array_key_exists($c, $data)) {
+                            // Não sobrescrever senha se vier mascarada
+                            if (in_array($c, ['db_pass','api_key','api_auth_pass']) && $data[$c] === '********') continue;
+                            $fonteData[$c] = $data[$c];
+                        }
+                    }
+                    if (isset($fonteData['max_rows'])) $fonteData['max_rows'] = (int)$fonteData['max_rows'];
+                    if (isset($fonteData['ativo'])) $fonteData['ativo'] = (int)$fonteData['ativo'];
+                    if (isset($fonteData['api_endpoints']) && is_string($fonteData['api_endpoints'])) {
+                        $parsed = json_decode($fonteData['api_endpoints'], true);
+                        if (is_array($parsed)) $fonteData['api_endpoints'] = json_encode($parsed, JSON_UNESCAPED_UNICODE);
+                    }
+                    $chatbot->atualizarFonteDados($fonteId, $fonteData);
+                    jsonResponse(['success' => true, 'message' => 'Fonte atualizada']);
+                } catch (Exception $e) {
+                    jsonResponse(['error' => $e->getMessage()], 400);
+                }
+                break;
+
+            // ---- FONTES DE DADOS: REMOVER ----
+            case 'remover_fonte':
+                $fonteId = (int)($data['id'] ?? 0);
+                if (!$fonteId) jsonResponse(['error' => 'ID obrigatório'], 400);
+                $chatbot->removerFonteDados($fonteId);
+                jsonResponse(['success' => true, 'message' => 'Fonte removida']);
+                break;
+
+            // ---- FONTES DE DADOS: TOGGLE ----
+            case 'toggle_fonte':
+                $fonteId = (int)($data['id'] ?? 0);
+                if (!$fonteId) jsonResponse(['error' => 'ID obrigatório'], 400);
+                $novoStatus = $chatbot->toggleFonteDados($fonteId);
+                jsonResponse(['success' => true, 'ativo' => $novoStatus]);
+                break;
+
+            // ---- FONTES DE DADOS: TESTAR CONEXÃO ----
+            case 'testar_fonte':
+                $fonteId = (int)($data['id'] ?? 0);
+                if (!$fonteId) jsonResponse(['error' => 'ID obrigatório'], 400);
+                $resultado = $chatbot->testarFonteDadosConexao($fonteId);
+                jsonResponse(['success' => true, 'data' => $resultado]);
+                break;
+
+            // ---- FONTES DE DADOS: SALVAR RELACIONAMENTOS ----
+            case 'salvar_fonte_relacionamentos':
+                $fonteId = (int)($data['id'] ?? 0);
+                if (!$fonteId) jsonResponse(['error' => 'ID obrigatório'], 400);
+                $rels = $data['relacionamentos'] ?? [];
+                $chatbot->salvarFonteRelacionamentos($fonteId, $rels);
+                jsonResponse(['success' => true, 'message' => 'Relacionamentos salvos']);
                 break;
 
             default:

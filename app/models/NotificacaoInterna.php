@@ -133,8 +133,22 @@ class NotificacaoInterna {
     // ========================================
 
     public function notificarNovoChamado($chamado) {
-        $tecnicos = $this->db->fetchAll("SELECT id FROM usuarios WHERE tipo IN ('admin','tecnico') AND ativo = 1");
-        foreach ($tecnicos as $t) {
+        $deptId = !empty($chamado['departamento_id']) ? (int)$chamado['departamento_id'] : 0;
+
+        // Buscar usuários do departamento do chamado + admins (sempre recebem)
+        if ($deptId) {
+            $destinatarios = $this->db->fetchAll(
+                "SELECT id FROM usuarios WHERE ativo = 1 AND (tipo = 'admin' OR departamento_id = ?)",
+                [$deptId]
+            );
+        } else {
+            // Sem departamento definido: notificar admins
+            $destinatarios = $this->db->fetchAll(
+                "SELECT id FROM usuarios WHERE ativo = 1 AND tipo = 'admin'"
+            );
+        }
+
+        foreach ($destinatarios as $t) {
             if (!$this->deveNotificar($t['id'], 'chamado_novo')) continue;
             $this->criar([
                 'usuario_id' => $t['id'],

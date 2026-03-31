@@ -12,11 +12,44 @@ const HelpDesk = {
         this.baseUrl = document.getElementById('baseUrl')?.value || '';
         this.csrfToken = document.getElementById('csrfToken')?.value || '';
 
+        this.initTheme();
         this.initSidebar();
         this.initUserMenu();
         this.initMobileMenu();
         this.initGlobalSearch();
         this.initAutoCloseAlerts();
+    },
+
+    /**
+     * Initialize theme from localStorage / data-theme attribute
+     */
+    initTheme() {
+        const stored = localStorage.getItem('tema');
+        const current = document.documentElement.getAttribute('data-theme') || 'light';
+        // localStorage takes precedence (already applied via anti-flash script)
+        if (stored && stored !== current) {
+            document.documentElement.setAttribute('data-theme', stored);
+        }
+    },
+
+    /**
+     * Toggle dark/light theme
+     */
+    toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme') || 'light';
+        const next = current === 'dark' ? 'light' : 'dark';
+
+        // Add transition class for smooth animation
+        document.documentElement.classList.add('theme-transitioning');
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('tema', next);
+
+        // Remove transition class after animation
+        setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 400);
+
+        // Persist to server
+        this.api('POST', '/api/usuarios.php', { action: 'salvar_tema', tema: next })
+            .catch(() => {}); // silent fail
     },
 
     /**
@@ -171,63 +204,25 @@ const HelpDesk = {
     },
 
     /**
-     * Initialize sidebar toggle
+     * Initialize sidebar toggle — handled by footer.php inline script
      */
     initSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const toggle = document.getElementById('sidebarToggle');
-        if (!sidebar || !toggle) return;
-
-        // Load saved state
-        const collapsed = localStorage.getItem('sidebar_collapsed') === 'true';
-        if (collapsed) sidebar.classList.add('collapsed');
-
-        toggle.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
-            localStorage.setItem('sidebar_collapsed', sidebar.classList.contains('collapsed'));
-        });
+        // Sidebar toggle is now handled by the inline script in footer.php
+        // to support collapsible sections. This is left as a stub.
     },
 
     /**
-     * Initialize mobile menu
+     * Initialize mobile menu — handled by footer.php inline script
      */
     initMobileMenu() {
-        const btn = document.getElementById('mobileMenuBtn');
-        const sidebar = document.getElementById('sidebar');
-        if (!btn || !sidebar) return;
-
-        btn.addEventListener('click', () => {
-            sidebar.classList.toggle('mobile-open');
-        });
-
-        // Close on outside click
-        document.addEventListener('click', (e) => {
-            if (sidebar.classList.contains('mobile-open') && 
-                !sidebar.contains(e.target) && 
-                !btn.contains(e.target)) {
-                sidebar.classList.remove('mobile-open');
-            }
-        });
+        // Mobile menu is now handled by footer.php with overlay support.
     },
 
     /**
-     * Initialize user dropdown menu
+     * Initialize user dropdown menu — handled by footer.php inline script
      */
     initUserMenu() {
-        const btn = document.getElementById('userMenuBtn');
-        const dropdown = document.getElementById('userDropdown');
-        if (!btn || !dropdown) return;
-
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdown.classList.toggle('active');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!dropdown.contains(e.target)) {
-                dropdown.classList.remove('active');
-            }
-        });
+        // User dropdown is now handled by footer.php inline script.
     },
 
     /**

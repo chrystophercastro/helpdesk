@@ -285,7 +285,8 @@ function currentUser() {
         'telefone' => $_SESSION['usuario_telefone'] ?? '',
         'tipo' => $_SESSION['usuario_tipo'] ?? '',
         'avatar' => $_SESSION['usuario_avatar'] ?? '',
-        'departamento_id' => $_SESSION['usuario_departamento_id'] ?? null
+        'departamento_id' => $_SESSION['usuario_departamento_id'] ?? null,
+        'tema' => $_SESSION['usuario_tema'] ?? 'light'
     ];
 }
 

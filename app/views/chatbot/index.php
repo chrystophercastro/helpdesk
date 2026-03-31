@@ -1,9 +1,94 @@
 <?php /** View: Chatbot Inteligente */ $user = currentUser(); ?>
 
-<div class="page-header">
-    <div class="page-header-left">
-        <h1><i class="fas fa-headset"></i> Chatbot Inteligente</h1>
-        <p class="page-subtitle">Gerenciamento do chatbot com IA, WhatsApp, N8N e base de dados</p>
+<style>
+/* ===== CHATBOT PAGE STYLES ===== */
+.cb-page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:16px}
+.cb-page-header-left{display:flex;align-items:center;gap:16px}
+.cb-page-header-icon{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#6366F1 0%,#8B5CF6 50%,#A78BFA 100%);display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;box-shadow:0 8px 24px rgba(99,102,241,0.3);flex-shrink:0}
+.cb-page-header h1{font-size:24px;font-weight:800;margin:0;letter-spacing:-0.3px}
+.cb-page-header p{font-size:13px;margin:2px 0 0;opacity:0.6}
+
+/* KPI Grid */
+.cb-kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:14px;margin-bottom:28px}
+.cb-kpi{border-radius:14px;padding:18px 16px;display:flex;align-items:center;gap:14px;border:1px solid rgba(0,0,0,0.06);transition:all 0.2s ease;position:relative;overflow:hidden;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.cb-kpi:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.08)}
+.cb-kpi-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.cb-kpi-body{display:flex;flex-direction:column;min-width:0}
+.cb-kpi-value{font-size:22px;font-weight:800;line-height:1.1;letter-spacing:-0.5px}
+.cb-kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;opacity:0.5;margin-top:2px}
+.cb-kpi-status{font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px}
+.cb-kpi-status .dot{width:8px;height:8px;border-radius:50%;display:inline-block;animation:cbDotPulse 2s infinite}
+@keyframes cbDotPulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.cb-kpi.clickable{cursor:pointer}
+
+/* Color variants */
+.cb-kpi-blue .cb-kpi-icon{background:rgba(59,130,246,0.1);color:#3B82F6}
+.cb-kpi-green .cb-kpi-icon{background:rgba(16,185,129,0.1);color:#10B981}
+.cb-kpi-purple .cb-kpi-icon{background:rgba(139,92,246,0.1);color:#8B5CF6}
+.cb-kpi-cyan .cb-kpi-icon{background:rgba(6,182,212,0.1);color:#06B6D4}
+.cb-kpi-red .cb-kpi-icon{background:rgba(239,68,68,0.1);color:#EF4444}
+.cb-kpi-indigo .cb-kpi-icon{background:rgba(99,102,241,0.1);color:#6366F1}
+.cb-kpi-emerald .cb-kpi-icon{background:rgba(16,185,129,0.1);color:#10B981}
+
+/* Tabs */
+.cb-tabs{display:flex;gap:4px;border-bottom:2px solid var(--gray-200);margin-bottom:24px;overflow-x:auto;scrollbar-width:none;padding-bottom:0}
+.cb-tabs::-webkit-scrollbar{display:none}
+.cb-tab{display:inline-flex;align-items:center;gap:7px;padding:10px 16px;border:none;background:none;color:var(--gray-500);font-size:13px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s;white-space:nowrap;border-radius:8px 8px 0 0}
+.cb-tab:hover{color:var(--gray-700);background:var(--gray-50)}
+.cb-tab.active{color:#6366F1;border-bottom-color:#6366F1;background:rgba(99,102,241,0.04)}
+.cb-tab i{font-size:13px}
+.cb-tab .badge{font-size:9px;padding:2px 6px;border-radius:10px;vertical-align:middle}
+.cb-tab-content{display:none}
+.cb-tab-content.active{display:block;animation:cbFadeIn 0.25s ease}
+@keyframes cbFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* Section cards */
+.cb-section{background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,0.06);overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04);margin-bottom:20px}
+.cb-section-header{padding:16px 20px;border-bottom:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.cb-section-header h3{font-size:15px;font-weight:700;margin:0;display:flex;align-items:center;gap:8px}
+.cb-section-header h3 i{font-size:14px;opacity:0.5}
+.cb-section-body{padding:20px}
+
+/* Chat area */
+.cb-chat-area{border-radius:12px;padding:20px;min-height:400px;max-height:500px;overflow-y:auto;background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%)}
+.cb-chat-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:350px;opacity:0.4}
+.cb-chat-empty i{font-size:48px;margin-bottom:12px}
+.cb-chat-empty p{font-size:14px}
+
+/* Log terminal */
+.cb-log-terminal{font-family:'SFMono-Regular',Consolas,monospace;font-size:12px;background:#0d1117;color:#c9d1d9;border-radius:12px;overflow:hidden}
+.cb-log-header{display:flex;align-items:center;gap:6px;padding:10px 16px;background:#161b22;border-bottom:1px solid #30363d}
+.cb-log-header .dot{width:10px;height:10px;border-radius:50%}
+.cb-log-body{padding:16px;max-height:500px;overflow-y:auto}
+
+/* Ajuda steps */
+.cb-step{border-radius:14px;padding:24px;border:1px solid rgba(0,0,0,0.08);margin-bottom:16px;transition:all 0.2s}
+.cb-step:hover{box-shadow:0 4px 16px rgba(0,0,0,0.06)}
+.cb-step-number{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:10px;font-size:14px;font-weight:800;margin-right:10px;flex-shrink:0}
+.cb-step h5{display:flex;align-items:center;gap:4px;font-size:16px;font-weight:700;margin-bottom:12px}
+
+/* Checklist */
+.cb-checklist-item{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid rgba(0,0,0,0.04);font-size:13px;transition:background 0.15s}
+.cb-checklist-item:hover{background:rgba(0,0,0,0.02)}
+.cb-checklist-item:last-child{border-bottom:none}
+.cb-checklist-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+.cb-checklist-icon.pending{background:rgba(0,0,0,0.06);color:var(--gray-400)}
+.cb-checklist-icon.ok{background:rgba(16,185,129,0.1);color:#10B981}
+.cb-checklist-icon.fail{background:rgba(239,68,68,0.1);color:#EF4444}
+
+@media(max-width:768px){
+    .cb-kpi-grid{grid-template-columns:repeat(2,1fr)}
+    .cb-page-header{flex-direction:column;align-items:flex-start}
+}
+</style>
+
+<div class="cb-page-header">
+    <div class="cb-page-header-left">
+        <div class="cb-page-header-icon"><i class="fas fa-robot"></i></div>
+        <div>
+            <h1>Chatbot Inteligente</h1>
+            <p>Gerenciamento do chatbot com IA, WhatsApp, N8N e base de dados</p>
+        </div>
     </div>
     <div class="page-header-actions">
         <button class="btn btn-outline-primary" onclick="cbRefreshStatus()">
@@ -13,76 +98,87 @@
 </div>
 
 <!-- KPI Cards -->
-<div class="row g-3 mb-4" id="cbKpis">
-    <div class="col">
-        <div class="card text-center p-3">
-            <div style="font-size:22px;font-weight:700;color:var(--primary)" id="kpiSessoes">-</div>
-            <small class="text-muted">Sessões Ativas</small>
+<div class="cb-kpi-grid" id="cbKpis">
+    <div class="cb-kpi cb-kpi-blue">
+        <div class="cb-kpi-icon"><i class="fas fa-headset"></i></div>
+        <div class="cb-kpi-body">
+            <div class="cb-kpi-value" id="kpiSessoes">-</div>
+            <div class="cb-kpi-label">Sessões Ativas</div>
         </div>
     </div>
-    <div class="col">
-        <div class="card text-center p-3">
-            <div style="font-size:22px;font-weight:700;color:var(--success)" id="kpiMsgsHoje">-</div>
-            <small class="text-muted">Msgs Hoje</small>
+    <div class="cb-kpi cb-kpi-green">
+        <div class="cb-kpi-icon"><i class="fas fa-paper-plane"></i></div>
+        <div class="cb-kpi-body">
+            <div class="cb-kpi-value" id="kpiMsgsHoje">-</div>
+            <div class="cb-kpi-label">Msgs Hoje</div>
         </div>
     </div>
-    <div class="col">
-        <div class="card text-center p-3">
-            <div style="font-size:22px;font-weight:700;color:var(--purple)" id="kpiNumeros">-</div>
-            <small class="text-muted">Nº Autorizados</small>
+    <div class="cb-kpi cb-kpi-purple">
+        <div class="cb-kpi-icon"><i class="fas fa-user-check"></i></div>
+        <div class="cb-kpi-body">
+            <div class="cb-kpi-value" id="kpiNumeros">-</div>
+            <div class="cb-kpi-label">Nº Autorizados</div>
         </div>
     </div>
-    <div class="col">
-        <div class="card text-center p-3">
-            <div style="font-size:22px;font-weight:700;color:var(--cyan)" id="kpiQueries">-</div>
-            <small class="text-muted">Queries SQL</small>
+    <div class="cb-kpi cb-kpi-cyan">
+        <div class="cb-kpi-icon"><i class="fas fa-database"></i></div>
+        <div class="cb-kpi-body">
+            <div class="cb-kpi-value" id="kpiQueries">-</div>
+            <div class="cb-kpi-label">Queries SQL</div>
         </div>
     </div>
-    <div class="col">
-        <div class="card text-center p-3" style="cursor:pointer" onclick="document.querySelector('[data-tab=cb-logs]').click()">
-            <div style="font-size:22px;font-weight:700;color:var(--danger)" id="kpiErros">0</div>
-            <small class="text-muted">Erros Hoje</small>
+    <div class="cb-kpi cb-kpi-red clickable" onclick="document.querySelector('[data-tab=cb-logs]').click()">
+        <div class="cb-kpi-icon"><i class="fas fa-exclamation-triangle"></i></div>
+        <div class="cb-kpi-body">
+            <div class="cb-kpi-value" id="kpiErros">0</div>
+            <div class="cb-kpi-label">Erros Hoje</div>
         </div>
     </div>
-    <div class="col">
-        <div class="card text-center p-3">
-            <div id="kpiOllama" style="font-size:14px;font-weight:600;">-</div>
-            <small class="text-muted">Ollama IA</small>
+    <div class="cb-kpi cb-kpi-indigo">
+        <div class="cb-kpi-icon"><i class="fas fa-brain"></i></div>
+        <div class="cb-kpi-body">
+            <div id="kpiOllama" class="cb-kpi-status">-</div>
+            <div class="cb-kpi-label">Ollama IA</div>
         </div>
     </div>
-    <div class="col">
-        <div class="card text-center p-3">
-            <div id="kpiEvolution" style="font-size:14px;font-weight:600;">-</div>
-            <small class="text-muted">WhatsApp</small>
+    <div class="cb-kpi cb-kpi-emerald">
+        <div class="cb-kpi-icon"><i class="fab fa-whatsapp"></i></div>
+        <div class="cb-kpi-body">
+            <div id="kpiEvolution" class="cb-kpi-status">-</div>
+            <div class="cb-kpi-label">WhatsApp</div>
         </div>
     </div>
 </div>
 
 <!-- Tabs -->
-<div class="ad-tabs">
-    <button class="ad-tab active" data-tab="cb-config" onclick="cbTab(this)">
+<div class="cb-tabs">
+    <button class="cb-tab active" data-tab="cb-config" onclick="cbTab(this)">
         <i class="fas fa-cog"></i> Configurações
     </button>
-    <button class="ad-tab" data-tab="cb-numeros" onclick="cbTab(this)">
+    <button class="cb-tab" data-tab="cb-numeros" onclick="cbTab(this)">
         <i class="fas fa-phone"></i> Números Autorizados
     </button>
-    <button class="ad-tab" data-tab="cb-sessoes" onclick="cbTab(this)">
+    <button class="cb-tab" data-tab="cb-sessoes" onclick="cbTab(this)">
         <i class="fas fa-comments"></i> Sessões / Chat
     </button>
-    <button class="ad-tab" data-tab="cb-database" onclick="cbTab(this)">
+    <button class="cb-tab" data-tab="cb-database" onclick="cbTab(this);cbLoadFontes()">
         <i class="fas fa-database"></i> Base de Dados
     </button>
-    <button class="ad-tab" data-tab="cb-n8n" onclick="cbTab(this)">
+    <button class="cb-tab" data-tab="cb-n8n" onclick="cbTab(this)">
         <i class="fas fa-project-diagram"></i> N8N
     </button>
-    <button class="ad-tab" data-tab="cb-logs" onclick="cbTab(this);cbLoadLogs()">
+    <button class="cb-tab" data-tab="cb-logs" onclick="cbTab(this);cbLoadLogs()">
         <i class="fas fa-file-alt"></i> Logs
         <span class="badge bg-danger ms-1" id="badgeErrosHoje" style="display:none;font-size:9px">0</span>
     </button>
-    <button class="ad-tab" data-tab="cb-teste" onclick="cbTab(this)">
+    <button class="cb-tab" data-tab="cb-api-logs" onclick="cbTab(this);cbLoadDSLogs()">
+        <i class="fas fa-exchange-alt"></i> API Logs
+        <span class="badge bg-info ms-1" id="badgeDSLogsHoje" style="display:none;font-size:9px">0</span>
+    </button>
+    <button class="cb-tab" data-tab="cb-teste" onclick="cbTab(this)">
         <i class="fas fa-flask"></i> Testar IA
     </button>
-    <button class="ad-tab" data-tab="cb-ajuda" onclick="cbTab(this)">
+    <button class="cb-tab" data-tab="cb-ajuda" onclick="cbTab(this)">
         <i class="fas fa-question-circle"></i> Ajuda
     </button>
 </div>
@@ -90,16 +186,16 @@
 <!-- ============================================ -->
 <!--  TAB: CONFIGURAÇÕES                         -->
 <!-- ============================================ -->
-<div class="ad-tab-content active" id="cb-config">
+<div class="cb-tab-content active" id="cb-config">
     <div class="row g-4">
         <!-- Geral -->
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header"><h6 class="mb-0"><i class="fas fa-sliders-h"></i> Geral</h6></div>
-                <div class="card-body">
+            <div class="cb-section">
+                <div class="cb-section-header"><h3><i class="fas fa-sliders-h"></i> Geral</h3></div>
+                <div class="cb-section-body">
                     <div class="form-group mb-3">
                         <label class="form-label fw-bold">Chatbot Ativo</label>
-                        <select class="form-control" id="cfg_chatbot_ativo">
+                        <select class="form-select" id="cfg_chatbot_ativo">
                             <option value="0">Desativado</option>
                             <option value="1">Ativado</option>
                         </select>
@@ -126,9 +222,9 @@
 
         <!-- Horário de Atendimento -->
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header"><h6 class="mb-0"><i class="fas fa-clock"></i> Horário de Atendimento</h6></div>
-                <div class="card-body">
+            <div class="cb-section">
+                <div class="cb-section-header"><h3><i class="fas fa-clock"></i> Horário de Atendimento</h3></div>
+                <div class="cb-section-body">
                     <div class="form-group mb-3">
                         <label class="form-label fw-bold">Controle de Horário</label>
                         <select class="form-control" id="cfg_chatbot_horario_ativo">
@@ -160,9 +256,9 @@
 
         <!-- IA / Ollama -->
         <div class="col-md-12">
-            <div class="card">
-                <div class="card-header"><h6 class="mb-0"><i class="fas fa-brain"></i> Inteligência Artificial (Ollama)</h6></div>
-                <div class="card-body">
+            <div class="cb-section">
+                <div class="cb-section-header"><h3><i class="fas fa-brain"></i> Inteligência Artificial (Ollama)</h3></div>
+                <div class="cb-section-body">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group mb-3">
@@ -207,15 +303,15 @@
 <!-- ============================================ -->
 <!--  TAB: NÚMEROS AUTORIZADOS                    -->
 <!-- ============================================ -->
-<div class="ad-tab-content" id="cb-numeros">
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h6 class="mb-0"><i class="fas fa-phone"></i> Números Autorizados</h6>
+<div class="cb-tab-content" id="cb-numeros">
+    <div class="cb-section">
+        <div class="cb-section-header">
+            <h3><i class="fas fa-phone"></i> Números Autorizados</h3>
             <button class="btn btn-sm btn-primary" onclick="cbShowAddNumero()">
                 <i class="fas fa-plus"></i> Adicionar Número
             </button>
         </div>
-        <div class="card-body p-0">
+        <div style="padding:0">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
                     <thead>
@@ -240,34 +336,34 @@
 <!-- ============================================ -->
 <!--  TAB: SESSÕES / CHAT                         -->
 <!-- ============================================ -->
-<div class="ad-tab-content" id="cb-sessoes">
+<div class="cb-tab-content" id="cb-sessoes">
     <div class="row g-4">
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0"><i class="fas fa-list"></i> Sessões</h6>
+            <div class="cb-section">
+                <div class="cb-section-header">
+                    <h3><i class="fas fa-list"></i> Sessões</h3>
                     <button class="btn btn-sm btn-outline-primary" onclick="cbLoadSessoes()">
                         <i class="fas fa-sync-alt"></i>
                     </button>
                 </div>
-                <div class="card-body p-0" style="max-height:600px;overflow-y:auto" id="sessoesListContainer">
+                <div style="padding:0;max-height:600px;overflow-y:auto" id="sessoesListContainer">
                     <div class="text-center text-muted py-4">Carregando...</div>
                 </div>
             </div>
         </div>
         <div class="col-md-8">
-            <div class="card" id="chatViewCard">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0" id="chatViewTitle"><i class="fas fa-comments"></i> Selecione uma sessão</h6>
+            <div class="cb-section" id="chatViewCard">
+                <div class="cb-section-header">
+                    <h3 id="chatViewTitle"><i class="fas fa-comments"></i> Selecione uma sessão</h3>
                     <div>
                         <button class="btn btn-sm btn-outline-danger" id="btnLimparSessao" style="display:none" onclick="cbLimparSessao()">
                             <i class="fas fa-trash"></i> Limpar
                         </button>
                     </div>
                 </div>
-                <div class="card-body" id="chatViewBody" style="height:500px;overflow-y:auto;background:#f8f9fa;">
-                    <div class="text-center text-muted py-5">
-                        <i class="fas fa-comments fa-3x mb-3" style="opacity:0.3"></i>
+                <div class="cb-chat-area" id="chatViewBody">
+                    <div class="cb-chat-empty">
+                        <i class="fas fa-comments"></i>
                         <p>Selecione uma sessão para ver o histórico</p>
                     </div>
                 </div>
@@ -277,269 +373,172 @@
 </div>
 
 <!-- ============================================ -->
-<!--  TAB: BASE DE DADOS                          -->
+<!--  TAB: BASE DE DADOS (MULTI-FONTES)          -->
 <!-- ============================================ -->
-<div class="ad-tab-content" id="cb-database">
-    <div class="row g-4">
-        <div class="col-md-5">
-            <div class="card">
-                <div class="card-header"><h6 class="mb-0"><i class="fas fa-database"></i> Conexão com Base de Dados Externa</h6></div>
-                <div class="card-body">
-                    <div class="form-group mb-3">
-                        <label class="form-label fw-bold">Fonte de Dados Ativa</label>
-                        <select class="form-control" id="cfg_chatbot_db_ativo">
-                            <option value="0">Desativada</option>
-                            <option value="1">Ativada</option>
-                        </select>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="form-label fw-bold">Tipo de Fonte</label>
-                        <select class="form-control" id="cfg_chatbot_db_tipo" onchange="cbOnTipoFonteChange()">
-                            <option value="mysql">MySQL / MariaDB</option>
-                            <option value="pgsql">PostgreSQL</option>
-                            <option value="sqlserver">SQL Server</option>
-                            <option value="sqlite">SQLite</option>
-                            <option value="api">API REST</option>
-                        </select>
-                    </div>
+<div class="cb-tab-content" id="cb-database">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center gap-3">
+            <h5 class="mb-0" style="color:var(--gray-800);font-weight:700">
+                <i class="fas fa-layer-group" style="color:var(--primary)"></i> Fontes de Dados
+            </h5>
+            <div class="form-check form-switch ms-2">
+                <input class="form-check-input" type="checkbox" id="cfg_chatbot_db_ativo_switch"
+                    onchange="document.getElementById('cfg_chatbot_db_ativo').value = this.checked ? '1' : '0'; cbSaveConfig();">
+                <label class="form-check-label" for="cfg_chatbot_db_ativo_switch" style="font-size:13px;color:var(--gray-500)">Ativado</label>
+            </div>
+            <!-- hidden select for save compat -->
+            <select class="d-none" id="cfg_chatbot_db_ativo">
+                <option value="0">Desativadas</option>
+                <option value="1">Ativadas</option>
+            </select>
+        </div>
+        <button class="btn btn-primary" onclick="cbShowAddFonte()">
+            <i class="fas fa-plus"></i> Nova Fonte
+        </button>
+    </div>
 
-                    <!-- ====== Campos para Banco SQL ====== -->
-                    <div id="dbFieldsSQL">
-                        <div class="row mb-3" id="dbFieldHost">
-                            <div class="col-8">
-                                <label class="form-label">Host</label>
-                                <input type="text" class="form-control" id="cfg_chatbot_db_host" placeholder="localhost">
-                            </div>
-                            <div class="col-4">
-                                <label class="form-label">Porta</label>
-                                <input type="text" class="form-control" id="cfg_chatbot_db_port" placeholder="3306">
-                            </div>
-                        </div>
-                        <div class="form-group mb-3" id="dbFieldSQLite" style="display:none">
-                            <label class="form-label">Caminho do Arquivo SQLite</label>
-                            <input type="text" class="form-control" id="cfg_chatbot_db_host_sqlite" placeholder="C:\dados\meu_banco.db" disabled>
-                            <small class="text-muted">O campo Host será usado como caminho do arquivo</small>
-                        </div>
-                        <div class="form-group mb-3" id="dbFieldName">
-                            <label class="form-label">Nome do Banco</label>
-                            <input type="text" class="form-control" id="cfg_chatbot_db_name">
-                        </div>
-                        <div class="form-group mb-3" id="dbFieldUser">
-                            <label class="form-label">Usuário</label>
-                            <input type="text" class="form-control" id="cfg_chatbot_db_user">
-                        </div>
-                        <div class="form-group mb-3" id="dbFieldPass">
-                            <label class="form-label">Senha</label>
-                            <input type="password" class="form-control" id="cfg_chatbot_db_pass">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="form-label">Descrição do Banco (contexto para a IA)</label>
-                            <textarea class="form-control" id="cfg_chatbot_db_descricao" rows="3" placeholder="Ex: Banco de dados do ERP com vendas, clientes e produtos"></textarea>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="form-label">Tabelas Permitidas (separadas por vírgula, vazio = todas)</label>
-                            <input type="text" class="form-control" id="cfg_chatbot_db_tabelas_permitidas" placeholder="vendas,clientes,produtos">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="form-label">Máx. Linhas por Consulta</label>
-                            <input type="number" class="form-control" id="cfg_chatbot_db_max_rows" value="50">
-                        </div>
-                    </div>
+    <p class="text-muted mb-4" style="font-size:13px;margin-top:-12px">
+        Configure bancos de dados e APIs que o chatbot pode consultar. Todas as fontes ativas são disponibilizadas simultaneamente para a IA.
+    </p>
 
-                    <!-- ====== Campos para API REST ====== -->
-                    <div id="dbFieldsAPI" style="display:none">
-                        <div class="form-group mb-3">
-                            <label class="form-label">URL Base da API</label>
-                            <input type="text" class="form-control" id="cfg_chatbot_api_url" placeholder="https://api.exemplo.com/v1">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="form-label">Tipo de Autenticação</label>
-                            <select class="form-control" id="cfg_chatbot_api_auth_tipo" onchange="cbOnAuthTipoChange()">
-                                <option value="none">Nenhuma</option>
-                                <option value="bearer">Bearer Token</option>
-                                <option value="apikey">API Key (Header Custom)</option>
-                                <option value="basic">Basic Auth (Usuário/Senha)</option>
-                            </select>
-                        </div>
-                        <div class="form-group mb-3" id="apiFieldKey" style="display:none">
-                            <label class="form-label">Token / API Key</label>
-                            <input type="password" class="form-control" id="cfg_chatbot_api_key" placeholder="sk-...">
-                        </div>
-                        <div class="form-group mb-3" id="apiFieldHeader" style="display:none">
-                            <label class="form-label">Nome do Header</label>
-                            <input type="text" class="form-control" id="cfg_chatbot_api_auth_header" placeholder="X-API-Key">
-                        </div>
-                        <div id="apiFieldBasic" style="display:none">
-                            <div class="form-group mb-3">
-                                <label class="form-label">Usuário</label>
-                                <input type="text" class="form-control" id="cfg_chatbot_api_auth_user">
-                            </div>
-                            <div class="form-group mb-3">
-                                <label class="form-label">Senha</label>
-                                <input type="password" class="form-control" id="cfg_chatbot_api_auth_pass">
-                            </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="form-label">Descrição da API (contexto para a IA)</label>
-                            <textarea class="form-control" id="cfg_chatbot_api_descricao" rows="2" placeholder="Ex: API do ERP que retorna dados de vendas e clientes"></textarea>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="form-label d-flex justify-content-between">
-                                <span>Endpoints Disponíveis (JSON)</span>
-                                <button type="button" class="btn btn-xs btn-outline-secondary" onclick="cbInsertEndpointTemplate()">
-                                    <i class="fas fa-plus"></i> Modelo
-                                </button>
-                            </label>
-                            <textarea class="form-control font-monospace" id="cfg_chatbot_api_endpoints" rows="10" placeholder='[{"method":"GET","path":"/clientes","description":"Lista clientes","params":[{"name":"nome","type":"string","description":"Filtrar por nome"}]}]' style="font-size:12px"></textarea>
-                            <small class="text-muted">Array JSON com os endpoints que a IA pode usar. Cada item: method, path, description, params[], response_example</small>
-                        </div>
-                    </div>
+    <!-- Lista de Fontes -->
+    <div id="fontesListContainer">
+        <div class="text-center py-5" style="color:var(--gray-400)">
+            <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+            <p>Carregando fontes de dados...</p>
+        </div>
+    </div>
 
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-primary" onclick="cbSaveConfig()">
-                            <i class="fas fa-save"></i> Salvar
-                        </button>
-                        <button class="btn btn-outline-success" onclick="cbTestDB()">
-                            <i class="fas fa-plug"></i> Testar Conexão
-                        </button>
-                    </div>
+    <!-- Área de detalhes (schema/relacionamentos) da fonte selecionada -->
+    <div id="fonteDetalhes" style="display:none" class="mt-4">
+        <div class="cb-section">
+            <div class="cb-section-header">
+                <h3 id="fonteDetalhesTitulo"><i class="fas fa-project-diagram"></i> Schema da Fonte</h3>
+                <div class="d-flex gap-1 align-items-center">
+                    <button class="btn btn-sm btn-outline-primary" onclick="cbLoadFonteSchema()" title="Recarregar"><i class="fas fa-sync-alt"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('fonteDetalhes').style.display='none'" title="Fechar"><i class="fas fa-times"></i></button>
                 </div>
             </div>
-        </div>
-        <div class="col-md-7">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center" style="background:#161b22;border-bottom:1px solid #30363d">
-                    <h6 class="mb-0" id="dbSchemaTitle" style="color:#c9d1d9"><i class="fas fa-project-diagram" style="color:#58a6ff"></i> Diagrama do Banco</h6>
-                    <div class="d-flex gap-1 align-items-center">
-                        <div class="btn-group btn-group-sm">
-                            <button class="btn btn-sm" onclick="cbDiagramZoom(-0.1)" title="Zoom Out" style="border-color:#30363d;color:#8b949e"><i class="fas fa-search-minus"></i></button>
-                            <button class="btn btn-sm" onclick="cbDiagramZoom(0)" title="Resetar Zoom" style="border-color:#30363d;color:#c9d1d9;min-width:48px"><small id="lblZoom">100%</small></button>
-                            <button class="btn btn-sm" onclick="cbDiagramZoom(0.1)" title="Zoom In" style="border-color:#30363d;color:#8b949e"><i class="fas fa-search-plus"></i></button>
+            <div style="padding:0">
+                <ul class="nav nav-tabs nav-fill px-3 pt-2" style="font-size:13px">
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#subTabFonteSchema">
+                            <i class="fas fa-list"></i> Tabelas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#subTabFonteDiagram">
+                            <i class="fas fa-project-diagram"></i> Diagrama
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#subTabFonteRels">
+                            <i class="fas fa-link"></i> Relacionamentos
+                            <span class="badge bg-primary ms-1" id="badgeFonteRelCount">0</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <!-- Lista de Tabelas -->
+                    <div class="tab-pane fade p-3" id="subTabFonteSchema">
+                        <div id="fonteSchemaContainer">
+                            <div class="text-center py-4" style="color:var(--gray-400)">Carregando schema...</div>
                         </div>
-                        <button class="btn btn-sm" onclick="cbLoadSchema()" title="Carregar Schema" style="border-color:#1f6feb;color:#58a6ff"><i class="fas fa-sync-alt"></i></button>
-                        <button class="btn btn-sm" onclick="cbToggleLinkMode()" title="Criar Relacionamento (clique nas colunas)" id="btnLinkMode" style="border-color:#2ea043;color:#2ea043"><i class="fas fa-link"></i></button>
-                        <button class="btn btn-sm" onclick="cbAutoLayoutDiagram()" title="Reorganizar Layout" style="border-color:#d29922;color:#d29922"><i class="fas fa-th"></i></button>
-                        <button class="btn btn-sm" onclick="cbToggleFullscreen()" title="Tela Cheia" id="btnFullscreen" style="border-color:#30363d;color:#8b949e"><i class="fas fa-expand" id="btnFullscreenIcon"></i></button>
                     </div>
-                </div>
-                <div class="card-body p-0">
-                    <!-- Sub-abas: Diagrama | Relacionamentos -->
-                    <ul class="nav nav-tabs nav-fill px-3 pt-2" style="font-size:13px">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-bs-toggle="tab" href="#subTabDiagrama">
-                                <i class="fas fa-project-diagram"></i> Diagrama
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#subTabRelacionamentos">
-                                <i class="fas fa-link"></i> Relacionamentos
-                                <span class="badge bg-primary ms-1" id="badgeRelCount">0</span>
-                            </a>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <!-- Aba Tabelas/Diagrama -->
-                        <div class="tab-pane fade show active p-0" id="subTabDiagrama">
-                            <div id="dbDiagramWrapper" class="db-diagram-wrapper">
-                                <!-- Toolbar: visível apenas em fullscreen -->
-                                <div id="dbDiagramToolbar" class="db-diagram-toolbar">
-                                    <span><i class="fas fa-project-diagram"></i> Diagrama do Banco</span>
-                                    <div class="d-flex gap-1 align-items-center ms-auto">
-                                        <div class="btn-group btn-group-sm">
-                                            <button class="btn btn-dark btn-sm" onclick="cbDiagramZoom(-0.1)"><i class="fas fa-search-minus"></i></button>
-                                            <button class="btn btn-dark btn-sm" id="lblZoomFS" style="min-width:48px">100%</button>
-                                            <button class="btn btn-dark btn-sm" onclick="cbDiagramZoom(0.1)"><i class="fas fa-search-plus"></i></button>
-                                        </div>
-                                        <button class="btn btn-dark btn-sm" onclick="cbDiagramZoom(0)" title="Resetar Zoom"><i class="fas fa-undo"></i></button>
-                                        <button class="btn btn-dark btn-sm" onclick="cbToggleLinkMode()" id="btnLinkModeFS"><i class="fas fa-link"></i> Relacionar</button>
-                                        <button class="btn btn-dark btn-sm" onclick="cbAutoLayoutDiagram()"><i class="fas fa-th"></i> Reorganizar</button>
-                                        <button class="btn btn-warning btn-sm" onclick="cbToggleFullscreen()"><i class="fas fa-compress"></i> Sair</button>
+                    <!-- Diagrama Interativo -->
+                    <div class="tab-pane fade show active p-0" id="subTabFonteDiagram">
+                        <div class="db-diagram-wrapper" id="dbDiagramWrapper">
+                            <!-- Toolbar (visible in fullscreen) -->
+                            <div class="db-diagram-toolbar" id="dbDiagramToolbar">
+                                <span><i class="fas fa-project-diagram"></i> Diagrama</span>
+                                <div class="ms-auto d-flex gap-2 align-items-center">
+                                    <button class="btn btn-sm" style="border-color:#30363d;color:#c9d1d9" onclick="cbDiagramZoom(-0.1)" title="Zoom -"><i class="fas fa-search-minus"></i></button>
+                                    <span id="lblZoomFS" style="font-size:12px;min-width:40px;text-align:center">100%</span>
+                                    <button class="btn btn-sm" style="border-color:#30363d;color:#c9d1d9" onclick="cbDiagramZoom(0.1)" title="Zoom +"><i class="fas fa-search-plus"></i></button>
+                                    <button class="btn btn-sm" style="border-color:#30363d;color:#c9d1d9" onclick="cbDiagramZoom(0)" title="Reset zoom"><i class="fas fa-undo"></i></button>
+                                    <span style="border-left:1px solid #30363d;height:20px;margin:0 4px"></span>
+                                    <button class="btn btn-sm" style="border-color:#30363d;color:#c9d1d9" onclick="cbAutoLayoutDiagram()" title="Auto layout"><i class="fas fa-th"></i></button>
+                                    <button class="btn btn-sm" id="btnLinkModeFS" style="border-color:#30363d;color:#c9d1d9" onclick="cbToggleLinkMode()" title="Modo Link"><i class="fas fa-link"></i></button>
+                                    <button class="btn btn-sm" style="border-color:#30363d;color:#c9d1d9" onclick="cbToggleFullscreen()" title="Sair fullscreen"><i class="fas fa-compress"></i></button>
+                                </div>
+                            </div>
+                            <!-- Canvas -->
+                            <div class="db-diagram-canvas" id="dbDiagramCanvas">
+                                <svg class="db-diagram-svg" id="dbDiagramSvg"></svg>
+                            </div>
+                            <!-- Empty state -->
+                            <div class="db-diagram-empty" id="dbDiagramEmpty" style="display:flex">
+                                <i class="fas fa-project-diagram fa-3x mb-3" style="color:var(--gray-300)"></i>
+                                <p style="color:var(--gray-400)">Clique em "Schema" em uma fonte para ver o diagrama</p>
+                            </div>
+                            <!-- Link mode status bar -->
+                            <div class="db-link-status" id="dbLinkStatus">
+                                <span class="step-badge" id="linkStep1">1</span>
+                                <span id="linkStatusText">Clique na coluna <strong>FK</strong> da tabela de origem</span>
+                                <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border:none;font-size:12px" onclick="cbCancelLinkMode()">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Diagram controls bar (outside wrapper, below diagram) -->
+                        <div class="d-flex align-items-center gap-2 px-3 py-2" style="background:var(--gray-50);border-top:1px solid var(--gray-200);font-size:12px">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="cbDiagramZoom(-0.1)" title="Zoom -"><i class="fas fa-search-minus"></i></button>
+                            <span id="lblZoom" style="min-width:40px;text-align:center;color:var(--gray-500)">100%</span>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="cbDiagramZoom(0.1)" title="Zoom +"><i class="fas fa-search-plus"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="cbDiagramZoom(0)" title="Reset"><i class="fas fa-undo"></i></button>
+                            <span style="border-left:1px solid var(--gray-200);height:20px;margin:0 4px"></span>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="cbAutoLayoutDiagram()" title="Auto layout"><i class="fas fa-th"></i> Auto Layout</button>
+                            <button class="btn btn-sm btn-outline-primary" id="btnLinkMode" onclick="cbToggleLinkMode()" title="Criar relacionamento clicando nas colunas"><i class="fas fa-link"></i> Modo Link</button>
+                            <div class="ms-auto">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="cbToggleFullscreen()" title="Tela cheia"><i class="fas fa-expand" id="btnFullscreenIcon"></i> Tela Cheia</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Relacionamentos -->
+                    <div class="tab-pane fade p-3" id="subTabFonteRels">
+                        <div class="alert alert-info py-2" style="font-size:12px">
+                            <i class="fas fa-info-circle"></i>
+                            Defina os relacionamentos (JOINs) entre tabelas desta fonte. A IA usará para trazer <strong>nomes</strong> ao invés de IDs.
+                        </div>
+                        <div class="card card-body mb-3 p-3" style="background:var(--gray-50);border:1px solid var(--gray-200)">
+                            <div class="row g-2 align-items-end">
+                                <div class="col-md-5">
+                                    <label class="form-label mb-1" style="font-size:11px;font-weight:600;color:var(--gray-600)">Tabela.Coluna (FK)</label>
+                                    <div class="input-group input-group-sm">
+                                        <select class="form-select form-select-sm" id="fRelTabelaOrigem" onchange="cbOnFRelTabelaOrigemChange()">
+                                            <option value="">Tabela...</option>
+                                        </select>
+                                        <select class="form-select form-select-sm" id="fRelColunaOrigem"><option value="">Coluna...</option></select>
                                     </div>
                                 </div>
-                                <!-- Empty state -->
-                                <div id="dbDiagramEmpty" class="db-diagram-empty">
-                                    <i class="fas fa-database fa-3x mb-3" style="color:#30363d"></i>
-                                    <p style="color:#8b949e">Clique em <strong style="color:#58a6ff"><i class="fas fa-sync-alt"></i> Carregar</strong> para visualizar o diagrama</p>
+                                <div class="col-auto text-center" style="font-size:18px;color:var(--primary)"><i class="fas fa-arrow-right"></i></div>
+                                <div class="col-md-5">
+                                    <label class="form-label mb-1" style="font-size:11px;font-weight:600;color:var(--gray-600)">Tabela Ref.Coluna (PK)</label>
+                                    <div class="input-group input-group-sm">
+                                        <select class="form-select form-select-sm" id="fRelTabelaRef" onchange="cbOnFRelTabelaRefChange()">
+                                            <option value="">Tabela...</option>
+                                        </select>
+                                        <select class="form-select form-select-sm" id="fRelColunaRef"><option value="">Coluna (PK)...</option></select>
+                                    </div>
                                 </div>
-                                <!-- Canvas com tabelas + SVG -->
-                                <div id="dbDiagramCanvas" class="db-diagram-canvas">
-                                    <svg id="dbDiagramSvg" class="db-diagram-svg"></svg>
+                                <div class="col-auto">
+                                    <button class="btn btn-sm btn-success" onclick="cbAddFonteRel()"><i class="fas fa-plus"></i></button>
                                 </div>
-                                <!-- Floating status bar for link mode -->
-                                <div id="dbLinkStatus" class="db-link-status">
-                                    <span class="step-badge" id="linkStep1">1</span>
-                                    <span id="linkStatusText">Clique na coluna <strong>FK</strong> da tabela de origem</span>
-                                    <button class="btn btn-sm btn-outline-light" onclick="cbCancelLinkMode()" style="font-size:11px">
-                                        <i class="fas fa-times"></i> Cancelar
-                                    </button>
+                            </div>
+                            <div class="row g-2 mt-1">
+                                <div class="col">
+                                    <label class="form-label mb-1" style="font-size:11px;color:var(--gray-500)">Coluna nome legível (ref)</label>
+                                    <select class="form-select form-select-sm" id="fRelColunaDescricao"><option value="">Ex: nome, descricao...</option></select>
                                 </div>
                             </div>
                         </div>
-                        <!-- Aba Relacionamentos -->
-                        <div class="tab-pane fade p-3" id="subTabRelacionamentos">
-                            <div class="alert alert-info py-2" style="font-size:12px">
-                                <i class="fas fa-info-circle"></i>
-                                Defina os relacionamentos (JOINs) entre tabelas. A IA usará estas relações para trazer <strong>nomes</strong> ao invés de IDs/códigos.
-                            </div>
-                            <!-- Formulário para adicionar relacionamento -->
-                            <div class="card card-body bg-light mb-3 p-2" id="formAddRel">
-                                <div class="row g-2 align-items-end">
-                                    <div class="col-md-5">
-                                        <label class="form-label mb-0" style="font-size:11px"><strong>Tabela.Coluna (FK)</strong></label>
-                                        <div class="input-group input-group-sm">
-                                            <select class="form-select form-select-sm" id="relTabelaOrigem" onchange="cbOnRelTabelaOrigemChange()">
-                                                <option value="">Tabela...</option>
-                                            </select>
-                                            <select class="form-select form-select-sm" id="relColunaOrigem">
-                                                <option value="">Coluna...</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto text-center" style="font-size:18px;color:var(--primary)">
-                                        <i class="fas fa-arrow-right"></i>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <label class="form-label mb-0" style="font-size:11px"><strong>Tabela Ref.Coluna (PK)</strong></label>
-                                        <div class="input-group input-group-sm">
-                                            <select class="form-select form-select-sm" id="relTabelaRef" onchange="cbOnRelTabelaRefChange()">
-                                                <option value="">Tabela...</option>
-                                            </select>
-                                            <select class="form-select form-select-sm" id="relColunaRef">
-                                                <option value="">Coluna (PK)...</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <button class="btn btn-sm btn-success" onclick="cbAddRelacionamento()">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- Coluna de exibição (nome legível) -->
-                                <div class="row g-2 mt-1">
-                                    <div class="col">
-                                        <label class="form-label mb-0" style="font-size:11px">Coluna com nome legível (da tabela referenciada)</label>
-                                        <select class="form-select form-select-sm" id="relColunaDescricao">
-                                            <option value="">Ex: nome, descricao, titulo...</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Lista de relacionamentos -->
-                            <div id="relListContainer" style="max-height:350px;overflow-y:auto">
-                                <div class="text-center text-muted py-3">
-                                    <small>Nenhum relacionamento definido</small>
-                                </div>
-                            </div>
-                            <!-- Botão salvar -->
-                            <div class="d-flex justify-content-between mt-2">
-                                <button class="btn btn-sm btn-outline-danger" onclick="cbLimparRelacionamentos()">
-                                    <i class="fas fa-trash"></i> Limpar Todos
-                                </button>
-                                <button class="btn btn-sm btn-primary" onclick="cbSalvarRelacionamentos()">
-                                    <i class="fas fa-save"></i> Salvar Relacionamentos
-                                </button>
-                            </div>
+                        <div id="fonteRelListContainer" style="max-height:350px;overflow-y:auto">
+                            <div class="text-center py-3" style="color:var(--gray-400)"><small>Nenhum relacionamento</small></div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-3">
+                            <button class="btn btn-sm btn-outline-danger" onclick="cbLimparFonteRels()"><i class="fas fa-trash"></i> Limpar</button>
+                            <button class="btn btn-sm btn-primary" onclick="cbSalvarFonteRels()"><i class="fas fa-save"></i> Salvar Relacionamentos</button>
                         </div>
                     </div>
                 </div>
@@ -551,12 +550,12 @@
 <!-- ============================================ -->
 <!--  TAB: N8N                                    -->
 <!-- ============================================ -->
-<div class="ad-tab-content" id="cb-n8n">
+<div class="cb-tab-content" id="cb-n8n">
     <div class="row g-4">
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header"><h6 class="mb-0"><i class="fas fa-project-diagram"></i> Integração N8N</h6></div>
-                <div class="card-body">
+            <div class="cb-section">
+                <div class="cb-section-header"><h3><i class="fas fa-project-diagram"></i> Integração N8N</h3></div>
+                <div class="cb-section-body">
                     <div class="form-group mb-3">
                         <label class="form-label fw-bold">N8N Ativo</label>
                         <select class="form-control" id="cfg_chatbot_n8n_ativo">
@@ -596,14 +595,14 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0"><i class="fas fa-history"></i> Logs N8N</h6>
+            <div class="cb-section">
+                <div class="cb-section-header">
+                    <h3><i class="fas fa-history"></i> Logs N8N</h3>
                     <button class="btn btn-sm btn-outline-primary" onclick="cbLoadN8NLogs()">
                         <i class="fas fa-sync-alt"></i>
                     </button>
                 </div>
-                <div class="card-body p-0" style="max-height:500px;overflow-y:auto">
+                <div style="padding:0;max-height:500px;overflow-y:auto">
                     <table class="table table-sm table-hover mb-0">
                         <thead>
                             <tr>
@@ -627,12 +626,12 @@
 <!-- ============================================ -->
 <!--  TAB: LOGS                                    -->
 <!-- ============================================ -->
-<div class="ad-tab-content" id="cb-logs">
+<div class="cb-tab-content" id="cb-logs">
     <div class="row g-4">
         <div class="col-md-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0"><i class="fas fa-file-alt"></i> Logs do Chatbot (Webhook + IA)</h6>
+            <div class="cb-section">
+                <div class="cb-section-header">
+                    <h3><i class="fas fa-file-alt"></i> Logs do Chatbot (Webhook + IA)</h3>
                     <div class="d-flex gap-2 align-items-center">
                         <select class="form-select form-select-sm" id="logFiltro" onchange="cbLoadLogs()" style="width:auto;font-size:12px">
                             <option value="all">Todos</option>
@@ -650,16 +649,16 @@
                         </button>
                     </div>
                 </div>
-                <div class="card-body p-0">
+                <div style="padding:0">
                     <!-- Resumo de erros -->
-                    <div class="px-3 py-2 d-flex gap-3 align-items-center" style="background:#f8f9fa;border-bottom:1px solid #dee2e6;font-size:12px">
+                    <div class="px-3 py-2 d-flex gap-3 align-items-center cb-log-summary" style="border-bottom:1px solid rgba(0,0,0,0.06);font-size:12px">
                         <span id="logCountTotal" class="badge bg-secondary">0 logs</span>
                         <span id="logCountErrors" class="badge bg-danger" style="display:none">0 erros</span>
                         <span id="logCountSuccess" class="badge bg-success" style="display:none">0 OK</span>
                         <span class="ms-auto text-muted"><i class="fas fa-info-circle"></i> Logs das últimas 200 ações do webhook/IA</span>
                     </div>
                     <!-- Log entries -->
-                    <div id="logContainer" style="max-height:600px;overflow-y:auto;font-family:'SFMono-Regular',Consolas,monospace;font-size:12px;background:#0d1117;color:#c9d1d9">
+                    <div id="logContainer" class="cb-log-body" style="max-height:600px;overflow-y:auto;font-family:'SFMono-Regular',Consolas,monospace;font-size:12px;background:#0d1117;color:#c9d1d9">
                         <div class="text-center py-4" style="color:#8b949e">
                             <i class="fas fa-file-alt fa-2x mb-2 d-block"></i>
                             <p>Clique em "Atualizar" para carregar os logs</p>
@@ -672,14 +671,14 @@
     <!-- Erros do banco (mensagens tipo error) -->
     <div class="row g-4 mt-2">
         <div class="col-md-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0"><i class="fas fa-exclamation-triangle text-danger"></i> Erros de SQL / IA (do banco)</h6>
+            <div class="cb-section">
+                <div class="cb-section-header">
+                    <h3><i class="fas fa-exclamation-triangle" style="color:var(--danger)"></i> Erros de SQL / IA (do banco)</h3>
                     <button class="btn btn-sm btn-outline-primary" onclick="cbLoadErros()">
                         <i class="fas fa-sync-alt"></i> Atualizar
                     </button>
                 </div>
-                <div class="card-body p-0">
+                <div style="padding:0">
                     <div class="table-responsive">
                         <table class="table table-sm table-striped mb-0" style="font-size:12px">
                             <thead>
@@ -701,23 +700,89 @@
 </div>
 
 <!-- ============================================ -->
+<!--  TAB: API LOGS (DataSystem)                   -->
+<!-- ============================================ -->
+<div class="cb-tab-content" id="cb-api-logs">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="cb-section">
+                <div class="cb-section-header">
+                    <h3><i class="fas fa-exchange-alt"></i> Logs de Chamadas — DataSystem API</h3>
+                    <div class="d-flex gap-2 align-items-center">
+                        <select class="form-select form-select-sm" id="dsLogFiltro" onchange="cbLoadDSLogs()" style="width:auto;font-size:12px">
+                            <option value="all">Todos</option>
+                            <option value="errors">🔴 Erros</option>
+                            <option value="success">🟢 Sucesso</option>
+                        </select>
+                        <select class="form-select form-select-sm" id="dsLogLimite" onchange="cbLoadDSLogs()" style="width:auto;font-size:12px">
+                            <option value="50">50</option>
+                            <option value="100" selected>100</option>
+                            <option value="200">200</option>
+                            <option value="500">500</option>
+                        </select>
+                        <button class="btn btn-sm btn-outline-primary" onclick="cbLoadDSLogs()">
+                            <i class="fas fa-sync-alt"></i> Atualizar
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="cbLimparDSLogs()">
+                            <i class="fas fa-trash"></i> Limpar
+                        </button>
+                    </div>
+                </div>
+                <!-- Stats -->
+                <div class="px-3 py-2 d-flex gap-3 align-items-center flex-wrap" style="border-bottom:1px solid rgba(0,0,0,0.06);font-size:12px" id="dsLogStats">
+                    <span class="badge bg-secondary" id="dsStatTotal">0 total</span>
+                    <span class="badge bg-success" id="dsStatOk">0 sucesso</span>
+                    <span class="badge bg-danger" id="dsStatErro">0 erros</span>
+                    <span class="badge bg-info" id="dsStatHoje">0 hoje</span>
+                    <span class="badge bg-warning text-dark" id="dsStatAvg">0ms avg</span>
+                </div>
+                <!-- Table -->
+                <div style="padding:0;overflow-x:auto">
+                    <table class="table table-sm table-hover mb-0" style="font-size:12px">
+                        <thead style="position:sticky;top:0;background:#fff;z-index:2">
+                            <tr>
+                                <th style="width:50px">#</th>
+                                <th style="width:140px">Data/Hora</th>
+                                <th style="width:50px">Método</th>
+                                <th>Endpoint</th>
+                                <th style="width:55px">HTTP</th>
+                                <th style="width:70px">Duração</th>
+                                <th style="width:70px">Tamanho</th>
+                                <th style="width:50px">Status</th>
+                                <th style="width:70px">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dsLogTableBody">
+                            <tr><td colspan="9" class="text-center text-muted py-4">
+                                <i class="fas fa-exchange-alt fa-2x mb-2 d-block" style="opacity:0.3"></i>
+                                Clique em "Atualizar" para carregar os logs
+                            </td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================ -->
 <!--  TAB: TESTAR IA                               -->
 <!-- ============================================ -->
-<div class="ad-tab-content" id="cb-teste">
+<div class="cb-tab-content" id="cb-teste">
     <div class="row g-4">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0"><i class="fas fa-flask"></i> Testar Chatbot</h6>
+            <div class="cb-section">
+                <div class="cb-section-header">
+                    <h3><i class="fas fa-flask"></i> Testar Chatbot</h3>
                     <small class="text-muted" id="testeModelInfo"></small>
                 </div>
-                <div class="card-body" id="testeChat" style="height:450px;overflow-y:auto;background:#f8f9fa;">
-                    <div class="text-center text-muted py-5">
-                        <i class="fas fa-robot fa-3x mb-3" style="opacity:0.3"></i>
+                <div class="cb-chat-area" id="testeChat">
+                    <div class="cb-chat-empty">
+                        <i class="fas fa-robot"></i>
                         <p>Envie uma mensagem para testar o chatbot</p>
                     </div>
                 </div>
-                <div class="card-footer">
+                <div style="padding:12px 20px;border-top:1px solid rgba(0,0,0,0.06)">
                     <div class="input-group">
                         <input type="text" class="form-control" id="testeMsgInput" placeholder="Digite sua mensagem..." 
                                onkeypress="if(event.key==='Enter')cbEnviarTeste()">
@@ -729,9 +794,9 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-header"><h6 class="mb-0"><i class="fas fa-info-circle"></i> Info do Teste</h6></div>
-                <div class="card-body" id="testeInfo">
+            <div class="cb-section">
+                <div class="cb-section-header"><h3><i class="fas fa-info-circle"></i> Info do Teste</h3></div>
+                <div class="cb-section-body" id="testeInfo">
                     <p class="text-muted mb-2"><small>As mensagens de teste são salvas em uma sessão especial (número 0000000000).</small></p>
                     <hr>
                     <div id="testeStats">
@@ -741,9 +806,9 @@
                 </div>
             </div>
 
-            <div class="card mt-3">
-                <div class="card-header"><h6 class="mb-0"><i class="fas fa-link"></i> Webhook WhatsApp</h6></div>
-                <div class="card-body">
+            <div class="cb-section mt-3">
+                <div class="cb-section-header"><h3><i class="fas fa-link"></i> Webhook WhatsApp</h3></div>
+                <div class="cb-section-body">
                     <p class="mb-2" style="font-size:13px">Configure este URL no Evolution API como webhook:</p>
                     <div class="input-group mb-2">
                         <input type="text" class="form-control form-control-sm" id="webhookUrlDisplay" readonly
@@ -762,18 +827,18 @@
 <!-- ============================================ -->
 <!--  TAB: AJUDA                                   -->
 <!-- ============================================ -->
-<div class="ad-tab-content" id="cb-ajuda">
+<div class="cb-tab-content" id="cb-ajuda">
     <div class="row g-4">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-book"></i> Guia Completo — Como Colocar o Chatbot para Funcionar</h5>
+            <div class="cb-section">
+                <div class="cb-section-header" style="background:linear-gradient(135deg,#6366F1,#8B5CF6);border-radius:14px 14px 0 0">
+                    <h3 style="color:#fff"><i class="fas fa-book" style="opacity:0.8"></i> Guia Completo — Como Colocar o Chatbot para Funcionar</h3>
                 </div>
-                <div class="card-body" style="font-size:14px;line-height:1.7">
+                <div class="cb-section-body" style="font-size:14px;line-height:1.7">
 
                     <!-- PASSO 1 -->
-                    <div class="mb-4 p-3 border rounded" style="background:#f0f9ff">
-                        <h5 class="text-primary"><i class="fas fa-1"></i> Passo 1 — Configurar a IA (Ollama)</h5>
+                    <div class="cb-step" style="background:rgba(59,130,246,0.04);border-color:rgba(59,130,246,0.15)">
+                        <h5><span class="cb-step-number" style="background:rgba(59,130,246,0.1);color:#3B82F6">1</span> Configurar a IA (Ollama)</h5>
                         <p>O chatbot usa o <strong>Ollama</strong> como motor de inteligência artificial local. Ele deve estar rodando em um servidor acessível.</p>
                         <ol>
                             <li>Instale o Ollama no servidor: <a href="https://ollama.ai" target="_blank">https://ollama.ai</a></li>
@@ -796,8 +861,8 @@ ollama pull mistral</code></pre>
                     </div>
 
                     <!-- PASSO 2 -->
-                    <div class="mb-4 p-3 border rounded" style="background:#f0fff4">
-                        <h5 class="text-success"><i class="fas fa-2"></i> Passo 2 — Configurar o WhatsApp (Evolution API)</h5>
+                    <div class="cb-step" style="background:rgba(16,185,129,0.04);border-color:rgba(16,185,129,0.15)">
+                        <h5><span class="cb-step-number" style="background:rgba(16,185,129,0.1);color:#10B981">2</span> Configurar o WhatsApp (Evolution API)</h5>
                         <p>A integração com WhatsApp usa o <strong>Evolution API</strong>, que gerencia a sessão do WhatsApp.</p>
                         <ol>
                             <li>Instale e configure o Evolution API: <a href="https://doc.evolution-api.com" target="_blank">Documentação Oficial</a></li>
@@ -819,8 +884,8 @@ ollama pull mistral</code></pre>
                     </div>
 
                     <!-- PASSO 3 -->
-                    <div class="mb-4 p-3 border rounded" style="background:#fff5f0">
-                        <h5 style="color:var(--orange)"><i class="fas fa-3"></i> Passo 3 — Autorizar Números</h5>
+                    <div class="cb-step" style="background:rgba(249,115,22,0.04);border-color:rgba(249,115,22,0.15)">
+                        <h5><span class="cb-step-number" style="background:rgba(249,115,22,0.1);color:#F97316">3</span> Autorizar Números</h5>
                         <p>Por segurança, o chatbot <strong>só responde para números autorizados</strong>.</p>
                         <ol>
                             <li>Vá na aba <strong>Números Autorizados</strong></li>
@@ -832,8 +897,8 @@ ollama pull mistral</code></pre>
                     </div>
 
                     <!-- PASSO 4 -->
-                    <div class="mb-4 p-3 border rounded" style="background:#f5f0ff">
-                        <h5 style="color:var(--purple)"><i class="fas fa-4"></i> Passo 4 — Conectar uma Fonte de Dados (Opcional)</h5>
+                    <div class="cb-step" style="background:rgba(139,92,246,0.04);border-color:rgba(139,92,246,0.15)">
+                        <h5><span class="cb-step-number" style="background:rgba(139,92,246,0.1);color:#8B5CF6">4</span> Conectar uma Fonte de Dados (Opcional)</h5>
                         <p>Você pode conectar o chatbot a um <strong>banco de dados</strong> ou uma <strong>API REST</strong> para que a IA consulte dados reais.</p>
                         
                         <h6 class="mt-3"><i class="fas fa-database"></i> Opção A — Banco de Dados SQL</h6>
@@ -888,8 +953,8 @@ ollama pull mistral</code></pre>
                     </div>
 
                     <!-- PASSO 5 -->
-                    <div class="mb-4 p-3 border rounded" style="background:#fffbe6">
-                        <h5 style="color:#b8860b"><i class="fas fa-5"></i> Passo 5 — Integração N8N (Opcional)</h5>
+                    <div class="cb-step" style="background:rgba(245,158,11,0.04);border-color:rgba(245,158,11,0.15)">
+                        <h5><span class="cb-step-number" style="background:rgba(245,158,11,0.1);color:#F59E0B">5</span> Integração N8N (Opcional)</h5>
                         <p>O <strong>N8N</strong> permite criar automações disparadas pelo chatbot.</p>
                         <ol>
                             <li>Instale o N8N: <a href="https://n8n.io" target="_blank">https://n8n.io</a></li>
@@ -908,8 +973,8 @@ ollama pull mistral</code></pre>
                     </div>
 
                     <!-- PASSO 6 -->
-                    <div class="mb-4 p-3 border rounded" style="background:#e8f5e9">
-                        <h5 class="text-success"><i class="fas fa-6"></i> Passo 6 — Ativar e Testar!</h5>
+                    <div class="cb-step" style="background:rgba(16,185,129,0.04);border-color:rgba(16,185,129,0.15)">
+                        <h5><span class="cb-step-number" style="background:rgba(16,185,129,0.1);color:#10B981">6</span> Ativar e Testar!</h5>
                         <ol>
                             <li>Na aba <strong>Configurações</strong>, coloque <strong>Chatbot Ativo = Ativado</strong></li>
                             <li>Opcionalmente configure <strong>Horário de Funcionamento</strong></li>
@@ -926,42 +991,48 @@ ollama pull mistral</code></pre>
 
         <!-- Sidebar: Checklist Rápido + Arquitetura -->
         <div class="col-md-4">
-            <div class="card mb-3">
-                <div class="card-header bg-success text-white">
-                    <h6 class="mb-0"><i class="fas fa-clipboard-check"></i> Checklist Rápido</h6>
+            <div class="cb-section mb-3">
+                <div class="cb-section-header" style="background:linear-gradient(135deg,#10B981,#059669);border-radius:14px 14px 0 0">
+                    <h3 style="color:#fff"><i class="fas fa-clipboard-check" style="opacity:0.8"></i> Checklist Rápido</h3>
                 </div>
-                <div class="card-body p-0">
-                    <ul class="list-group list-group-flush" id="ajudaChecklist" style="font-size:13px">
-                        <li class="list-group-item d-flex align-items-center gap-2" id="chk_ollama">
-                            <i class="fas fa-circle text-muted"></i> Ollama rodando e acessível
-                        </li>
-                        <li class="list-group-item d-flex align-items-center gap-2" id="chk_modelo">
-                            <i class="fas fa-circle text-muted"></i> Modelo de IA selecionado
-                        </li>
-                        <li class="list-group-item d-flex align-items-center gap-2" id="chk_evolution">
-                            <i class="fas fa-circle text-muted"></i> Evolution API conectado
-                        </li>
-                        <li class="list-group-item d-flex align-items-center gap-2" id="chk_webhook">
-                            <i class="fas fa-circle text-muted"></i> Webhook configurado
-                        </li>
-                        <li class="list-group-item d-flex align-items-center gap-2" id="chk_numeros">
-                            <i class="fas fa-circle text-muted"></i> Pelo menos 1 número autorizado
-                        </li>
-                        <li class="list-group-item d-flex align-items-center gap-2" id="chk_ativo">
-                            <i class="fas fa-circle text-muted"></i> Chatbot ativado
-                        </li>
-                    </ul>
+                <div style="padding:0">
+                    <div id="ajudaChecklist">
+                        <div class="cb-checklist-item" id="chk_ollama">
+                            <div class="cb-checklist-icon pending"><i class="fas fa-minus"></i></div>
+                            <span>Ollama rodando e acessível</span>
+                        </div>
+                        <div class="cb-checklist-item" id="chk_modelo">
+                            <div class="cb-checklist-icon pending"><i class="fas fa-minus"></i></div>
+                            <span>Modelo de IA selecionado</span>
+                        </div>
+                        <div class="cb-checklist-item" id="chk_evolution">
+                            <div class="cb-checklist-icon pending"><i class="fas fa-minus"></i></div>
+                            <span>Evolution API conectado</span>
+                        </div>
+                        <div class="cb-checklist-item" id="chk_webhook">
+                            <div class="cb-checklist-icon pending"><i class="fas fa-minus"></i></div>
+                            <span>Webhook configurado</span>
+                        </div>
+                        <div class="cb-checklist-item" id="chk_numeros">
+                            <div class="cb-checklist-icon pending"><i class="fas fa-minus"></i></div>
+                            <span>Pelo menos 1 número autorizado</span>
+                        </div>
+                        <div class="cb-checklist-item" id="chk_ativo">
+                            <div class="cb-checklist-icon pending"><i class="fas fa-minus"></i></div>
+                            <span>Chatbot ativado</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-footer text-center">
+                <div style="padding:12px 16px;text-align:center;border-top:1px solid rgba(0,0,0,0.06)">
                     <button class="btn btn-sm btn-success" onclick="cbVerificarChecklist()">
                         <i class="fas fa-sync-alt"></i> Verificar Tudo
                     </button>
                 </div>
             </div>
 
-            <div class="card mb-3">
-                <div class="card-header"><h6 class="mb-0"><i class="fas fa-sitemap"></i> Arquitetura do Sistema</h6></div>
-                <div class="card-body" style="font-size:12px">
+            <div class="cb-section mb-3">
+                <div class="cb-section-header"><h3><i class="fas fa-sitemap"></i> Arquitetura do Sistema</h3></div>
+                <div class="cb-section-body" style="font-size:12px">
                     <div class="text-center mb-3">
                         <pre style="text-align:left;font-size:11px;background:#1e1e1e;color:#d4d4d4;padding:12px;border-radius:8px;overflow-x:auto;line-height:1.5">
 ┌──────────────┐
@@ -1001,9 +1072,9 @@ ollama pull mistral</code></pre>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header"><h6 class="mb-0"><i class="fas fa-wrench"></i> Solução de Problemas</h6></div>
-                <div class="card-body" style="font-size:13px">
+            <div class="cb-section">
+                <div class="cb-section-header"><h3><i class="fas fa-wrench"></i> Solução de Problemas</h3></div>
+                <div class="cb-section-body" style="font-size:13px">
                     <div class="mb-3">
                         <strong class="text-danger"><i class="fas fa-times-circle"></i> IA não responde</strong>
                         <ul class="mb-0">
@@ -1291,23 +1362,12 @@ ollama pull mistral</code></pre>
 .db-link-modal label { display: block; margin-bottom: 6px; font-size: 12px; color: #8b949e; }
 .db-link-modal .btn-row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
 
-/* Dark card/tab styling for diagram card */
-#cb-database .col-md-7 > .card { background: #0d1117; border-color: #30363d; }
-#cb-database .col-md-7 .nav-tabs { border-bottom-color: #30363d; background: #161b22; }
-#cb-database .col-md-7 .nav-tabs .nav-link { color: #8b949e; border-color: transparent; }
-#cb-database .col-md-7 .nav-tabs .nav-link:hover { color: #c9d1d9; border-color: #30363d #30363d transparent; }
-#cb-database .col-md-7 .nav-tabs .nav-link.active { color: #58a6ff; background: #0d1117; border-color: #30363d #30363d #0d1117; }
-#subTabRelacionamentos { background: #0d1117; }
-#subTabRelacionamentos .alert-info { background: rgba(56,139,253,0.1); border-color: #1f6feb; color: #c9d1d9; }
-#subTabRelacionamentos .card-body { background: #161b22 !important; }
-#subTabRelacionamentos .bg-light { background: #161b22 !important; }
-#subTabRelacionamentos .form-select,
-#subTabRelacionamentos .form-control { background: #0d1117; border-color: #30363d; color: #c9d1d9; }
-#subTabRelacionamentos .form-label { color: #8b949e; }
-#subTabRelacionamentos .border { border-color: #30363d !important; }
-#subTabRelacionamentos .text-muted { color: #8b949e !important; }
-#subTabRelacionamentos #relListContainer .d-flex { background: #161b22; }
-#subTabRelacionamentos #relListContainer code { font-size: 12px; }
+/* Dark card/tab styling for fonte details */
+#fonteDetalhes .nav-tabs { border-bottom-color: var(--gray-200); }
+#fonteDetalhes .nav-tabs .nav-link { color: var(--gray-500); }
+#fonteDetalhes .nav-tabs .nav-link:hover { color: var(--gray-700); }
+#fonteDetalhes .nav-tabs .nav-link.active { color: var(--primary); font-weight: 600; }
+#subTabFonteRels .alert-info { background: var(--info-bg); border-color: var(--info); }
 </style>
 <script>
 const CB_API = '<?= BASE_URL ?>/api/chatbot.php';
@@ -1323,8 +1383,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ---- Tab Switching ----
 function cbTab(btn) {
-    document.querySelectorAll('.ad-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.ad-tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.cb-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.cb-tab-content').forEach(c => c.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(btn.dataset.tab).classList.add('active');
 }
@@ -1352,19 +1412,23 @@ async function cbRefreshStatus() {
         // Ollama
         const ollamaEl = document.getElementById('kpiOllama');
         if (d.ollama.online) {
-            ollamaEl.innerHTML = '<span style="color:var(--success)">● Online</span>';
+            ollamaEl.innerHTML = '<span class="dot" style="background:#10B981"></span> Online';
+            ollamaEl.style.color = '#10B981';
             // Preencher select de modelos
             cbPopulateModels(d.ollama.models, d.ollama.modelo_ativo);
         } else {
-            ollamaEl.innerHTML = '<span style="color:var(--danger)">● Offline</span>';
+            ollamaEl.innerHTML = '<span class="dot" style="background:#EF4444;animation:none"></span> Offline';
+            ollamaEl.style.color = '#EF4444';
         }
 
         // Evolution
         const evoEl = document.getElementById('kpiEvolution');
         if (d.evolution.connected) {
-            evoEl.innerHTML = '<span style="color:var(--success)">● Conectado</span>';
+            evoEl.innerHTML = '<span class="dot" style="background:#10B981"></span> Conectado';
+            evoEl.style.color = '#10B981';
         } else {
-            evoEl.innerHTML = '<span style="color:var(--danger)">● ' + (d.evolution.state || 'Desconectado') + '</span>';
+            evoEl.innerHTML = '<span class="dot" style="background:#EF4444;animation:none"></span> ' + (d.evolution.state || 'Desconectado');
+            evoEl.style.color = '#EF4444';
         }
 
         // Model info
@@ -1422,6 +1486,10 @@ async function cbLoadConfig() {
     // Atualizar visibilidade dos campos de DB/API
     cbOnTipoFonteChange();
     cbOnAuthTipoChange();
+
+    // Sync switch de fontes de dados
+    const dbSwitch = document.getElementById('cfg_chatbot_db_ativo_switch');
+    if (dbSwitch) dbSwitch.checked = cfg.chatbot_db_ativo === '1';
 }
 
 async function cbSaveConfig() {
@@ -1606,201 +1674,12 @@ async function cbLimparSessao() {
     }
 }
 
-// ---- BASE DE DADOS / API ----
-
-// Toggle campos conforme tipo de fonte selecionado
-function cbOnTipoFonteChange() {
-    const tipo = document.getElementById('cfg_chatbot_db_tipo').value;
-    const isAPI = tipo === 'api';
-    const isSQLite = tipo === 'sqlite';
-
-    document.getElementById('dbFieldsSQL').style.display = isAPI ? 'none' : '';
-    document.getElementById('dbFieldsAPI').style.display = isAPI ? '' : 'none';
-
-    // SQLite: só precisa do caminho do arquivo, sem user/pass/port/name
-    document.getElementById('dbFieldHost').style.display = isSQLite ? 'none' : '';
-    document.getElementById('dbFieldSQLite').style.display = isSQLite ? '' : 'none';
-    document.getElementById('dbFieldName').style.display = isSQLite ? 'none' : '';
-    document.getElementById('dbFieldUser').style.display = isSQLite ? 'none' : '';
-    document.getElementById('dbFieldPass').style.display = isSQLite ? 'none' : '';
-
-    // Para SQLite, usar campo host como path
-    if (isSQLite) {
-        document.getElementById('cfg_chatbot_db_host').placeholder = 'C:\\dados\\banco.db';
-    } else {
-        document.getElementById('cfg_chatbot_db_host').placeholder = 'localhost';
-    }
-
-    // Atualizar placeholder da porta conforme driver
-    const portPlaceholders = { mysql: '3306', pgsql: '5432', sqlserver: '1433' };
-    document.getElementById('cfg_chatbot_db_port').placeholder = portPlaceholders[tipo] || '3306';
-
-    // Atualizar título do schema
-    const titleEl = document.getElementById('dbSchemaTitle');
-    if (titleEl) {
-        titleEl.innerHTML = isAPI 
-            ? '<i class="fas fa-plug"></i> Endpoints da API' 
-            : '<i class="fas fa-table"></i> Schema do Banco (' + tipo.toUpperCase() + ')';
-    }
-}
-
-// Toggle campos de auth conforme tipo
-function cbOnAuthTipoChange() {
-    const auth = document.getElementById('cfg_chatbot_api_auth_tipo').value;
-    document.getElementById('apiFieldKey').style.display = (auth === 'bearer' || auth === 'apikey') ? '' : 'none';
-    document.getElementById('apiFieldHeader').style.display = auth === 'apikey' ? '' : 'none';
-    document.getElementById('apiFieldBasic').style.display = auth === 'basic' ? '' : 'none';
-}
-
-// Inserir template de endpoint no campo JSON
-function cbInsertEndpointTemplate() {
-    const el = document.getElementById('cfg_chatbot_api_endpoints');
-    let current = [];
-    try { current = JSON.parse(el.value) || []; } catch(e) { current = []; }
-    current.push({
-        method: "GET",
-        path: "/exemplo",
-        description: "Descreva o que este endpoint faz",
-        params: [
-            { name: "filtro", type: "string", description: "Parâmetro de filtro" }
-        ],
-        response_example: { id: 1, nome: "Exemplo" }
-    });
-    el.value = JSON.stringify(current, null, 2);
-}
-
-async function cbTestDB() {
-    HelpDesk.toast('Testando conexão...', 'info');
-    // Salvar config primeiro
-    await cbSaveConfig();
-
-    const resp = await HelpDesk.api('GET', '/api/chatbot.php', { action: 'db_test' });
-    if (resp.data && resp.data.success) {
-        const tipoLabel = resp.data.tipo === 'api' ? 'API' : resp.data.tipo?.toUpperCase();
-        HelpDesk.toast('✅ Conectado! ' + resp.data.message + (tipoLabel ? ' [' + tipoLabel + ']' : ''), 'success');
-        cbLoadSchema();
-    } else {
-        HelpDesk.toast('❌ Falha: ' + (resp.data?.message || resp.error), 'danger');
-    }
-}
-
-async function cbLoadSchema() {
-    const wrapper = document.getElementById('dbDiagramWrapper');
-    const canvas  = document.getElementById('dbDiagramCanvas');
-    const svg     = document.getElementById('dbDiagramSvg');
-    const emptyEl = document.getElementById('dbDiagramEmpty');
-    const tipo    = document.getElementById('cfg_chatbot_db_tipo')?.value || 'mysql';
-    const isAPI   = tipo === 'api';
-
-    // Reset
-    canvas.querySelectorAll('.db-table-card').forEach(el => el.remove());
-    svg.innerHTML = '';
-    emptyEl.style.display = 'flex';
-    emptyEl.innerHTML = '<i class="fas fa-spinner fa-spin fa-2x mb-3" style="color:#58a6ff"></i><p style="color:#8b949e">Carregando schema...</p>';
-
-    try {
-        const resp = await HelpDesk.api('GET', '/api/chatbot.php', { action: 'db_schema' });
-        if (!resp.success) {
-            emptyEl.innerHTML = '<i class="fas fa-exclamation-triangle fa-2x mb-3" style="color:#f85149"></i><p style="color:#f85149">' + (resp.error || 'Erro ao carregar') + '</p>';
-            return;
-        }
-
-        if (!resp.data || resp.data.length === 0) {
-            emptyEl.innerHTML = '<i class="fas fa-database fa-3x mb-3" style="color:#30363d"></i><p style="color:#8b949e">' + (isAPI ? 'Nenhum endpoint configurado' : 'Nenhuma tabela encontrada') + '</p>';
-            return;
-        }
-
-        window._dbSchema = resp.data;
-        emptyEl.style.display = 'none';
-
-        if (isAPI) {
-            // API mode - simple list
-            canvas.style.minWidth = 'auto';
-            const listDiv = document.createElement('div');
-            listDiv.className = 'p-3';
-            listDiv.innerHTML = resp.data.map(t => `
-                <div class="mb-3 border rounded p-2" style="background:#161b22;border-color:#30363d !important">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <strong style="color:#58a6ff"><i class="fas fa-plug"></i> ${t.table}</strong>
-                    </div>
-                    <div style="font-size:12px;color:#8b949e">${typeof t.row_count === 'string' ? t.row_count : ''}</div>
-                    ${t.columns && t.columns.length > 0 ? `<div style="font-size:12px;color:#c9d1d9;margin-top:4px">
-                        <strong style="color:#8b949e">Params:</strong> ${t.columns.map(c => '<code style="margin-right:8px;color:#7ee787">' + c.Field + ' <small style="color:#8b949e">(' + c.Type + ')</small></code>').join('')}
-                    </div>` : ''}
-                </div>
-            `).join('');
-            canvas.appendChild(listDiv);
-        } else {
-            // SQL mode - interactive diagram with draggable cards
-            const tables = resp.data.filter(t => t.permitted);
-            const savedPos = cbLoadTablePositions();
-            const cols = Math.max(3, Math.ceil(Math.sqrt(tables.length)));
-            const spacingX = 330;
-            const spacingY = 330;
-
-            tables.forEach((t, i) => {
-                const card = document.createElement('div');
-                card.className = 'db-table-card';
-                card.id = 'dbTable_' + t.table;
-                card.dataset.table = t.table;
-
-                // Position: saved or auto-grid
-                if (savedPos && savedPos[t.table]) {
-                    card.style.left = savedPos[t.table].left + 'px';
-                    card.style.top  = savedPos[t.table].top + 'px';
-                } else {
-                    card.style.left = (50 + (i % cols) * spacingX) + 'px';
-                    card.style.top  = (50 + Math.floor(i / cols) * spacingY) + 'px';
-                }
-
-                // Build columns
-                const colsHtml = t.columns.map(c => {
-                    const isPK = /^(id|codigo)$/i.test(c.Field) || c.Key === 'PRI';
-                    const isFK = /(_id|_cod|_codigo|id_|cod_)$/i.test(c.Field) || c.Key === 'MUL';
-                    let cls = '', icon = '';
-                    if (isPK)      { cls = 'pk'; icon = '🔑'; }
-                    else if (isFK) { cls = 'fk'; icon = '🔗'; }
-                    else {
-                        const tp = (c.Type || '').toLowerCase();
-                        if (/int|serial/.test(tp))                         icon = '<small style="color:#484f58">I</small>';
-                        else if (/char|text|string/.test(tp))              icon = '<small style="color:#484f58">A</small>';
-                        else if (/date|time/.test(tp))                     icon = '<small style="color:#484f58">D</small>';
-                        else if (/bool/.test(tp))                          icon = '<small style="color:#484f58">B</small>';
-                        else if (/float|double|decimal|numeric/.test(tp))  icon = '<small style="color:#484f58">N</small>';
-                        else                                                icon = '<small style="color:#484f58">•</small>';
-                    }
-                    return `<div class="db-table-col ${cls}" data-col="${c.Field}">
-                        <span class="db-col-icon">${icon}</span>
-                        <span class="db-col-name">${c.Field}</span>
-                        <span class="db-col-type">${c.Type}</span>
-                    </div>`;
-                }).join('');
-
-                card.innerHTML = `
-                    <div class="db-table-header">
-                        <span><i class="fas fa-table" style="opacity:0.7"></i> ${t.table}</span>
-                        <span class="db-table-count">${t.row_count ?? '?'} reg</span>
-                    </div>
-                    <div class="db-table-body">${colsHtml}</div>
-                `;
-
-                canvas.appendChild(card);
-                cbInitTableDrag(card);
-            });
-
-            cbUpdateCanvasSize();
-            cbPreencherSelectsRelacionamento(tables);
-        }
-
-        // Load and draw relationships
-        await cbCarregarRelacionamentos();
-        cbDrawRelLines();
-
-    } catch (e) {
-        emptyEl.style.display = 'flex';
-        emptyEl.innerHTML = '<i class="fas fa-exclamation-triangle fa-2x mb-3" style="color:#f85149"></i><p style="color:#f85149">Erro: ' + e.message + '</p>';
-    }
-}
+// ---- BASE DE DADOS / API (LEGADO - stubs para compatibilidade) ----
+function cbOnTipoFonteChange() { /* migrado para multi-fontes */ }
+function cbOnAuthTipoChange() { /* migrado para multi-fontes */ }
+function cbInsertEndpointTemplate() { /* migrado para multi-fontes */ }
+async function cbTestDB() { /* migrado para multi-fontes */ }
+async function cbLoadSchema() { /* migrado para multi-fontes */ }
 
 // ---- N8N ----
 async function cbTestN8N() {
@@ -1862,12 +1741,16 @@ async function cbVerificarChecklist() {
     checks.forEach(c => {
         const el = document.getElementById(c.id);
         if (!el) return;
-        const icon = el.querySelector('i');
-        if (c.ok) {
-            icon.className = 'fas fa-check-circle text-success';
-            totalOk++;
-        } else {
-            icon.className = 'fas fa-times-circle text-danger';
+        const iconEl = el.querySelector('.cb-checklist-icon');
+        if (iconEl) {
+            if (c.ok) {
+                iconEl.className = 'cb-checklist-icon ok';
+                iconEl.innerHTML = '<i class="fas fa-check"></i>';
+                totalOk++;
+            } else {
+                iconEl.className = 'cb-checklist-icon fail';
+                iconEl.innerHTML = '<i class="fas fa-times"></i>';
+            }
         }
     });
 
@@ -1950,6 +1833,257 @@ async function cbLimparLogs() {
     }
 }
 
+// =============================================
+//  DATASYSTEM API LOGS
+// =============================================
+let _dsLogsCache = [];
+
+async function cbLoadDSLogs() {
+    const tbody = document.getElementById('dsLogTableBody');
+    tbody.innerHTML = '<tr><td colspan="9" class="text-center py-3"><i class="fas fa-spinner fa-spin"></i> Carregando...</td></tr>';
+
+    const filtro = document.getElementById('dsLogFiltro')?.value || 'all';
+    const limite = document.getElementById('dsLogLimite')?.value || '100';
+
+    try {
+        const resp = await HelpDesk.api('GET', `/api/chatbot.php?action=datasystem_logs&filtro=${filtro}&limite=${limite}`);
+        if (!resp.success) throw new Error(resp.message || 'Erro');
+
+        const logs = resp.data || [];
+        const stats = resp.stats || {};
+        _dsLogsCache = logs;
+
+        // Stats
+        document.getElementById('dsStatTotal').textContent = (stats.total || 0) + ' total';
+        document.getElementById('dsStatOk').textContent = (stats.sucesso || 0) + ' sucesso';
+        document.getElementById('dsStatErro').textContent = (stats.erros || 0) + ' erros';
+        document.getElementById('dsStatHoje').textContent = (stats.hoje || 0) + ' hoje';
+        document.getElementById('dsStatAvg').textContent = (stats.avg_ms || 0) + 'ms avg';
+
+        // Badge
+        const badge = document.getElementById('badgeDSLogsHoje');
+        if (stats.hoje > 0) {
+            badge.textContent = stats.hoje;
+            badge.style.display = '';
+        } else {
+            badge.style.display = 'none';
+        }
+
+        if (logs.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted py-4">Nenhum log encontrado</td></tr>';
+            return;
+        }
+
+        let html = '';
+        logs.forEach((log, idx) => {
+            const data = log.criado_em ? new Date(log.criado_em).toLocaleString('pt-BR') : '-';
+            const isErr = !log.sucesso || parseInt(log.sucesso) === 0;
+            const httpBadge = log.http_code
+                ? `<span class="badge ${log.http_code >= 400 ? 'bg-danger' : 'bg-success'}">${log.http_code}</span>`
+                : '<span class="badge bg-secondary">—</span>';
+            const duracao = log.duracao_ms ? log.duracao_ms + 'ms' : '—';
+            const tamanho = log.response_size ? formatBytes(log.response_size) : '—';
+            const statusIcon = isErr
+                ? '<i class="fas fa-times-circle text-danger"></i>'
+                : '<i class="fas fa-check-circle text-success"></i>';
+            const endpoint = escapeHtml(log.endpoint || '—');
+            const endpointShort = endpoint.length > 60 ? endpoint.substring(0, 60) + '…' : endpoint;
+
+            html += `<tr style="cursor:pointer;${isErr ? 'background:rgba(239,68,68,0.04)' : ''}" onclick="cbShowDSLogDetail(${idx})">
+                <td class="text-muted">${log.id}</td>
+                <td><small>${data}</small></td>
+                <td><span class="badge bg-primary">${escapeHtml(log.method || 'GET')}</span></td>
+                <td><code style="font-size:11px;word-break:break-all" title="${endpoint}">${endpointShort}</code></td>
+                <td>${httpBadge}</td>
+                <td class="text-muted">${duracao}</td>
+                <td class="text-muted">${tamanho}</td>
+                <td class="text-center">${statusIcon}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-secondary py-0 px-1" onclick="event.stopPropagation();cbShowDSLogDetail(${idx})" title="Ver detalhe">
+                        <i class="fas fa-eye" style="font-size:11px"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary py-0 px-1" onclick="event.stopPropagation();cbDownloadDSLog(${idx},'full')" title="Baixar JSON">
+                        <i class="fas fa-download" style="font-size:11px"></i>
+                    </button>
+                </td>
+            </tr>`;
+        });
+        tbody.innerHTML = html;
+    } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center text-danger py-3"><i class="fas fa-exclamation-triangle"></i> ${escapeHtml(e.message)}</td></tr>`;
+    }
+}
+
+function cbShowDSLogDetail(idx) {
+    const log = _dsLogsCache[idx];
+    if (!log) return;
+
+    const data = log.criado_em ? new Date(log.criado_em).toLocaleString('pt-BR') : '-';
+    const isErr = !log.sucesso || parseInt(log.sucesso) === 0;
+
+    let payloadHtml = '<span class="text-muted">—</span>';
+    if (log.payload) {
+        try {
+            const p = typeof log.payload === 'string' ? JSON.parse(log.payload) : log.payload;
+            payloadHtml = `<pre style="max-height:200px;overflow:auto;background:#0d1117;color:#c9d1d9;padding:12px;border-radius:8px;font-size:12px;margin:0">${escapeHtml(JSON.stringify(p, null, 2))}</pre>`;
+        } catch { payloadHtml = `<pre style="max-height:200px;overflow:auto;background:#0d1117;color:#c9d1d9;padding:12px;border-radius:8px;font-size:12px;margin:0">${escapeHtml(log.payload)}</pre>`; }
+    }
+
+    let responseHtml = '<span class="text-muted">—</span>';
+    if (log.response_body) {
+        try {
+            const r = JSON.parse(log.response_body);
+            responseHtml = `<pre style="max-height:400px;overflow:auto;background:#0d1117;color:#c9d1d9;padding:12px;border-radius:8px;font-size:12px;margin:0">${escapeHtml(JSON.stringify(r, null, 2))}</pre>`;
+        } catch { responseHtml = `<pre style="max-height:400px;overflow:auto;background:#0d1117;color:#c9d1d9;padding:12px;border-radius:8px;font-size:12px;margin:0">${escapeHtml(log.response_body.substring(0, 10000))}</pre>`; }
+    }
+
+    const html = `
+        <div class="p-3">
+            <!-- Header info -->
+            <div class="d-flex gap-3 flex-wrap mb-3 pb-3" style="border-bottom:1px solid var(--gray-200)">
+                <div><strong>ID:</strong> ${log.id}</div>
+                <div><strong>Data:</strong> ${data}</div>
+                <div><strong>Fonte:</strong> ${escapeHtml(log.fonte_nome || '—')}</div>
+                <div><strong>Sessão:</strong> ${log.sessao_id || '—'}</div>
+                <div><strong>Duração:</strong> <span class="badge bg-warning text-dark">${log.duracao_ms || 0}ms</span></div>
+                <div><strong>Tamanho:</strong> ${formatBytes(log.response_size || 0)}</div>
+                <div><strong>Status:</strong> ${isErr
+                    ? '<span class="badge bg-danger"><i class="fas fa-times"></i> Erro</span>'
+                    : '<span class="badge bg-success"><i class="fas fa-check"></i> Sucesso</span>'}</div>
+            </div>
+
+            <!-- Endpoint -->
+            <div class="mb-3">
+                <label class="form-label fw-bold mb-1" style="font-size:12px"><i class="fas fa-link"></i> Endpoint</label>
+                <div style="background:var(--gray-50);padding:10px 14px;border-radius:8px;border:1px solid var(--gray-200);font-family:monospace;font-size:13px;word-break:break-all">
+                    <span class="badge bg-primary me-1">${escapeHtml(log.method || 'GET')}</span>
+                    <span class="badge ${log.http_code >= 400 ? 'bg-danger' : 'bg-success'} me-2">${log.http_code || '—'}</span>
+                    ${escapeHtml(log.endpoint || '—')}
+                </div>
+            </div>
+
+            ${log.erro ? `<div class="alert alert-danger py-2 mb-3" style="font-size:13px"><i class="fas fa-exclamation-triangle"></i> <strong>Erro:</strong> ${escapeHtml(log.erro)}</div>` : ''}
+
+            <!-- Payload -->
+            <div class="mb-3">
+                <div class="d-flex align-items-center justify-content-between mb-1">
+                    <label class="form-label fw-bold mb-0" style="font-size:12px"><i class="fas fa-upload"></i> Payload (enviado)</label>
+                    ${log.payload ? `<button class="btn btn-sm btn-outline-secondary py-0 px-2" style="font-size:11px" onclick="cbDownloadDSLog(${idx},'payload')"><i class="fas fa-download"></i> Baixar JSON</button>` : ''}
+                </div>
+                ${payloadHtml}
+            </div>
+
+            <!-- Response -->
+            <div class="mb-3">
+                <div class="d-flex align-items-center justify-content-between mb-1">
+                    <label class="form-label fw-bold mb-0" style="font-size:12px"><i class="fas fa-download"></i> Response (retorno)</label>
+                    <div class="d-flex gap-1">
+                        ${log.response_body ? `<button class="btn btn-sm btn-outline-secondary py-0 px-2" style="font-size:11px" onclick="cbDownloadDSLog(${idx},'response')"><i class="fas fa-download"></i> Baixar JSON</button>` : ''}
+                        ${log.response_body && log.payload ? `<button class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size:11px" onclick="cbDownloadDSLog(${idx},'full')"><i class="fas fa-file-archive"></i> Baixar Completo</button>` : ''}
+                    </div>
+                </div>
+                ${responseHtml}
+            </div>
+        </div>
+    `;
+
+    HelpDesk.showModal(
+        `<i class="fas fa-exchange-alt"></i> Detalhe da Chamada #${log.id}`,
+        html,
+        '',
+        'modal-xl'
+    );
+}
+
+async function cbLimparDSLogs() {
+    if (!confirm('Limpar todos os logs de chamadas DataSystem? Esta ação não pode ser desfeita.')) return;
+    try {
+        const resp = await HelpDesk.api('POST', '/api/chatbot.php', { action: 'limpar_datasystem_logs' });
+        if (resp.success) {
+            HelpDesk.toast('✅ Logs DataSystem limpos!', 'success');
+            cbLoadDSLogs();
+        } else {
+            HelpDesk.toast('❌ ' + (resp.message || 'Erro'), 'error');
+        }
+    } catch (e) {
+        HelpDesk.toast('❌ Erro: ' + e.message, 'error');
+    }
+}
+
+/**
+ * Download payload, response ou ambos como JSON
+ * @param {number} idx - Índice no cache
+ * @param {'payload'|'response'|'full'} tipo
+ */
+function cbDownloadDSLog(idx, tipo) {
+    const log = _dsLogsCache[idx];
+    if (!log) return;
+
+    let content, filename;
+    const ts = (log.criado_em || '').replace(/[\s:\/]/g, '-');
+    const endpointSlug = (log.endpoint || 'unknown').replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 40);
+
+    if (tipo === 'payload') {
+        let data;
+        try {
+            data = typeof log.payload === 'string' ? JSON.parse(log.payload) : log.payload;
+        } catch { data = log.payload; }
+        content = JSON.stringify(data, null, 2);
+        filename = `datasystem_payload_${log.id}_${endpointSlug}.json`;
+    } else if (tipo === 'response') {
+        let data;
+        try {
+            data = JSON.parse(log.response_body);
+        } catch { data = log.response_body; }
+        content = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+        filename = `datasystem_response_${log.id}_${endpointSlug}.json`;
+    } else {
+        // full — payload + response + metadata
+        let payloadData, responseData;
+        try { payloadData = typeof log.payload === 'string' ? JSON.parse(log.payload) : log.payload; } catch { payloadData = log.payload; }
+        try { responseData = JSON.parse(log.response_body); } catch { responseData = log.response_body; }
+        const full = {
+            _meta: {
+                id: log.id,
+                data: log.criado_em,
+                fonte: log.fonte_nome,
+                method: log.method,
+                endpoint: log.endpoint,
+                http_code: log.http_code,
+                duracao_ms: log.duracao_ms,
+                response_size: log.response_size,
+                sucesso: !!parseInt(log.sucesso),
+                erro: log.erro || null,
+                sessao_id: log.sessao_id
+            },
+            payload: payloadData || null,
+            response: responseData || null
+        };
+        content = JSON.stringify(full, null, 2);
+        filename = `datasystem_full_${log.id}_${endpointSlug}.json`;
+    }
+
+    const blob = new Blob([content], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    HelpDesk.toast('📥 Download iniciado: ' + filename, 'success');
+}
+
+function formatBytes(bytes) {
+    if (!bytes || bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
 async function cbLoadErros() {
     const tbody = document.getElementById('errosTableBody');
     tbody.innerHTML = '<tr><td colspan="3" class="text-center py-3"><i class="fas fa-spinner fa-spin"></i> Carregando...</td></tr>';
@@ -1983,6 +2117,671 @@ async function cbLoadErros() {
         tbody.innerHTML = html;
     } catch (e) {
         tbody.innerHTML = `<tr><td colspan="3" class="text-center text-danger py-3"><i class="fas fa-exclamation-triangle"></i> ${escapeHtml(e.message)}</td></tr>`;
+    }
+}
+
+// ---- FONTES DE DADOS MÚLTIPLAS ----
+let _fontes = [];
+let _fonteAtualId = null;
+let _fonteSchema = null;
+let _fonteRels = [];
+
+async function cbLoadFontes() {
+    try {
+        const resp = await HelpDesk.api('GET', '/api/chatbot.php', { action: 'fontes' });
+        if (!resp.success) return;
+        _fontes = resp.data || [];
+        cbRenderFontes();
+    } catch (e) {
+        console.error('Erro ao carregar fontes:', e);
+    }
+}
+
+function cbRenderFontes() {
+    const container = document.getElementById('fontesListContainer');
+    if (!_fontes || _fontes.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-5">
+                <i class="fas fa-database fa-3x mb-3" style="color:var(--gray-300)"></i>
+                <p style="color:var(--gray-500)">Nenhuma fonte de dados configurada</p>
+                <button class="btn btn-primary" onclick="cbShowAddFonte()">
+                    <i class="fas fa-plus"></i> Adicionar Primeira Fonte
+                </button>
+            </div>`;
+        return;
+    }
+
+    const tipoIcons = { mysql: 'fa-database', pgsql: 'fa-database', sqlserver: 'fa-database', sqlite: 'fa-file', api: 'fa-plug' };
+    const tipoLabels = { mysql: 'MySQL', pgsql: 'PostgreSQL', sqlserver: 'SQL Server', sqlite: 'SQLite', api: 'API REST' };
+    const tipoCores = { mysql: '#00758f', pgsql: '#336791', sqlserver: '#cc2927', sqlite: '#003b57', api: '#8B5CF6' };
+    const tipoBgs = { mysql: '#f0fafb', pgsql: '#f0f4f8', sqlserver: '#fef2f2', sqlite: '#f0f5f8', api: '#f5f3ff' };
+
+    let html = '<div class="row g-3">';
+    _fontes.forEach(f => {
+        const isDS = (f.api_template === 'datasystem');
+        const cor = isDS ? '#E65100' : (tipoCores[f.tipo] || '#6c757d');
+        const bg = isDS ? '#FFF3E0' : (tipoBgs[f.tipo] || 'var(--gray-50)');
+        const icon = isDS ? 'fa-cubes' : (tipoIcons[f.tipo] || 'fa-database');
+        const label = isDS ? '📦 DataSystem ERP' : (tipoLabels[f.tipo] || f.tipo);
+        const testeOk = f.ultimo_teste_ok === '1' || f.ultimo_teste_ok === 1;
+        const testeFalhou = f.ultimo_teste_ok === '0' || f.ultimo_teste_ok === 0;
+        const ativo = f.ativo == 1;
+
+        const statusBadge = ativo
+            ? '<span class="badge bg-success" style="font-weight:500"><i class="fas fa-check"></i> Ativa</span>'
+            : '<span class="badge bg-secondary" style="font-weight:500"><i class="fas fa-pause"></i> Inativa</span>';
+        const testeBadge = testeOk
+            ? '<span class="badge" style="background:var(--success-bg);color:var(--success);font-weight:500"><i class="fas fa-plug"></i> OK</span>'
+            : (testeFalhou ? '<span class="badge" style="background:var(--danger-bg);color:var(--danger);font-weight:500"><i class="fas fa-exclamation-triangle"></i> Falha</span>'
+            : '<span class="badge" style="background:var(--warning-bg);color:var(--warning);font-weight:500"><i class="fas fa-question-circle"></i> Não testada</span>');
+
+        const info = f.tipo === 'api'
+            ? (f.api_url || '-')
+            : `${f.db_host || '-'}${f.db_name ? '/' + f.db_name : ''}`;
+
+        html += `
+        <div class="col-md-6 col-xl-4">
+            <div class="card h-100" style="border-left:4px solid ${cor};${!ativo ? 'opacity:0.65;' : ''}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <div style="width:32px;height:32px;border-radius:8px;background:${bg};display:flex;align-items:center;justify-content:center">
+                                    <i class="fas ${icon}" style="color:${cor};font-size:14px"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0" style="font-weight:600;color:var(--gray-800)">${escapeHtml(f.nome)}</h6>
+                                    <small style="color:var(--gray-400);font-size:11px">${label} · <code style="font-size:11px;color:${cor}">${escapeHtml(f.alias)}</code></small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column gap-1 align-items-end">
+                            ${statusBadge}
+                            ${testeBadge}
+                        </div>
+                    </div>
+                    <div class="mb-3" style="font-size:12px;color:var(--gray-500)">
+                        <div class="mb-1"><i class="fas fa-server" style="width:14px;color:var(--gray-400)"></i> ${escapeHtml(info)}</div>
+                        ${f.descricao ? '<div><i class="fas fa-info-circle" style="width:14px;color:var(--gray-400)"></i> ' + escapeHtml(f.descricao.substring(0, 100)) + '</div>' : ''}
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button class="btn btn-sm btn-outline-primary" onclick="cbEditFonte(${f.id})" title="Editar">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button class="btn btn-sm btn-outline-success" onclick="cbTestarFonte(${f.id})" title="Testar conexão">
+                            <i class="fas fa-plug"></i> Testar
+                        </button>
+                        <button class="btn btn-sm btn-outline-info" onclick="cbVerFonteSchema(${f.id})" title="Ver schema/tabelas">
+                            <i class="fas fa-table"></i> Schema
+                        </button>
+                        <div class="ms-auto d-flex gap-1">
+                            <button class="btn btn-sm btn-${ativo ? 'warning' : 'success'}" onclick="cbToggleFonte(${f.id})" title="${ativo ? 'Desativar' : 'Ativar'}" style="font-size:11px">
+                                <i class="fas fa-${ativo ? 'pause' : 'play'}"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="cbRemoverFonte(${f.id})" title="Remover">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function cbShowAddFonte() {
+    _fonteAtualId = null;
+    cbShowFonteModal('Nova Fonte de Dados', {});
+}
+
+async function cbEditFonte(id) {
+    const resp = await HelpDesk.api('GET', '/api/chatbot.php', { action: 'fonte', id });
+    if (!resp.success) return HelpDesk.toast(resp.error || 'Erro', 'danger');
+    _fonteAtualId = id;
+    cbShowFonteModal('Editar Fonte: ' + resp.data.nome, resp.data);
+}
+
+function cbShowFonteModal(titulo, dados) {
+    const isAPI = dados.tipo === 'api';
+    const isDS = (dados.api_template === 'datasystem');
+    const d = dados;
+    HelpDesk.showModal(
+        '<i class="fas fa-database"></i> ' + titulo,
+        `<div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Nome *</label>
+                <input type="text" class="form-control" id="fonteNome" value="${escapeHtml(d.nome || '')}" placeholder="Ex: ERP Vendas">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Alias *</label>
+                <input type="text" class="form-control" id="fonteAlias" value="${escapeHtml(d.alias || '')}" placeholder="erp">
+                <small class="text-muted">Minúsculas, sem espaços</small>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Tipo *</label>
+                <select class="form-control" id="fonteTipo" onchange="cbFonteModalTipoChange()">
+                    <option value="mysql" ${d.tipo === 'mysql' ? 'selected' : ''}>MySQL</option>
+                    <option value="pgsql" ${d.tipo === 'pgsql' ? 'selected' : ''}>PostgreSQL</option>
+                    <option value="sqlserver" ${d.tipo === 'sqlserver' ? 'selected' : ''}>SQL Server</option>
+                    <option value="sqlite" ${d.tipo === 'sqlite' ? 'selected' : ''}>SQLite</option>
+                    <option value="api" ${isAPI && !isDS ? 'selected' : ''}>API REST</option>
+                    <option value="datasystem" ${isDS ? 'selected' : ''}>📦 DataSystem ERP</option>
+                </select>
+            </div>
+        </div>
+        <hr>
+        <!-- Campos SQL -->
+        <div id="fonteFieldsSQL" style="display:${isAPI || isDS ? 'none' : ''}">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Host</label>
+                    <input type="text" class="form-control" id="fonteDbHost" value="${escapeHtml(d.db_host || '')}" placeholder="localhost">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Porta</label>
+                    <input type="text" class="form-control" id="fonteDbPort" value="${escapeHtml(d.db_port || '')}" placeholder="3306">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Banco</label>
+                    <input type="text" class="form-control" id="fonteDbName" value="${escapeHtml(d.db_name || '')}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Usuário</label>
+                    <input type="text" class="form-control" id="fonteDbUser" value="${escapeHtml(d.db_user || '')}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Senha</label>
+                    <input type="password" class="form-control" id="fonteDbPass" value="${escapeHtml(d.db_pass || '')}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Máx. Linhas</label>
+                    <input type="number" class="form-control" id="fonteMaxRows" value="${d.max_rows || 50}">
+                </div>
+            </div>
+            <div class="form-group mt-3">
+                <label class="form-label">Tabelas Permitidas <small class="text-muted">(vírgula, vazio=todas)</small></label>
+                <input type="text" class="form-control" id="fonteTabelasPermitidas" value="${escapeHtml(d.tabelas_permitidas || '')}" placeholder="vendas,clientes,produtos">
+            </div>
+        </div>
+        <!-- Campos DataSystem ERP -->
+        <div id="fonteFieldsDS" style="display:${isDS ? '' : 'none'}">
+            <div class="alert alert-info py-2 mb-3" style="font-size:12px">
+                <i class="fas fa-info-circle"></i>
+                <strong>DataSystem ERP</strong> — Integração automática com a API de gestão DataSystem.
+                A autenticação JWT é feita automaticamente. Informe o CNPJ e Hash fornecidos pela DataSystem.
+            </div>
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <label class="form-label">URL Base da API *</label>
+                    <input type="text" class="form-control" id="fonteDsUrl" value="${escapeHtml(isDS ? (d.api_url || 'https://integracaodatasystem.useserver.com.br') : 'https://integracaodatasystem.useserver.com.br')}" placeholder="https://integracaodatasystem.useserver.com.br">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="text-muted" style="font-size:11px;padding-top:8px">
+                        <i class="fas fa-lock" style="color:var(--success)"></i> Auth JWT automática
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-building"></i> CNPJ *</label>
+                    <input type="text" class="form-control" id="fonteDsCnpj" value="${escapeHtml(isDS ? (d.api_auth_user || '') : '')}" placeholder="00.000.000/0000-00">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-key"></i> Hash de Acesso *</label>
+                    <input type="password" class="form-control" id="fonteDsHash" value="${escapeHtml(isDS ? (d.api_key || '') : '')}" placeholder="Hash fornecido pela DataSystem">
+                </div>
+            </div>
+            <div class="mt-3 p-3 rounded" style="background:var(--gray-50);border:1px solid var(--gray-200)">
+                <h6 style="font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:8px">
+                    <i class="fas fa-list-check"></i> Endpoints pré-configurados:
+                </h6>
+                <div style="font-size:11px;color:var(--gray-500);columns:2;column-gap:16px;line-height:1.8">
+                    <div>📊 <strong>Vendas</strong> — por período</div>
+                    <div>👥 <strong>Clientes</strong> — busca / por CPF</div>
+                    <div>📦 <strong>Produtos</strong> — catálogo</div>
+                    <div>🏪 <strong>Lojas</strong> — filiais</div>
+                    <div>👤 <strong>Vendedores</strong> — equipe</div>
+                    <div>📋 <strong>Saldos/Estoque</strong> — por loja</div>
+                    <div>💰 <strong>Contas a Pagar</strong></div>
+                    <div>💳 <strong>Contas a Receber</strong></div>
+                    <div>📥 <strong>Entradas de Estoque</strong></div>
+                    <div>🏭 <strong>Fornecedores</strong></div>
+                    <div>🏷️ <strong>Departamentos, Marcas, Cores</strong></div>
+                    <div>🛒 <strong>Pedidos de Compra</strong></div>
+                    <div>💳 <strong>Planos de Pagamento</strong></div>
+                    <div>📁 <strong>Coleções, Modelos, Classes, Tipos</strong></div>
+                </div>
+            </div>
+        </div>
+        <!-- Campos API Genérica -->
+        <div id="fonteFieldsAPI" style="display:${isAPI && !isDS ? '' : 'none'}">
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <label class="form-label">URL Base</label>
+                    <input type="text" class="form-control" id="fonteApiUrl" value="${escapeHtml(!isDS ? (d.api_url || '') : '')}" placeholder="https://api.exemplo.com/v1">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Autenticação</label>
+                    <select class="form-control" id="fonteApiAuthTipo" onchange="cbFonteModalAuthChange()">
+                        <option value="none" ${d.api_auth_tipo === 'none' || !d.api_auth_tipo ? 'selected' : ''}>Nenhuma</option>
+                        <option value="bearer" ${d.api_auth_tipo === 'bearer' ? 'selected' : ''}>Bearer Token</option>
+                        <option value="apikey" ${d.api_auth_tipo === 'apikey' ? 'selected' : ''}>API Key</option>
+                        <option value="basic" ${d.api_auth_tipo === 'basic' ? 'selected' : ''}>Basic Auth</option>
+                    </select>
+                </div>
+                <div class="col-md-6" id="fonteApiKeyField" style="display:${['bearer','apikey'].includes(d.api_auth_tipo) ? '' : 'none'}">
+                    <label class="form-label">Token / API Key</label>
+                    <input type="password" class="form-control" id="fonteApiKey" value="${escapeHtml(!isDS ? (d.api_key || '') : '')}">
+                </div>
+                <div class="col-md-6" id="fonteApiHeaderField" style="display:${d.api_auth_tipo === 'apikey' ? '' : 'none'}">
+                    <label class="form-label">Header Name</label>
+                    <input type="text" class="form-control" id="fonteApiAuthHeader" value="${escapeHtml(d.api_auth_header || 'Authorization')}">
+                </div>
+                <div class="col-md-12" id="fonteApiBasicField" style="display:${d.api_auth_tipo === 'basic' ? '' : 'none'}">
+                    <div class="row g-2">
+                        <div class="col-6"><input type="text" class="form-control" id="fonteApiAuthUser" value="${escapeHtml(!isDS ? (d.api_auth_user || '') : '')}" placeholder="Usuário"></div>
+                        <div class="col-6"><input type="password" class="form-control" id="fonteApiAuthPass" value="${escapeHtml(d.api_auth_pass || '')}" placeholder="Senha"></div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Endpoints (JSON)</label>
+                    <textarea class="form-control font-monospace" id="fonteApiEndpoints" rows="5" style="font-size:12px">${escapeHtml(typeof d.api_endpoints === 'string' ? d.api_endpoints : JSON.stringify(d.api_endpoints || [], null, 2))}</textarea>
+                </div>
+            </div>
+            <div class="form-group mt-3">
+                <label class="form-label">Descrição da API</label>
+                <textarea class="form-control" id="fonteApiDescricao" rows="2">${escapeHtml(d.api_descricao || '')}</textarea>
+            </div>
+        </div>
+        <!-- Comum -->
+        <div class="form-group mt-3">
+            <label class="form-label">Descrição (contexto para a IA)</label>
+            <textarea class="form-control" id="fonteDescricao" rows="2" placeholder="Ex: Banco do ERP com dados de vendas, clientes e estoque">${escapeHtml(d.descricao || '')}</textarea>
+        </div>`,
+        `<button class="btn btn-primary" onclick="cbSalvarFonte()"><i class="fas fa-save"></i> Salvar</button>
+         <button class="btn btn-secondary" onclick="HelpDesk.closeModal()">Cancelar</button>`
+    );
+    setTimeout(() => cbFonteModalTipoChange(), 50);
+}
+
+function cbFonteModalTipoChange() {
+    const tipo = document.getElementById('fonteTipo')?.value;
+    const isAPI = tipo === 'api';
+    const isDS = tipo === 'datasystem';
+    const sqlEl = document.getElementById('fonteFieldsSQL');
+    const apiEl = document.getElementById('fonteFieldsAPI');
+    const dsEl = document.getElementById('fonteFieldsDS');
+    if (sqlEl) sqlEl.style.display = (isAPI || isDS) ? 'none' : '';
+    if (apiEl) apiEl.style.display = (isAPI && !isDS) ? '' : 'none';
+    if (dsEl) dsEl.style.display = isDS ? '' : 'none';
+
+    // Auto-fill alias and nome for DataSystem
+    if (isDS) {
+        const aliasEl = document.getElementById('fonteAlias');
+        const nomeEl = document.getElementById('fonteNome');
+        if (aliasEl && !aliasEl.value) aliasEl.value = 'datasystem';
+        if (nomeEl && !nomeEl.value) nomeEl.value = 'DataSystem ERP';
+    }
+}
+
+function cbFonteModalAuthChange() {
+    const auth = document.getElementById('fonteApiAuthTipo')?.value;
+    const keyField = document.getElementById('fonteApiKeyField');
+    const headerField = document.getElementById('fonteApiHeaderField');
+    const basicField = document.getElementById('fonteApiBasicField');
+    if (keyField) keyField.style.display = ['bearer','apikey'].includes(auth) ? '' : 'none';
+    if (headerField) headerField.style.display = auth === 'apikey' ? '' : 'none';
+    if (basicField) basicField.style.display = auth === 'basic' ? '' : 'none';
+}
+
+async function cbSalvarFonte() {
+    const tipoSelect = document.getElementById('fonteTipo')?.value;
+    const isDS = tipoSelect === 'datasystem';
+
+    const dados = {
+        nome: document.getElementById('fonteNome')?.value?.trim(),
+        alias: document.getElementById('fonteAlias')?.value?.trim().toLowerCase().replace(/[^a-z0-9_]/g, ''),
+        tipo: isDS ? 'api' : tipoSelect,
+        api_template: isDS ? 'datasystem' : '',
+        db_host: document.getElementById('fonteDbHost')?.value?.trim(),
+        db_port: document.getElementById('fonteDbPort')?.value?.trim(),
+        db_name: document.getElementById('fonteDbName')?.value?.trim(),
+        db_user: document.getElementById('fonteDbUser')?.value?.trim(),
+        db_pass: document.getElementById('fonteDbPass')?.value,
+        descricao: document.getElementById('fonteDescricao')?.value?.trim(),
+        tabelas_permitidas: document.getElementById('fonteTabelasPermitidas')?.value?.trim(),
+        max_rows: parseInt(document.getElementById('fonteMaxRows')?.value) || 50,
+        api_url: isDS ? (document.getElementById('fonteDsUrl')?.value?.trim() || '') : (document.getElementById('fonteApiUrl')?.value?.trim() || ''),
+        api_auth_tipo: isDS ? 'bearer' : (document.getElementById('fonteApiAuthTipo')?.value || 'none'),
+        api_key: isDS ? (document.getElementById('fonteDsHash')?.value || '') : (document.getElementById('fonteApiKey')?.value || ''),
+        api_auth_header: isDS ? '' : (document.getElementById('fonteApiAuthHeader')?.value?.trim() || ''),
+        api_auth_user: isDS ? (document.getElementById('fonteDsCnpj')?.value?.trim() || '') : (document.getElementById('fonteApiAuthUser')?.value?.trim() || ''),
+        api_auth_pass: isDS ? '' : (document.getElementById('fonteApiAuthPass')?.value || ''),
+        api_endpoints: isDS ? '[]' : (document.getElementById('fonteApiEndpoints')?.value?.trim() || ''),
+        api_descricao: isDS ? 'API DataSystem ERP - gestão de vendas, clientes, produtos, estoque, financeiro' : (document.getElementById('fonteApiDescricao')?.value?.trim() || ''),
+    };
+
+    if (!dados.nome || !dados.alias || !dados.tipo) {
+        return HelpDesk.toast('Nome, alias e tipo são obrigatórios', 'warning');
+    }
+    if (isDS) {
+        if (!dados.api_url || !dados.api_auth_user || !dados.api_key) {
+            return HelpDesk.toast('URL, CNPJ e Hash são obrigatórios para DataSystem', 'warning');
+        }
+    }
+
+    let action, payload;
+    if (_fonteAtualId) {
+        action = 'atualizar_fonte';
+        payload = { action, id: _fonteAtualId, ...dados };
+    } else {
+        action = 'criar_fonte';
+        payload = { action, ...dados };
+    }
+
+    const resp = await HelpDesk.api('POST', '/api/chatbot.php', payload);
+    if (resp.success) {
+        HelpDesk.toast(resp.message || 'Fonte salva!', 'success');
+        HelpDesk.closeModal();
+        cbLoadFontes();
+    } else {
+        HelpDesk.toast(resp.error || 'Erro ao salvar', 'danger');
+    }
+}
+
+async function cbTestarFonte(id) {
+    HelpDesk.toast('Testando conexão...', 'info');
+    const resp = await HelpDesk.api('POST', '/api/chatbot.php', { action: 'testar_fonte', id });
+    if (resp.success && resp.data) {
+        if (resp.data.success) {
+            HelpDesk.toast('✅ ' + resp.data.message, 'success');
+        } else {
+            HelpDesk.toast('❌ ' + resp.data.message, 'danger');
+        }
+        cbLoadFontes();
+    } else {
+        HelpDesk.toast(resp.error || 'Erro', 'danger');
+    }
+}
+
+async function cbToggleFonte(id) {
+    const resp = await HelpDesk.api('POST', '/api/chatbot.php', { action: 'toggle_fonte', id });
+    if (resp.success) {
+        cbLoadFontes();
+    }
+}
+
+async function cbRemoverFonte(id) {
+    if (!confirm('Remover esta fonte de dados?')) return;
+    const resp = await HelpDesk.api('POST', '/api/chatbot.php', { action: 'remover_fonte', id });
+    if (resp.success) {
+        HelpDesk.toast('Fonte removida', 'success');
+        cbLoadFontes();
+        if (_fonteAtualId === id) {
+            document.getElementById('fonteDetalhes').style.display = 'none';
+            _fonteAtualId = null;
+        }
+    }
+}
+
+async function cbVerFonteSchema(id) {
+    _fonteAtualId = id;
+    const fonte = _fontes.find(f => f.id == id);
+    const tipoLabels = { mysql: 'MySQL', pgsql: 'PostgreSQL', sqlserver: 'SQL Server', sqlite: 'SQLite', api: 'API REST' };
+    const isDS = fonte && fonte.api_template === 'datasystem';
+    document.getElementById('fonteDetalhes').style.display = '';
+    document.getElementById('fonteDetalhesTitulo').innerHTML =
+        '<i class="fas fa-project-diagram" style="color:var(--primary)"></i> ' + (fonte ? escapeHtml(fonte.nome) : 'Fonte') + ' <small style="color:var(--gray-400);font-weight:400">(' + (isDS ? '📦 DataSystem ERP' : (fonte ? (tipoLabels[fonte.tipo] || fonte.tipo) : '')) + ')</small>';
+    cbLoadFonteSchema();
+    cbLoadFonteRels();
+    document.getElementById('fonteDetalhes').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function cbLoadFonteSchema() {
+    if (!_fonteAtualId) return;
+    const container = document.getElementById('fonteSchemaContainer');
+    container.innerHTML = '<div class="text-center py-4" style="color:var(--gray-400)"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>';
+
+    try {
+        const resp = await HelpDesk.api('GET', '/api/chatbot.php', { action: 'fonte_schema', id: _fonteAtualId });
+        if (!resp.success) {
+            container.innerHTML = '<div class="alert alert-danger">' + (resp.error || 'Erro') + '</div>';
+            cbDiagramShowEmpty('Erro ao carregar schema');
+            return;
+        }
+        _fonteSchema = resp.data || [];
+        window._dbSchema = _fonteSchema; // Sync for diagram functions
+        if (_fonteSchema.length === 0) {
+            container.innerHTML = '<div class="text-center py-4" style="color:var(--gray-400)">Nenhuma tabela/endpoint encontrado</div>';
+            cbDiagramShowEmpty('Nenhuma tabela encontrada');
+            return;
+        }
+
+        // Render table list
+        let html = '<div class="table-responsive"><table class="table table-sm table-hover mb-0"><thead><tr style="font-size:12px;color:var(--gray-600)"><th>Tabela</th><th>Colunas</th><th class="text-end">Registros</th><th class="text-center">Permitida</th></tr></thead><tbody>';
+        _fonteSchema.forEach(t => {
+            const cols = (t.columns || []).map(c => `<code style="font-size:11px;color:var(--gray-700)">${escapeHtml(c.Field)}</code> <small style="color:var(--gray-400)">${escapeHtml(c.Type)}</small>`).join(', ');
+            html += `<tr>
+                <td><strong style="color:var(--gray-800)">${escapeHtml(t.table)}</strong></td>
+                <td style="font-size:12px">${cols}</td>
+                <td class="text-end" style="color:var(--gray-500)">${t.row_count}</td>
+                <td class="text-center">${t.permitted ? '<i class="fas fa-check-circle" style="color:var(--success)"></i>' : '<i class="fas fa-minus-circle" style="color:var(--gray-300)"></i>'}</td>
+            </tr>`;
+        });
+        html += '</tbody></table></div>';
+        container.innerHTML = html;
+
+        // Build interactive diagram
+        cbBuildFonteDiagram(_fonteSchema.filter(t => t.permitted));
+
+        // Popular dropdowns de relacionamentos
+        cbPopulateFonteRelDropdowns();
+    } catch (e) {
+        container.innerHTML = '<div class="alert alert-danger">' + e.message + '</div>';
+    }
+}
+
+function cbDiagramShowEmpty(msg) {
+    const canvas = document.getElementById('dbDiagramCanvas');
+    const emptyEl = document.getElementById('dbDiagramEmpty');
+    if (canvas) canvas.querySelectorAll('.db-table-card').forEach(el => el.remove());
+    const svg = document.getElementById('dbDiagramSvg');
+    if (svg) svg.innerHTML = '';
+    if (emptyEl) {
+        emptyEl.style.display = 'flex';
+        emptyEl.innerHTML = '<i class="fas fa-project-diagram fa-3x mb-3" style="color:var(--gray-300)"></i><p style="color:var(--gray-400)">' + escapeHtml(msg || 'Sem dados') + '</p>';
+    }
+}
+
+function cbBuildFonteDiagram(tables) {
+    const canvas = document.getElementById('dbDiagramCanvas');
+    const emptyEl = document.getElementById('dbDiagramEmpty');
+    const svg = document.getElementById('dbDiagramSvg');
+    if (!canvas) return;
+
+    // Clear previous cards
+    canvas.querySelectorAll('.db-table-card').forEach(el => el.remove());
+    if (svg) svg.innerHTML = '';
+
+    if (!tables || tables.length === 0) {
+        if (emptyEl) {
+            emptyEl.style.display = 'flex';
+            emptyEl.innerHTML = '<i class="fas fa-project-diagram fa-3x mb-3" style="color:var(--gray-300)"></i><p style="color:var(--gray-400)">Nenhuma tabela permitida</p>';
+        }
+        return;
+    }
+
+    if (emptyEl) emptyEl.style.display = 'none';
+
+    const savedPos = cbLoadTablePositions();
+    const cols = Math.max(3, Math.ceil(Math.sqrt(tables.length)));
+    const spacingX = 330;
+    const spacingY = 330;
+
+    tables.forEach((t, i) => {
+        const card = document.createElement('div');
+        card.className = 'db-table-card';
+        card.id = 'dbTable_' + t.table;
+        card.dataset.table = t.table;
+
+        // Position
+        if (savedPos && savedPos[t.table]) {
+            card.style.left = savedPos[t.table].left + 'px';
+            card.style.top  = savedPos[t.table].top + 'px';
+        } else {
+            card.style.left = (50 + (i % cols) * spacingX) + 'px';
+            card.style.top  = (50 + Math.floor(i / cols) * spacingY) + 'px';
+        }
+
+        // Build columns
+        const colsHtml = (t.columns || []).map(c => {
+            const isPK = /^(id|codigo)$/i.test(c.Field) || c.Key === 'PRI';
+            const isFK = /(_id|_cod|_codigo|id_|cod_)/i.test(c.Field) || c.Key === 'MUL';
+            let cls = '', icon = '';
+            if (isPK)      { cls = 'pk'; icon = '🔑'; }
+            else if (isFK) { cls = 'fk'; icon = '🔗'; }
+            else {
+                const tp = (c.Type || '').toLowerCase();
+                if (/int|serial/.test(tp))                         icon = '<small style="color:#484f58">I</small>';
+                else if (/char|text|string/.test(tp))              icon = '<small style="color:#484f58">A</small>';
+                else if (/date|time/.test(tp))                     icon = '<small style="color:#484f58">D</small>';
+                else if (/bool/.test(tp))                          icon = '<small style="color:#484f58">B</small>';
+                else if (/float|double|decimal|numeric/.test(tp))  icon = '<small style="color:#484f58">N</small>';
+                else                                                icon = '<small style="color:#484f58">•</small>';
+            }
+            return `<div class="db-table-col ${cls}" data-col="${c.Field}">
+                <span class="db-col-icon">${icon}</span>
+                <span class="db-col-name">${c.Field}</span>
+                <span class="db-col-type">${c.Type}</span>
+            </div>`;
+        }).join('');
+
+        card.innerHTML = `
+            <div class="db-table-header">
+                <span><i class="fas fa-table" style="opacity:0.7"></i> ${t.table}</span>
+                <span class="db-table-count">${t.row_count ?? '?'} reg</span>
+            </div>
+            <div class="db-table-body">${colsHtml}</div>
+        `;
+
+        canvas.appendChild(card);
+        cbInitTableDrag(card);
+    });
+
+    cbUpdateCanvasSize();
+
+    // Draw relationships (data loaded by cbLoadFonteRels called in parallel)
+    // Give a small delay to let cbLoadFonteRels finish if still loading
+    setTimeout(() => cbDrawRelLines(), 300);
+}
+
+function cbPopulateFonteRelDropdowns() {
+    if (!_fonteSchema) return;
+    const tables = _fonteSchema.filter(t => t.permitted).map(t => t.table);
+    ['fRelTabelaOrigem', 'fRelTabelaRef'].forEach(selId => {
+        const sel = document.getElementById(selId);
+        if (!sel) return;
+        sel.innerHTML = '<option value="">Tabela...</option>' + tables.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join('');
+    });
+}
+
+function cbOnFRelTabelaOrigemChange() {
+    const table = document.getElementById('fRelTabelaOrigem')?.value;
+    cbPopulateFonteRelCols('fRelColunaOrigem', table);
+}
+function cbOnFRelTabelaRefChange() {
+    const table = document.getElementById('fRelTabelaRef')?.value;
+    cbPopulateFonteRelCols('fRelColunaRef', table);
+    cbPopulateFonteRelCols('fRelColunaDescricao', table);
+}
+function cbPopulateFonteRelCols(selId, table) {
+    const sel = document.getElementById(selId);
+    if (!sel || !table) { if(sel) sel.innerHTML = '<option value="">Coluna...</option>'; return; }
+    const t = (_fonteSchema || []).find(t => t.table === table);
+    if (!t) return;
+    sel.innerHTML = '<option value="">Coluna...</option>' + (t.columns || []).map(c => `<option value="${escapeHtml(c.Field)}">${escapeHtml(c.Field)}</option>`).join('');
+}
+
+async function cbLoadFonteRels() {
+    if (!_fonteAtualId) return;
+    const resp = await HelpDesk.api('GET', '/api/chatbot.php', { action: 'fonte_relacionamentos', id: _fonteAtualId });
+    _fonteRels = resp.success ? (resp.data || []) : [];
+    window._dbRelacionamentos = [..._fonteRels];
+    document.getElementById('badgeFonteRelCount').textContent = _fonteRels.length;
+    cbRenderFonteRels();
+    cbDrawRelLines();
+}
+
+function cbRenderFonteRels() {
+    const container = document.getElementById('fonteRelListContainer');
+    if (!container) return;
+    // Keep arrays in sync
+    _fonteRels = [...window._dbRelacionamentos];
+    const badge = document.getElementById('badgeFonteRelCount');
+    if (badge) badge.textContent = _fonteRels.length;
+
+    if (!_fonteRels.length) {
+        container.innerHTML = '<div class="text-center py-3" style="color:var(--gray-400)"><small>Nenhum relacionamento</small></div>';
+        return;
+    }
+    let html = '';
+    _fonteRels.forEach((r, i) => {
+        html += `<div class="d-flex align-items-center justify-content-between py-2 px-3" style="font-size:12px;border-bottom:1px solid var(--gray-100);background:${i % 2 === 0 ? '#fff' : 'var(--gray-50)'}">
+            <span>
+                <code style="color:var(--primary);font-weight:600">${escapeHtml(r.tabela)}.${escapeHtml(r.coluna)}</code>
+                <i class="fas fa-arrow-right mx-2" style="color:var(--gray-400);font-size:10px"></i>
+                <code style="color:var(--success);font-weight:600">${escapeHtml(r.ref_tabela)}.${escapeHtml(r.ref_coluna)}</code>
+                ${r.coluna_descricao ? ' <small style="color:var(--gray-400)">(→ '+escapeHtml(r.coluna_descricao)+')</small>' : ''}
+            </span>
+            <button class="btn btn-sm btn-outline-danger py-0 px-1" onclick="cbRemoverRelacionamento(${i})" title="Remover"><i class="fas fa-times"></i></button>
+        </div>`;
+    });
+    container.innerHTML = html;
+}
+
+function cbAddFonteRel() {
+    const tabela = document.getElementById('fRelTabelaOrigem')?.value;
+    const coluna = document.getElementById('fRelColunaOrigem')?.value;
+    const ref_tabela = document.getElementById('fRelTabelaRef')?.value;
+    const ref_coluna = document.getElementById('fRelColunaRef')?.value;
+    const coluna_descricao = document.getElementById('fRelColunaDescricao')?.value;
+    if (!tabela || !coluna || !ref_tabela || !ref_coluna) return HelpDesk.toast('Preencha todos os campos', 'warning');
+
+    const existe = window._dbRelacionamentos.find(r =>
+        r.tabela === tabela && r.coluna === coluna && r.ref_tabela === ref_tabela && r.ref_coluna === ref_coluna
+    );
+    if (existe) return HelpDesk.toast('Esse relacionamento já existe', 'warning');
+
+    const rel = { tabela, coluna, ref_tabela, ref_coluna, coluna_descricao: coluna_descricao || '' };
+    window._dbRelacionamentos.push(rel);
+    _fonteRels = [...window._dbRelacionamentos];
+    cbRenderFonteRels();
+    cbDrawRelLines();
+    HelpDesk.toast('Relacionamento adicionado! Clique em "Salvar" para persistir.', 'info');
+}
+
+function cbLimparFonteRels() {
+    if (!confirm('Limpar todos os relacionamentos?')) return;
+    window._dbRelacionamentos = [];
+    _fonteRels = [];
+    cbRenderFonteRels();
+    cbDrawRelLines();
+    cbSalvarFonteRels();
+}
+
+async function cbSalvarFonteRels() {
+    if (!_fonteAtualId) return;
+    _fonteRels = [...window._dbRelacionamentos];
+    const resp = await HelpDesk.api('POST', '/api/chatbot.php', {
+        action: 'salvar_fonte_relacionamentos',
+        id: _fonteAtualId,
+        relacionamentos: _fonteRels,
+    });
+    if (resp.success) {
+        HelpDesk.toast('Relacionamentos salvos!', 'success');
+    } else {
+        HelpDesk.toast(resp.error || 'Erro', 'danger');
     }
 }
 
@@ -2409,9 +3208,11 @@ function cbDrawRelLines() {
 
 // ---- SAVE/LOAD TABLE POSITIONS (localStorage) ----
 function cbGetPositionKey() {
-    const host = document.getElementById('cfg_chatbot_db_host')?.value || 'local';
-    const name = document.getElementById('cfg_chatbot_db_name')?.value || 'db';
-    return 'cbDiagram_' + host + '_' + name;
+    if (_fonteAtualId) {
+        const fonte = _fontes.find(f => f.id == _fonteAtualId);
+        return 'cbDiagram_fonte_' + (fonte ? fonte.alias : _fonteAtualId);
+    }
+    return 'cbDiagram_default';
 }
 
 function cbSaveTablePositions() {
@@ -2605,19 +3406,22 @@ function cbCloseLinkModal(confirm) {
         const descCol = document.getElementById('linkModalDescCol')?.value || '';
         const { source, target } = window._pendingLink;
 
-        // Add relationship
-        window._dbRelacionamentos.push({
+        const rel = {
             tabela: source.table,
             coluna: source.column,
             ref_tabela: target.table,
             ref_coluna: target.column,
             coluna_descricao: descCol
-        });
+        };
+
+        // Add to both systems
+        window._dbRelacionamentos.push(rel);
+        _fonteRels.push(rel);
 
         cbRenderRelacionamentos();
         cbDrawRelLines();
 
-        // Auto-save
+        // Auto-save via fonte endpoint
         cbSalvarRelacionamentos();
         HelpDesk.toast('✅ Relacionamento criado: ' + source.table + '.' + source.column + ' → ' + target.table + '.' + target.column, 'success');
     }
@@ -2629,25 +3433,28 @@ function cbCloseLinkModal(confirm) {
 }
 
 // ============================================================
-//  RELACIONAMENTOS
+//  RELACIONAMENTOS (rewired for multi-fonte)
 // ============================================================
 
 function cbPreencherSelectsRelacionamento(tables) {
     const selOrigem = document.getElementById('relTabelaOrigem');
     const selRef = document.getElementById('relTabelaRef');
+    if (!selOrigem || !selRef) return;
     const opts = '<option value="">Tabela...</option>' + tables.map(t => `<option value="${t.table}">${t.table}</option>`).join('');
     selOrigem.innerHTML = opts;
     selRef.innerHTML = opts;
-    // Limpar colunas
-    document.getElementById('relColunaOrigem').innerHTML = '<option value="">Coluna...</option>';
-    document.getElementById('relColunaRef').innerHTML = '<option value="">Coluna (PK)...</option>';
-    document.getElementById('relColunaDescricao').innerHTML = '<option value="">Selecione tabela ref primeiro...</option>';
+    const colOrigem = document.getElementById('relColunaOrigem');
+    const colRef = document.getElementById('relColunaRef');
+    const colDesc = document.getElementById('relColunaDescricao');
+    if (colOrigem) colOrigem.innerHTML = '<option value="">Coluna...</option>';
+    if (colRef)    colRef.innerHTML = '<option value="">Coluna (PK)...</option>';
+    if (colDesc)   colDesc.innerHTML = '<option value="">Selecione tabela ref primeiro...</option>';
 }
 
 function cbOnRelTabelaOrigemChange() {
-    const tabela = document.getElementById('relTabelaOrigem').value;
+    const tabela = document.getElementById('relTabelaOrigem')?.value;
     const sel = document.getElementById('relColunaOrigem');
-    if (!tabela || !window._dbSchema) { sel.innerHTML = '<option value="">Coluna...</option>'; return; }
+    if (!sel || !tabela || !window._dbSchema) { if(sel) sel.innerHTML = '<option value="">Coluna...</option>'; return; }
     const t = window._dbSchema.find(x => x.table === tabela);
     if (!t) return;
     sel.innerHTML = '<option value="">Coluna...</option>' + t.columns.map(c => {
@@ -2657,12 +3464,12 @@ function cbOnRelTabelaOrigemChange() {
 }
 
 function cbOnRelTabelaRefChange() {
-    const tabela = document.getElementById('relTabelaRef').value;
+    const tabela = document.getElementById('relTabelaRef')?.value;
     const selPK = document.getElementById('relColunaRef');
     const selDesc = document.getElementById('relColunaDescricao');
-    if (!tabela || !window._dbSchema) {
-        selPK.innerHTML = '<option value="">Coluna (PK)...</option>';
-        selDesc.innerHTML = '<option value="">Selecione tabela ref primeiro...</option>';
+    if (!selPK || !tabela || !window._dbSchema) {
+        if(selPK)  selPK.innerHTML = '<option value="">Coluna (PK)...</option>';
+        if(selDesc) selDesc.innerHTML = '<option value="">Selecione tabela ref primeiro...</option>';
         return;
     }
     const t = window._dbSchema.find(x => x.table === tabela);
@@ -2673,30 +3480,27 @@ function cbOnRelTabelaRefChange() {
         return `<option value="${c.Field}" ${isPK ? 'selected' : ''}>${c.Field}${isPK ? ' 🔑' : ''}</option>`;
     }).join('');
 
-    // Detectar colunas de nome/descrição
     const nomeCols = ['nome', 'name', 'descricao', 'description', 'titulo', 'title', 'razao_social', 'nome_fantasia', 'label', 'denominacao'];
     selDesc.innerHTML = '<option value="">(opcional)</option>' + t.columns.map(c => {
         const isNome = nomeCols.some(n => c.Field.toLowerCase().includes(n));
         return `<option value="${c.Field}" ${isNome ? 'style="color:green;font-weight:bold"' : ''}>${c.Field}${isNome ? ' ✓' : ''}</option>`;
     }).join('');
-    // Auto-selecionar primeira coluna que parece nome
     const autoNome = t.columns.find(c => nomeCols.some(n => c.Field.toLowerCase() === n));
     if (autoNome) selDesc.value = autoNome.Field;
 }
 
 function cbAddRelacionamento() {
-    const tOrigem = document.getElementById('relTabelaOrigem').value;
-    const cOrigem = document.getElementById('relColunaOrigem').value;
-    const tRef = document.getElementById('relTabelaRef').value;
-    const cRef = document.getElementById('relColunaRef').value;
-    const cDesc = document.getElementById('relColunaDescricao').value;
+    const tOrigem = document.getElementById('relTabelaOrigem')?.value;
+    const cOrigem = document.getElementById('relColunaOrigem')?.value;
+    const tRef = document.getElementById('relTabelaRef')?.value;
+    const cRef = document.getElementById('relColunaRef')?.value;
+    const cDesc = document.getElementById('relColunaDescricao')?.value;
 
     if (!tOrigem || !cOrigem || !tRef || !cRef) {
         HelpDesk.toast('Preencha tabela e coluna de origem + tabela e coluna de referência', 'warning');
         return;
     }
 
-    // Verificar duplicata
     const existe = window._dbRelacionamentos.find(r =>
         r.tabela === tOrigem && r.coluna === cOrigem && r.ref_tabela === tRef && r.ref_coluna === cRef
     );
@@ -2705,13 +3509,16 @@ function cbAddRelacionamento() {
         return;
     }
 
-    window._dbRelacionamentos.push({
+    const rel = {
         tabela: tOrigem,
         coluna: cOrigem,
         ref_tabela: tRef,
         ref_coluna: cRef,
         coluna_descricao: cDesc || ''
-    });
+    };
+
+    window._dbRelacionamentos.push(rel);
+    _fonteRels.push(rel);
 
     cbRenderRelacionamentos();
     HelpDesk.toast('Relacionamento adicionado! Clique em "Salvar" para persistir.', 'info');
@@ -2719,43 +3526,35 @@ function cbAddRelacionamento() {
 
 function cbRemoverRelacionamento(idx) {
     window._dbRelacionamentos.splice(idx, 1);
+    _fonteRels = [...window._dbRelacionamentos];
     cbRenderRelacionamentos();
 }
 
 function cbRenderRelacionamentos() {
-    const container = document.getElementById('relListContainer');
+    // Sync arrays
+    _fonteRels = [...window._dbRelacionamentos];
+
+    // Update badges
     const badge = document.getElementById('badgeRelCount');
-    const rels = window._dbRelacionamentos;
-    badge.textContent = rels.length;
+    if (badge) badge.textContent = window._dbRelacionamentos.length;
 
-    if (rels.length === 0) {
-        container.innerHTML = '<div class="text-center text-muted py-3"><small>Nenhum relacionamento definido</small></div>';
-        return;
-    }
-
-    container.innerHTML = rels.map((r, i) => `
-        <div class="d-flex align-items-center justify-content-between border rounded p-2 mb-1" style="font-size:12px">
-            <div>
-                <code class="text-primary">${r.tabela}</code>.<strong>${r.coluna}</strong>
-                <i class="fas fa-long-arrow-alt-right mx-1" style="color:var(--primary)"></i>
-                <code class="text-success">${r.ref_tabela}</code>.<strong>${r.ref_coluna}</strong>
-                ${r.coluna_descricao ? `<span class="badge bg-info ms-1" style="font-size:10px">→ ${r.coluna_descricao}</span>` : ''}
-            </div>
-            <button class="btn btn-sm btn-outline-danger py-0 px-1" onclick="cbRemoverRelacionamento(${i})" title="Remover">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    `).join('');
+    // Render via the unified fonte renderer
+    cbRenderFonteRels();
 
     // Redesenhar linhas do diagrama
     cbDrawRelLines();
 }
 
 async function cbSalvarRelacionamentos() {
+    if (!_fonteAtualId) {
+        HelpDesk.toast('Selecione uma fonte primeiro', 'warning');
+        return;
+    }
     try {
         const resp = await HelpDesk.api('POST', '/api/chatbot.php', {
-            action: 'save_relationships',
-            relationships: window._dbRelacionamentos
+            action: 'salvar_fonte_relacionamentos',
+            id: _fonteAtualId,
+            relacionamentos: window._dbRelacionamentos
         });
         if (resp.success) {
             HelpDesk.toast('Relacionamentos salvos! O chatbot usará estes JOINs nas consultas. 🎉', 'success');
@@ -2767,19 +3566,27 @@ async function cbSalvarRelacionamentos() {
     }
 }
 
-async function cbCarregarRelacionamentos() {
+async function cbCarregarRelacionamentosFonte() {
+    if (!_fonteAtualId) return;
     try {
-        const resp = await HelpDesk.api('GET', '/api/chatbot.php', { action: 'get_relationships' });
+        const resp = await HelpDesk.api('GET', '/api/chatbot.php', { action: 'fonte_relacionamentos', id: _fonteAtualId });
         if (resp.success && resp.data) {
             window._dbRelacionamentos = Array.isArray(resp.data) ? resp.data : [];
+            _fonteRels = [...window._dbRelacionamentos];
             cbRenderRelacionamentos();
         }
     } catch (e) { /* silenciar */ }
 }
 
+// Legacy wrapper
+async function cbCarregarRelacionamentos() {
+    return cbCarregarRelacionamentosFonte();
+}
+
 function cbLimparRelacionamentos() {
     if (!confirm('Tem certeza que deseja remover TODOS os relacionamentos?')) return;
     window._dbRelacionamentos = [];
+    _fonteRels = [];
     cbRenderRelacionamentos();
     cbSalvarRelacionamentos();
 }

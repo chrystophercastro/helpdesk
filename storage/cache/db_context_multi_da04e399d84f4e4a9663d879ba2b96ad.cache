@@ -1,0 +1,300 @@
+## FONTES DE DADOS DISPONÍVEIS
+Você tem acesso a 3 fonte(s) de dados. Cada fonte tem um **alias** único que você DEVE usar para identificar de qual fonte buscar dados.
+
+### FONTE: Fonte Principal (alias: `principal`, driver: PGSQL)
+Descrição: Banco de dados DW da empresa
+Banco: `dw` | Máximo linhas: 30000
+
+**Tabelas e Colunas:**
+- **atributos**: codigo (character varying), descricao (character varying)
+- **categorias**: codigo (integer), codigopai (character varying), descricao (character varying)
+- **clientes**: status (character varying), situacao (character varying), codigo (character varying), nome (character varying), email (character varying), cpf (character varying), tipopessoa (character varying), estrangeiro (character varying), sexo (character varying), datanascimento (character varying), celular (character varying), endereco (character varying), numero (character varying), complemento (character varying), bairro (character varying), cidade (character varying), estado (character varying), cep (character varying), saldopontos (integer), datacadastro (character varying), dataatualizacao (character varying)
+- **clstrib**: codigo (character varying), descricao (character varying), ncm (character varying), cest (character varying), sittrib (character varying), codenquad (character varying), aliquotadec (character varying), tributacao (character varying)
+- **colecoes**: codigo (character varying), descricao (character varying)
+- **condicao_pagto**: codigo (character varying), descricao (character varying)
+- **departamento**: codigo (character varying), descricao (character varying)
+- **epc**: codigo (character varying), tamanho (character varying), cor (character varying), codigo_rfid (text), sku (text)
+- **estoque**: codigo (character varying), loja (character varying), quantidade (integer)
+- **fornecedores**: codigo (integer), fantansia (character varying), razaoSocial (character varying), CNPJ (character varying)
+- **grade**: codigo (character varying), descricao (character varying), tipo (character varying)
+- **grade_posicao**: NUM_GRADT (character varying), POSICAO (character varying), TAM_GRAT (character varying)
+- **grade_produto**: codigo (character varying), grade (character varying)
+- **grupos**: codigo (character varying), descricao (character varying)
+- **inventario_epc**: epc (text)
+- **keys**: id (integer), user (character varying), pass (character varying), plataforma (character varying)
+- **linhas**: codigo (character varying), descricao (character varying)
+- **lojas**: codigo (character varying), descricao (character varying), cgccnpj (character varying), inscricaoestadual (character varying), razaosocial (character varying), nomefantasia (character varying), email (character varying), endereco (character varying), bairro (character varying), estado (character varying), cidade (character varying), telefone (character varying), celular (character varying), telefonecobranca (character varying), tabelapreco (character varying)
+- **marcas**: codigo (character varying), descricao (character varying)
+- **prodtrib**: codigo (character varying), ncm (character varying), cest (character varying), descricao (character varying), clastrib (character varying)
+- **produto_auxiliar**: codigo (character varying), referencia (character varying), marca (character varying)
+- **produtos**: codigo (text), descricao (text), narrativa (text), departamento (text), grupo (text), subgrupo (text), linha (text), marca (text), colecao (text), unidademedida (text), fornecedor (double precision), reffornecedor (text), composicao (text), ativo (text), observacao (text), datacadastro (timestamp without time zone), altura (double precision), largura (double precision), comprimento (double precision), peso (double precision)
+- **produtos_categorias**: codigo (character varying), codcategoria (integer)
+- **produtos_sku**: status (character varying), codigo (character varying), sku (character varying), codigotamanho (character varying), tamanho (character varying), codigocor (character varying), cor (character varying), descricao (character varying), narrativa (character varying), unidademedida (character varying), composicao (character varying), observacao (character varying), departamento (character varying), grupo (character varying), subgrupo (character varying), linha (character varying), marca (character varying), colecao (character varying), fornecedor (integer), altura (numeric), largura (numeric), comprimento (numeric), peso (numeric)
+- **produtos_tamanho**: codigo (character varying), posicao (character varying), tamanho (character varying)
+- **servicos**: id (integer), nome (character varying), ativo (integer), time (integer), classe (character varying), metodo (character varying)
+- **subgrupos**: codigo (character varying), descricao (character varying)
+- **tabpreco**: codigo (character varying), tabpreco (integer), precocusto (numeric), precovarejo (numeric)
+- **tabpreco_p**: codigo (integer), descricao (character varying)
+- **venda_header**: situacaovenda (character varying), clientecodigo (character varying), clientenome (character varying), clientefantasia (character varying), clienteemail (character varying), cpfcnpj (character varying), clientepessoa (character varying), clientesexo (character varying), clientenascimento (character varying), clientetelefone (character varying), clienteendereco (character varying), clientenumero (character varying), clientecomplemento (character varying), clientebairro (character varying), clientecidade (character varying), clienteestado (character varying), clientecep (character varying), idloja (character varying), datacompra (timestamp without time zone), codigotransportadora (text), fantasiatransportadora (character varying), controle (integer), terminal (integer), idcompra (character varying), nomeloja (character varying), nomefantasialoja (character varying), codigovendedor (integer), nomevendedor (character varying), subtotal (numeric), totaldesconto (numeric), totalfrete (numeric), totalseguro (numeric), totaloutrasdespesas (numeric), totalicmsvalorst (numeric), totalfcpvalorst (numeric), totalipi (numeric), total (numeric), fidelidadepontos (numeric), fidelidadevalor (numeric), dataat (timestamp without time zone), integracaonopedido (character varying), tipoloja (character varying), operacaoproduto (character varying), tiponota (character varying), modelo (character varying), modelodescricao (character varying), quantidadetotalproduto (numeric), numero (numeric)
+- **venda_itens**: situacaovenda (character varying), idcompra (character varying), seriepedido (integer), numeropedido (integer), controleitem (integer), idproduto (character varying), nomeproduto (character varying), quantidadeproduto (integer), precounitario (integer), desconto (integer), acrescimo (integer), frete (integer), seguro (integer), outrasdespesas (integer), icmsvlrst (integer), fcpvalorst (integer), ipivalor (integer), precocusto (integer), precoliquido (integer), transacao (character varying), codigocategoria (character varying), categoriaproduto (character varying), codigosubcategoria (character varying), subcategoriaproduto (character varying), corproduto (character varying), tamanhoproduto (character varying), idloja (character varying), lojanome (character varying), lojafantasia (character varying), datacompra (character varying), controle (integer), terminal (integer), vendedorcontrole (integer), vendedornome (character varying), codigo (character varying), codigolinha (character varying), linhaproduto (character varying), codigocolecao (character varying), colecaoproduto (character varying), codigomarca (character varying), marca (character varying), referenciafornecedor (character varying), fidelidadepontos (integer), fidelidadevalor (integer), dataatualizacao (character varying), participafidelidade (character varying), numero (integer)
+
+**Relacionamentos (JOINs):**
+- `produtos_sku.departamento` → `departamento.codigo` (JOIN departamento ON departamento.codigo = produtos_sku.departamento → use departamento.descricao para nome)
+- `produtos_sku.subgrupo` → `grupos.codigo` (JOIN grupos ON grupos.codigo = produtos_sku.subgrupo → use grupos.descricao para nome)
+- `produtos_sku.linha` → `linhas.codigo` (JOIN linhas ON linhas.codigo = produtos_sku.linha → use linhas.descricao para nome)
+- `produtos.codigo` → `produtos_sku.codigo` (JOIN produtos_sku ON produtos_sku.codigo = produtos.codigo → use produtos_sku.descricao para nome)
+- `produtos_sku.codigo` → `produto_auxiliar.codigo` (JOIN produto_auxiliar ON produto_auxiliar.codigo = produtos_sku.codigo)
+- `produto_auxiliar.marca` → `marcas.codigo` (JOIN marcas ON marcas.codigo = produto_auxiliar.marca → use marcas.descricao para nome)
+- `produtos_sku.codigo` → `tabpreco.codigo` (JOIN tabpreco ON tabpreco.codigo = produtos_sku.codigo)
+- `tabpreco.tabpreco` → `tabpreco_p.codigo` (JOIN tabpreco_p ON tabpreco_p.codigo = tabpreco.tabpreco → use tabpreco_p.descricao para nome)
+- `produtos_sku.codigo` → `produtos_tamanho.codigo` (JOIN produtos_tamanho ON produtos_tamanho.codigo = produtos_sku.codigo)
+- `produtos_sku.codigotamanho` → `produtos_tamanho.posicao` (JOIN produtos_tamanho ON produtos_tamanho.posicao = produtos_sku.codigotamanho)
+- `produtos_sku.sku` → `estoque.codigo` (JOIN estoque ON estoque.codigo = produtos_sku.sku)
+- `estoque.loja` → `lojas.codigo` (JOIN lojas ON lojas.codigo = estoque.loja → use lojas.descricao para nome)
+- `produtos_sku.fornecedor` → `fornecedores.codigo` (JOIN fornecedores ON fornecedores.codigo = produtos_sku.fornecedor)
+- `venda_header.idcompra` → `venda_itens.idcompra` (JOIN venda_itens ON venda_itens.idcompra = venda_header.idcompra → use venda_itens.nomeproduto para nome)
+- `venda_header.idloja` → `venda_itens.idloja` (JOIN venda_itens ON venda_itens.idloja = venda_header.idloja → use venda_itens.nomeproduto para nome)
+- `venda_itens.idproduto` → `produtos_sku.sku` (JOIN produtos_sku ON produtos_sku.sku = venda_itens.idproduto → use produtos_sku.descricao para nome)
+- **SEMPRE use os JOINs acima** para trazer NOMES ao invés de IDs
+
+**Regras SQL (PGSQL):**
+- Use LIMIT 30000 | Aspas duplas para nomes com maiúsculas
+
+
+### FONTE: Localhost (alias: `oraclex`, driver: MYSQL)
+Descrição: Banco de dados do gestor de tarefas de projetos da empresa
+Banco: `helpdesk_ti` | Máximo linhas: 300000
+
+**Tabelas e Colunas:**
+- **airflow_favoritos**: id (int unsigned), usuario_id (int unsigned), dag_id (varchar(255)), criado_em (datetime)
+- **airflow_log**: id (int unsigned), usuario_id (int unsigned), acao (varchar(50)), dag_id (varchar(255)), detalhes (json), criado_em (datetime)
+- **airflow_snapshots**: id (int unsigned), dags_total (int), dags_active (int), runs_running (int), runs_failed_24h (int), import_errors (int), criado_em (datetime)
+- **anexos**: id (int unsigned), entidade_tipo (enum('chamado','chamado_comentario','projeto','tarefa','compra','conhecimento','inventario')), entidade_id (int unsigned), nome_original (varchar(255)), nome_arquivo (varchar(255)), tamanho (int unsigned), tipo_mime (varchar(100)), criado_em (datetime)
+- **automacao_logs**: id (int unsigned), automacao_id (int unsigned), executado_em (datetime), status (enum('sucesso','erro','parcial')), itens_afetados (int unsigned), detalhes (json), erro_mensagem (text), duracao_ms (int unsigned)
+- **automacoes**: id (int unsigned), nome (varchar(150)), descricao (text), ativo (tinyint(1)), trigger_tipo (enum('novo_chamado','chamado_sem_resposta','chamado_resolvido_x_dias','sla_prestes_vencer','sla_violado','contrato_vencendo','contrato_vencido','monitor_offline','monitor_lento','agendado_diario','agendado_semanal','agendado_mensal','novo_usuario','inventario_sem_responsavel')), trigger_config (json), acao_tipo (enum('atribuir_chamado','mudar_status_chamado','mudar_prioridade_chamado','escalar_chamado','enviar_notificacao','criar_tarefa','fechar_chamado','enviar_email_resumo','atualizar_contrato_status','gerar_relatorio','executar_webhook','limpar_notificacoes_antigas')), acao_config (json), ultima_execucao (datetime), proxima_execucao (datetime), total_execucoes (int unsigned), total_itens_afetados (int unsigned), criado_por (int unsigned), criado_em (datetime), atualizado_em (datetime)
+- **base_conhecimento**: id (int unsigned), titulo (varchar(255)), problema (text), solucao (text), categoria_id (int unsigned), autor_id (int unsigned), visualizacoes (int unsigned), util (int unsigned), publicado (tinyint(1)), criado_em (datetime), atualizado_em (datetime)
+- **calendar_eventos**: id (int), titulo (varchar(255)), descricao (text), tipo (enum('evento','reuniao','lembrete','manutencao','deploy','plantao')), data_inicio (datetime), data_fim (datetime), dia_inteiro (tinyint(1)), cor (varchar(7)), local (varchar(255)), recorrencia (enum('nenhuma','diaria','semanal','mensal','anual')), recorrencia_fim (date), chamado_id (int unsigned), projeto_id (int unsigned), sprint_id (int unsigned), criado_por (int unsigned), participantes (json), notificar_antes (int), ativo (tinyint(1)), criado_em (datetime), atualizado_em (datetime)
+- **categorias**: id (int unsigned), nome (varchar(100)), tipo (enum('chamado','projeto','compra','conhecimento','inventario')), departamento_id (int unsigned), icone (varchar(50)), cor (varchar(7)), ativo (tinyint(1)), criado_em (datetime)
+- **chamados**: id (int unsigned), codigo (varchar(20)), titulo (varchar(255)), descricao (text), categoria_id (int unsigned), prioridade (enum('critica','alta','media','baixa')), urgencia (enum('alta','media','baixa')), impacto (enum('alto','medio','baixo')), solicitante_id (int unsigned), telefone_solicitante (varchar(20)), tecnico_id (int unsigned), status (enum('aberto','em_analise','em_atendimento','aguardando_usuario','resolvido','fechado')), sla_id (int unsigned), ativo_id (int unsigned), canal (enum('portal','interno','whatsapp','email')), departamento_id (int unsigned), data_abertura (datetime), data_primeira_resposta (datetime), data_resolucao (datetime), data_fechamento (datetime), sla_resposta_vencido (tinyint(1)), sla_resolucao_vencido (tinyint(1)), avaliacao (tinyint unsigned), avaliacao_comentario (text), criado_em (datetime), atualizado_em (datetime)
+- **chamados_comentarios**: id (int unsigned), chamado_id (int unsigned), usuario_id (int unsigned), solicitante_id (int unsigned), autor_nome (varchar(150)), conteudo (text), tipo (enum('comentario','interno','sistema')), criado_em (datetime)
+- **chamados_historico**: id (int unsigned), chamado_id (int unsigned), usuario_id (int unsigned), campo (varchar(50)), valor_anterior (text), valor_novo (text), criado_em (datetime)
+- **chamados_tags**: id (int unsigned), chamado_id (int unsigned), tag (varchar(50))
+- **chat_anexos**: id (int), mensagem_id (int), nome_original (varchar(255)), nome_arquivo (varchar(255)), tamanho (int unsigned), tipo_mime (varchar(100)), criado_em (datetime)
+- **chat_conversas**: id (int), tipo (enum('direta','grupo','canal')), nome (varchar(100)), descricao (varchar(500)), icone (varchar(50)), cor (varchar(7)), criado_por (int unsigned), fixada (tinyint(1)), arquivada (tinyint(1)), criado_em (datetime), atualizado_em (datetime)
+- **chat_mensagens**: id (int), conversa_id (int), usuario_id (int unsigned), tipo (enum('texto','imagem','arquivo','sistema')), conteudo (text), resposta_a (int), editado (tinyint(1)), editado_em (datetime), deletado (tinyint(1)), deletado_em (datetime), criado_em (datetime)
+- **chat_participantes**: id (int), conversa_id (int), usuario_id (int unsigned), papel (enum('membro','admin','dono')), notificacao_mudo (tinyint(1)), ultima_leitura (datetime), entrou_em (datetime)
+- **chat_presenca**: usuario_id (int unsigned), status (enum('online','ausente','ocupado','offline')), ultimo_acesso (datetime), digitando_em (int)
+- **chat_reacoes**: id (int), mensagem_id (int), usuario_id (int unsigned), emoji (varchar(10)), criado_em (datetime)
+- **chatbot_config**: chave (varchar(100)), valor (text), descricao (varchar(255)), atualizado_em (datetime)
+- **chatbot_datasystem_logs**: id (int unsigned), fonte_id (int unsigned), fonte_nome (varchar(100)), method (varchar(10)), endpoint (varchar(500)), payload (json), http_code (int unsigned), response_body (longtext), response_size (int unsigned), duracao_ms (int unsigned), sucesso (tinyint(1)), erro (varchar(500)), sessao_id (int unsigned), criado_em (datetime)
+- **chatbot_fontes_dados**: id (int unsigned), nome (varchar(100)), alias (varchar(50)), tipo (enum('mysql','pgsql','sqlserver','sqlite','api')), ativo (tinyint(1)), db_host (varchar(255)), db_port (varchar(10)), db_name (varchar(100)), db_user (varchar(100)), db_pass (varchar(255)), descricao (text), tabelas_permitidas (text), max_rows (int unsigned), relacionamentos (json), api_url (varchar(500)), api_auth_tipo (enum('none','bearer','apikey','basic')), api_key (text), api_auth_header (varchar(100)), api_auth_user (varchar(100)), api_auth_pass (varchar(255)), api_endpoints (json), api_descricao (text), api_template (varchar(50)), api_token_cache (text), api_token_expires (datetime), ordem (int unsigned), ultimo_teste (datetime), ultimo_teste_ok (tinyint(1)), criado_em (datetime), atualizado_em (datetime)
+- **chatbot_mensagens**: id (int unsigned), sessao_id (int unsigned), remetente (enum('user','bot')), mensagem (text), tipo (enum('text','query','error','system')), sql_executado (text), dados_consulta (json), tokens_usados (int unsigned), duracao_ms (int unsigned), criado_em (datetime)
+- **chatbot_n8n_logs**: id (int unsigned), direcao (enum('entrada','saida')), evento (varchar(100)), payload (json), resposta (json), http_code (int unsigned), sucesso (tinyint(1)), criado_em (datetime)
+- **chatbot_numeros_autorizados**: id (int unsigned), numero (varchar(20)), nome (varchar(100)), ativo (tinyint(1)), notas (text), criado_em (datetime), atualizado_em (datetime)
+- **chatbot_sessoes**: id (int unsigned), numero_whatsapp (varchar(20)), nome_contato (varchar(100)), contexto_resumo (text), total_mensagens (int unsigned), ultimo_acesso (datetime), ativo (tinyint(1)), criado_em (datetime)
+- **cmdb_categorias**: id (int unsigned), nome (varchar(100)), icone (varchar(50)), cor (varchar(20)), descricao (text), pai_id (int unsigned), ordem (int), criado_em (datetime)
+- **cmdb_historico**: id (int unsigned), ci_id (int unsigned), tipo_mudanca (enum('criacao','atualizacao','status','relacionamento','exclusao')), campo (varchar(100)), valor_anterior (text), valor_novo (text), descricao (text), usuario_id (int unsigned), criado_em (datetime)
+- **cmdb_itens**: id (int unsigned), nome (varchar(200)), identificador (varchar(50)), categoria_id (int unsigned), inventario_id (int unsigned), descricao (text), status (enum('ativo','inativo','planejado','em_manutencao','aposentado')), criticidade (enum('critica','alta','media','baixa')), ambiente (enum('producao','homologacao','desenvolvimento','teste')), versao (varchar(50)), ip_endereco (varchar(45)), localizacao (varchar(200)), responsavel_id (int unsigned), fornecedor_id (int unsigned), dados_extras (json), criado_por (int unsigned), criado_em (datetime), atualizado_em (datetime)
+- **cmdb_relacionamentos**: id (int unsigned), ci_origem_id (int unsigned), ci_destino_id (int unsigned), tipo (enum('depende_de','componente_de','conecta_com','backup_de','executa_em','hospedado_em','monitora')), descricao (varchar(255)), criado_por (int unsigned), criado_em (datetime)
+- **colaboradores**: id (int unsigned), usuario_id (int unsigned), nome_completo (varchar(200)), cpf (varchar(14)), rg (varchar(20)), data_nascimento (date), email (varchar(200)), telefone (varchar(20)), endereco (text), tipo_contrato (enum('clt','pj')), ctps (varchar(30)), pis_pasep (varchar(20)), cargo (varchar(100)), departamento_id (int unsigned), data_admissao (date), data_demissao (date), salario_base (decimal(12,2)), jornada_semanal (int), cnpj (varchar(20)), razao_social (varchar(200)), inscricao_municipal (varchar(30)), inscricao_estadual (varchar(30)), banco (varchar(100)), agencia (varchar(20)), conta (varchar(30)), pix (varchar(100)), valor_hora (decimal(10,2)), valor_mensal (decimal(12,2)), status (enum('ativo','inativo','desligado','ferias','licenca')), observacoes (text), criado_em (datetime), atualizado_em (datetime)
+- **compras**: id (int unsigned), codigo (varchar(20)), solicitante_id (int unsigned), solicitante_usuario_id (int unsigned), item (varchar(200)), descricao (text), quantidade (int unsigned), justificativa (text), prioridade (enum('critica','alta','media','baixa')), valor_estimado (decimal(12,2)), valor_aprovado (decimal(12,2)), status (enum('solicitado','em_analise','aprovado','reprovado','comprado','entregue','cancelado')), aprovador_id (int unsigned), fornecedor (varchar(200)), nota_fiscal (varchar(100)), data_aprovacao (datetime), data_compra (datetime), data_entrega (datetime), observacoes (text), chamado_origem_id (int unsigned), criado_em (datetime), atualizado_em (datetime)
+- **compras_historico**: id (int unsigned), compra_id (int unsigned), status (varchar(30)), usuario_id (int unsigned), observacao (text), criado_em (datetime)
+- **configuracoes**: id (int unsigned), chave (varchar(100)), valor (text), descricao (varchar(255)), atualizado_em (datetime)
+- **configuracoes_sistema**: id (int unsigned), chave (varchar(100)), valor (longtext), descricao (varchar(255)), criado_em (datetime), atualizado_em (datetime)
+- **contas_pagar**: id (int unsigned), nota_fiscal_id (int unsigned), fornecedor_id (int unsigned), codigo (varchar(30)), descricao (varchar(300)), categoria (enum('material','servico','aluguel','energia','internet','telefone','agua','impostos','salarios','folha_pj','manutencao','software','equipamento','outros')), centro_custo (varchar(100)), departamento_id (int unsigned), valor_original (decimal(14,2)), valor_juros (decimal(12,2)), valor_multa (decimal(12,2)), valor_desconto (decimal(12,2)), valor_pago (decimal(14,2)), codigo_barras (varchar(60)), linha_digitavel (varchar(60)), nosso_numero (varchar(30)), banco_emissor (varchar(100)), data_emissao (date), data_vencimento (date), data_pagamento (date), recorrente (tinyint(1)), frequencia (enum('mensal','bimestral','trimestral','semestral','anual')), parcela_atual (int), total_parcelas (int), conta_pai_id (int unsigned), forma_pagamento (enum('boleto','pix','transferencia','debito','cartao','dinheiro')), comprovante_url (varchar(500)), status (enum('pendente','parcial','pago','vencido','cancelado','agendado')), observacoes (text), criado_por (int unsigned), aprovado_por (int unsigned), pago_por (int unsigned), criado_em (datetime), atualizado_em (datetime)
+- **contrato_ativos**: id (int unsigned), contrato_id (int unsigned), ativo_id (int unsigned), criado_em (datetime)
+- **contratos**: id (int unsigned), fornecedor_id (int unsigned), numero (varchar(100)), titulo (varchar(255)), descricao (text), tipo (enum('manutencao','garantia','licenca','suporte','servico','aluguel','outro')), valor (decimal(12,2)), recorrencia (enum('mensal','trimestral','semestral','anual','unico')), data_inicio (date), data_fim (date), data_renovacao (date), auto_renovar (tinyint(1)), alerta_dias (int), status (enum('ativo','vencido','cancelado','renovado')), arquivo (varchar(255)), observacoes (text), criado_por (int unsigned), criado_em (datetime), atualizado_em (datetime)
+- **departamentos**: id (int unsigned), nome (varchar(100)), sigla (varchar(10)), descricao (text), icone (varchar(50)), cor (varchar(7)), email (varchar(200)), responsavel_id (int unsigned), ativo (tinyint(1)), ordem (int), criado_em (datetime), atualizado_em (datetime)
+- **deploy_config**: id (int), chave (varchar(100)), valor (text), descricao (varchar(255)), atualizado_em (timestamp)
+- **deploy_historico**: id (int), usuario_id (int), tipo (enum('full','parcial','config','rollback')), status (enum('iniciado','em_progresso','concluido','erro','cancelado')), arquivos_total (int), arquivos_enviados (int), arquivos_erro (int), bytes_total (bigint), duracao_segundos (int), versao_origem (varchar(20)), versao_destino (varchar(20)), log_resumo (text), log_detalhado (longtext), iniciado_em (datetime), finalizado_em (datetime)
+- **dispositivos_rede**: id (int unsigned), nome (varchar(255)), ip (varchar(45)), tipo (enum('servidor','computador','impressora','switch','roteador','access_point','camera','firewall','nobreak','outro')), localizacao (varchar(255)), mac_address (varchar(17)), observacoes (text), intervalo_ping (int unsigned), ultimo_status (enum('online','offline','desconhecido')), ultimo_ping (datetime), latencia_ms (decimal(8,2)), ativo (tinyint(1)), notificar_offline (tinyint(1)), criado_por (int unsigned), criado_em (datetime), atualizado_em (datetime)
+- **dispositivos_rede_log**: id (bigint unsigned), dispositivo_id (int unsigned), status (enum('online','offline')), latencia_ms (decimal(8,2)), criado_em (datetime)
+- **email_contas**: id (int unsigned), usuario_id (int unsigned), nome_conta (varchar(100)), email (varchar(255)), imap_host (varchar(255)), imap_porta (int), imap_seguranca (enum('ssl','tls','none')), smtp_host (varchar(255)), smtp_porta (int), smtp_seguranca (enum('ssl','tls','none')), usuario_email (varchar(255)), senha_email (varchar(500)), ativo (tinyint(1)), ultimo_sync (datetime), criado_em (datetime), atualizado_em (datetime)
+- **financeiro_historico**: id (int unsigned), entidade_tipo (enum('nota_fiscal','conta_pagar','folha_pagamento','colaborador','fornecedor')), entidade_id (int unsigned), acao (varchar(50)), campo_alterado (varchar(100)), valor_anterior (text), valor_novo (text), usuario_id (int unsigned), criado_em (datetime)
+- **folha_pagamento**: id (int unsigned), colaborador_id (int unsigned), competencia (varchar(7)), tipo (enum('mensal','ferias','13_salario','rescisao','adiantamento','bonus')), salario_bruto (decimal(12,2)), inss (decimal(10,2)), irrf (decimal(10,2)), vale_transporte (decimal(10,2)), vale_alimentacao (decimal(10,2)), plano_saude (decimal(10,2)), faltas_desconto (decimal(10,2)), outros_descontos (decimal(10,2)), descricao_outros_desc (varchar(255)), horas_extras (decimal(10,2)), adicional_noturno (decimal(10,2)), comissao (decimal(10,2)), bonus (decimal(10,2)), outros_adicionais (decimal(10,2)), descricao_outros_adic (varchar(255)), valor_nota (decimal(12,2)), horas_trabalhadas (decimal(8,2)), total_descontos (decimal(12,2)), total_adicionais (decimal(12,2)), salario_liquido (decimal(12,2)), fgts (decimal(10,2)), data_pagamento (date), status (enum('rascunho','calculado','aprovado','pago','cancelado')), forma_pagamento (enum('pix','transferencia','boleto','dinheiro')), comprovante_url (varchar(500)), observacoes (text), criado_por (int unsigned), aprovado_por (int unsigned), aprovado_em (datetime), criado_em (datetime), atualizado_em (datetime)
+- **fornecedores**: id (int unsigned), razao_social (varchar(200)), nome_fantasia (varchar(200)), cnpj (varchar(20)), cnpj_cpf (varchar(20)), cpf (varchar(14)), tipo (enum('pj','pf')), inscricao_estadual (varchar(30)), inscricao_municipal (varchar(30)), email (varchar(200)), telefone (varchar(20)), contato_nome (varchar(255)), contato (varchar(100)), cep (varchar(10)), logradouro (varchar(200)), numero (varchar(20)), complemento (varchar(100)), bairro (varchar(100)), cidade (varchar(100)), uf (char(2)), banco (varchar(100)), agencia (varchar(20)), conta (varchar(30)), pix (varchar(100)), status (enum('ativo','inativo')), contato_email (varchar(255)), contato_telefone (varchar(20)), endereco (text), website (varchar(255)), observacoes (text), ativo (tinyint(1)), criado_por (int unsigned), criado_em (datetime), atualizado_em (datetime)
+- **github_commits**: id (int), repositorio_id (int), sha (varchar(40)), message (text), author_name (varchar(200)), author_email (varchar(200)), author_avatar (varchar(500)), author_login (varchar(100)), commit_date (datetime), additions (int), deletions (int), url (varchar(500)), created_at (timestamp)
+- **github_config**: id (int), usuario_id (int unsigned), token (text), username (varchar(100)), avatar_url (varchar(500)), escopo (varchar(255)), ativo (tinyint(1)), ultimo_uso (datetime), created_at (timestamp), updated_at (timestamp)
+- **github_repositorios**: id (int), projeto_id (int unsigned), owner (varchar(100)), repo (varchar(200)), full_name (varchar(300)), description (text), default_branch (varchar(100)), private (tinyint(1)), language (varchar(50)), stars (int), forks (int), open_issues (int), html_url (varchar(500)), ultimo_sync (datetime), ativo (tinyint(1)), created_at (timestamp), updated_at (timestamp)
+- **github_webhooks**: id (int), repositorio_id (int), event_type (varchar(50)), action (varchar(50)), payload (json), processed (tinyint(1)), resultado (text), received_at (timestamp)
+- **ia_config**: chave (varchar(100)), valor (text), descricao (varchar(255)), atualizado_em (datetime)
+- **ia_conversas**: id (int unsigned), usuario_id (int unsigned), titulo (varchar(255)), contexto (enum('geral','chamado','ssh','rede','inventario','codigo')), contexto_id (int unsigned), modelo (varchar(100)), tokens_total (int unsigned), ativa (tinyint(1)), criado_em (datetime), atualizado_em (datetime)
+- **ia_dev_alteracao_arquivos**: id (int unsigned), alteracao_id (int unsigned), arquivo_id (int unsigned)
+- **ia_dev_alteracoes**: id (int unsigned), projeto_id (int unsigned), usuario_id (int unsigned), conversa_id (int unsigned), titulo (varchar(300)), descricao (text), status (enum('pendente','em_teste','aprovado','rejeitado','aplicado','revertido')), aprovado_por (int unsigned), aprovado_em (datetime), testado_em (datetime), aplicado_em (datetime), notas_revisao (text), criado_em (datetime)
+- **ia_dev_arquivos**: id (int unsigned), projeto_id (int unsigned), conversa_id (int unsigned), caminho (varchar(500)), conteudo (longtext), conteudo_original (longtext), linguagem (varchar(50)), acao (enum('criar','modificar','deletar')), versao (int unsigned), status (enum('pendente','em_teste','aprovado','rejeitado','aplicado')), aplicado_em (datetime), criado_em (datetime)
+- **ia_dev_projetos**: id (int unsigned), usuario_id (int unsigned), nome (varchar(200)), descricao (text), tipo (enum('interno','externo')), stack (varchar(200)), caminho (varchar(500)), status (enum('ativo','arquivado')), config (json), criado_em (datetime), atualizado_em (datetime)
+- **ia_mensagens**: id (int unsigned), conversa_id (int unsigned), role (enum('user','assistant','system')), conteudo (text), tokens (int unsigned), duracao_ms (int unsigned), modelo (varchar(100)), criado_em (datetime)
+- **inventario**: id (int unsigned), tipo (enum('computador','servidor','switch','roteador','impressora','software','monitor','telefone','outro')), nome (varchar(150)), numero_patrimonio (varchar(50)), modelo (varchar(150)), fabricante (varchar(100)), numero_serie (varchar(100)), localizacao (varchar(200)), responsavel_id (int unsigned), status (enum('ativo','manutencao','inativo','descartado')), data_aquisicao (date), valor_aquisicao (decimal(12,2)), garantia_ate (date), especificacoes (text), observacoes (text), criado_em (datetime), atualizado_em (datetime)
+- **logs**: id (int unsigned), usuario_id (int unsigned), acao (varchar(100)), entidade_tipo (varchar(30)), entidade_id (int unsigned), detalhes (text), ip (varchar(45)), user_agent (varchar(255)), criado_em (datetime)
+- **migrations**: id (int unsigned), migration (varchar(255)), batch (int unsigned), executado_em (datetime), duracao_ms (int unsigned), status (enum('sucesso','erro','skip')), output (text), erro (text)
+- **mikrotik_devices**: id (int), nome (varchar(100)), descricao (varchar(255)), host (varchar(255)), porta (int), usuario (varchar(100)), senha (varchar(500)), use_ssl (tinyint(1)), ativo (tinyint(1)), ultimo_acesso (datetime), created_at (timestamp), updated_at (timestamp)
+- **monitor_historico**: id (bigint), servico_id (int), status (enum('online','offline','degradado')), resposta_ms (int), codigo_http (int), mensagem (varchar(500)), checado_em (datetime)
+- **monitor_incidentes**: id (int), servico_id (int), tipo (enum('outage','degraded','recovery')), inicio (datetime), fim (datetime), duracao_seg (int), mensagem (text), resolvido (tinyint(1)), criado_em (datetime)
+- **monitor_servicos**: id (int), nome (varchar(100)), tipo (enum('http','https','ping','tcp','dns')), host (varchar(255)), porta (int), caminho (varchar(255)), esperado (varchar(255)), intervalo_seg (int), timeout_seg (int), status (enum('online','offline','degradado','desconhecido')), ultimo_check (datetime), ultimo_online (datetime), uptime_percent (decimal(5,2)), resposta_ms (int), total_checks (int), total_falhas (int), grupo (varchar(50)), ativo (tinyint(1)), notificar (tinyint(1)), criado_por (int unsigned), criado_em (datetime), atualizado_em (datetime)
+- **notas_fiscais**: id (int unsigned), tipo (enum('nfe','nfse','nfce','cte')), natureza (enum('entrada','saida')), numero (varchar(20)), serie (varchar(5)), chave_acesso (varchar(50)), protocolo_autorizacao (varchar(20)), data_emissao (date), data_entrada_saida (date), emitente_cnpj (varchar(20)), emitente_razao (varchar(200)), emitente_nome_fantasia (varchar(200)), emitente_uf (char(2)), destinatario_cnpj (varchar(20)), destinatario_razao (varchar(200)), fornecedor_id (int unsigned), valor_produtos (decimal(14,2)), valor_frete (decimal(12,2)), valor_seguro (decimal(12,2)), valor_desconto (decimal(12,2)), valor_outras_despesas (decimal(12,2)), valor_ipi (decimal(12,2)), valor_icms (decimal(12,2)), valor_icms_st (decimal(12,2)), valor_pis (decimal(12,2)), valor_cofins (decimal(12,2)), valor_iss (decimal(12,2)), valor_total (decimal(14,2)), manifesto_status (enum('pendente','ciencia','confirmada','desconhecida','nao_realizada')), manifesto_data (datetime), manifesto_protocolo (varchar(20)), manifesto_justificativa (text), xml_conteudo (longtext), xml_url (varchar(500)), danfe_url (varchar(500)), status (enum('pendente','escriturada','cancelada','inutilizada','denegada')), categoria (varchar(100)), centro_custo (varchar(100)), departamento_id (int unsigned), observacoes (text), criado_por (int unsigned), criado_em (datetime), atualizado_em (datetime)
+- **notas_fiscais_itens**: id (int unsigned), nota_fiscal_id (int unsigned), numero_item (int), codigo_produto (varchar(60)), descricao (varchar(500)), ncm (varchar(10)), cfop (varchar(10)), unidade (varchar(10)), quantidade (decimal(15,4)), valor_unitario (decimal(14,4)), valor_total (decimal(14,2)), icms_base (decimal(12,2)), icms_valor (decimal(12,2)), icms_aliquota (decimal(5,2)), ipi_valor (decimal(12,2)), pis_valor (decimal(12,2)), cofins_valor (decimal(12,2))
+- **notificacao_preferencias**: id (int), usuario_id (int unsigned), chamado_novo (tinyint(1)), chamado_atribuido (tinyint(1)), chamado_atualizado (tinyint(1)), chamado_fechado (tinyint(1)), tarefa_atribuida (tinyint(1)), tarefa_concluida (tinyint(1)), projeto_atualizado (tinyint(1)), compra_aprovada (tinyint(1)), sistema (tinyint(1)), som_ativo (tinyint(1))
+- **notificacoes**: id (int), usuario_id (int unsigned), tipo (varchar(50)), titulo (varchar(255)), mensagem (text), icone (varchar(50)), link (varchar(500)), referencia_tipo (varchar(50)), referencia_id (int), lida (tinyint(1)), lida_em (datetime), criado_em (datetime)
+- **notificacoes_whatsapp**: id (int unsigned), tipo (varchar(50)), destinatario_telefone (varchar(20)), destinatario_nome (varchar(150)), mensagem (text), referencia_tipo (varchar(30)), referencia_id (int unsigned), status (enum('pendente','enviado','erro')), tentativas (tinyint unsigned), erro (text), criado_em (datetime), enviado_em (datetime)
+- **posts**: id (int unsigned), usuario_id (int unsigned), departamento_id (int unsigned), conteudo (longtext), midia (json), tipo (enum('texto','foto','video','galeria','comunicado')), fixado (tinyint(1)), ativo (tinyint(1)), likes_count (int unsigned), comentarios_count (int unsigned), criado_em (datetime), atualizado_em (datetime)
+- **posts_comentarios**: id (int unsigned), post_id (int unsigned), usuario_id (int unsigned), conteudo (text), criado_em (datetime)
+- **posts_likes**: id (int unsigned), post_id (int unsigned), usuario_id (int unsigned), criado_em (datetime)
+- **projetos**: id (int unsigned), nome (varchar(200)), descricao (text), responsavel_id (int unsigned), departamento_id (int unsigned), prioridade (enum('critica','alta','media','baixa')), status (enum('planejamento','em_desenvolvimento','em_testes','concluido','cancelado')), data_inicio (date), prazo (date), progresso (tinyint unsigned), chamado_origem_id (int unsigned), criado_em (datetime), atualizado_em (datetime)
+- **projetos_comentarios**: id (int unsigned), projeto_id (int unsigned), usuario_id (int unsigned), conteudo (text), criado_em (datetime)
+- **projetos_equipe**: id (int unsigned), projeto_id (int unsigned), usuario_id (int unsigned), papel (varchar(50)), criado_em (datetime)
+- **proxmox_logs**: id (int), server_id (int), usuario_id (int unsigned), acao (varchar(100)), vmid (int), vm_nome (varchar(255)), node (varchar(100)), detalhes (text), resultado (enum('sucesso','erro')), criado_em (datetime)
+- **proxmox_servers**: id (int), nome (varchar(100)), host (varchar(255)), porta (int), usuario (varchar(100)), senha (text), realm (varchar(50)), token_id (varchar(100)), token_secret (text), auth_type (enum('password','apitoken')), verificar_ssl (tinyint(1)), ativo (tinyint(1)), criado_por (int unsigned), criado_em (datetime), atualizado_em (datetime)
+- **remote_config**: id (int unsigned), chave (varchar(100)), valor (varchar(500)), criado_em (datetime)
+- **remote_historico**: id (int unsigned), sessao_codigo (varchar(10)), tecnico_id (int unsigned), tecnico_nome (varchar(255)), hostname (varchar(255)), username (varchar(255)), ip_address (varchar(45)), chamado_id (int unsigned), inventario_id (int unsigned), inicio (datetime), fim (datetime), duracao_segundos (int unsigned), arquivos_enviados (int unsigned), arquivos_recebidos (int unsigned), criado_em (datetime)
+- **remote_sessoes**: id (int unsigned), codigo (varchar(10)), client_id (varchar(64)), hostname (varchar(255)), username (varchar(255)), ip_address (varchar(45)), ip_local (varchar(45)), os_info (varchar(255)), resolucao (varchar(20)), status (enum('online','conectado','desconectado')), tecnico_id (int unsigned), chamado_id (int unsigned), inventario_id (int unsigned), conectado_em (datetime), desconectado_em (datetime), criado_em (datetime), atualizado_em (datetime)
+- **sefaz_config**: id (int unsigned), cnpj_empresa (varchar(20)), razao_social (varchar(200)), inscricao_estadual (varchar(30)), uf (char(2)), ambiente (enum('producao','homologacao')), certificado_pfx (longblob), certificado_senha (varchar(100)), certificado_validade (date), ultimo_nsu (varchar(20)), max_nsu (varchar(20)), ultima_consulta (datetime), ativo (tinyint(1)), criado_em (datetime), atualizado_em (datetime)
+- **sefaz_log**: id (int unsigned), tipo (enum('dist_dfe','manifesto','consulta','download')), nsu (varchar(20)), chave_acesso (varchar(50)), evento (varchar(50)), request_xml (longtext), response_xml (longtext), http_code (int), sucesso (tinyint(1)), mensagem (text), criado_em (datetime)
+- **senhas**: id (int unsigned), titulo (varchar(255)), categoria (enum('servidor','aplicacao','rede','email','banco_dados','cloud','vpn','certificado','api','outro')), url (text), usuario (varchar(255)), senha (text), notas (text), ip_host (varchar(255)), porta (varchar(10)), criado_por (int unsigned), atualizado_por (int unsigned), criado_em (datetime), atualizado_em (datetime)
+- **senhas_log**: id (int unsigned), senha_id (int unsigned), usuario_id (int unsigned), acao (enum('visualizar','criar','editar','excluir','copiar')), ip (varchar(45)), criado_em (datetime)
+- **servidores_ssh**: id (int), nome (varchar(100)), host (varchar(255)), porta (int), usuario (varchar(100)), metodo_auth (enum('password','key')), credencial (text), passphrase (text), grupo (varchar(50)), descricao (text), sistema_operacional (varchar(100)), tags (varchar(255)), ultimo_acesso (datetime), ultimo_status (enum('online','offline','desconhecido')), ativo (tinyint(1)), criado_por (int unsigned), criado_em (datetime), atualizado_em (datetime)
+- **sla**: id (int unsigned), categoria_id (int unsigned), nome (varchar(100)), prioridade (enum('critica','alta','media','baixa')), tempo_resposta (int unsigned), tempo_resolucao (int unsigned), ativo (tinyint(1)), criado_em (datetime)
+- **solicitantes**: id (int unsigned), nome (varchar(150)), email (varchar(200)), telefone (varchar(20)), empresa (varchar(150)), departamento (varchar(100)), total_chamados (int unsigned), data_cadastro (datetime)
+- **sprints**: id (int unsigned), nome (varchar(100)), projeto_id (int unsigned), data_inicio (date), data_fim (date), status (enum('planejamento','ativa','concluida','cancelada')), meta (text), velocidade (int unsigned), criado_em (datetime)
+- **ssh_comandos_log**: id (int), servidor_id (int), usuario_id (int unsigned), comando (text), saida (longtext), exit_code (int), duracao_ms (int), executado_em (datetime)
+- **ssh_comandos_salvos**: id (int), nome (varchar(100)), comando (text), descricao (varchar(255)), categoria (varchar(50)), criado_por (int unsigned), criado_em (datetime)
+- **suprimento_categorias**: id (int unsigned), nome (varchar(100)), descricao (varchar(255)), cor (varchar(7)), icone (varchar(50)), ativo (tinyint(1)), criado_em (datetime)
+- **suprimento_movimentacoes**: id (int unsigned), suprimento_id (int unsigned), tipo (enum('entrada','saida','ajuste','devolucao')), quantidade (int), estoque_anterior (int), estoque_posterior (int), motivo (varchar(255)), documento (varchar(100)), requisicao_id (int unsigned), usuario_id (int unsigned), criado_em (datetime)
+- **suprimento_requisicao_historico**: id (int unsigned), requisicao_id (int unsigned), status (varchar(30)), usuario_id (int unsigned), observacao (text), criado_em (datetime)
+- **suprimento_requisicao_itens**: id (int unsigned), requisicao_id (int unsigned), suprimento_id (int unsigned), nome_item (varchar(200)), descricao (varchar(500)), quantidade (int), unidade (varchar(20)), preco_estimado (decimal(12,2)), subtotal (decimal(14,2))
+- **suprimento_requisicoes**: id (int unsigned), codigo (varchar(20)), titulo (varchar(200)), justificativa (text), prioridade (enum('baixa','media','alta','urgente')), status (enum('rascunho','pendente','em_analise','aprovada','reprovada','comprada','entregue','cancelada')), valor_total (decimal(14,2)), solicitante_id (int unsigned), aprovador_id (int unsigned), email_compras (varchar(200)), email_enviado (tinyint(1)), data_aprovacao (datetime), data_compra (datetime), data_entrega (datetime), observacoes (text), criado_em (datetime), atualizado_em (datetime)
+- **suprimentos**: id (int unsigned), codigo (varchar(30)), nome (varchar(200)), descricao (text), categoria_id (int unsigned), unidade (varchar(20)), marca (varchar(100)), modelo (varchar(100)), localizacao (varchar(150)), estoque_atual (int), estoque_minimo (int), estoque_maximo (int), preco_unitario (decimal(12,2)), fornecedor_padrao (varchar(200)), codigo_fornecedor (varchar(100)), ncm (varchar(15)), observacoes (text), ativo (tinyint(1)), criado_por (int unsigned), criado_em (datetime), atualizado_em (datetime)
+- **tarefas**: id (int unsigned), titulo (varchar(255)), descricao (text), projeto_id (int unsigned), sprint_id (int unsigned), responsavel_id (int unsigned), coluna (enum('backlog','a_fazer','em_andamento','em_revisao','concluido')), prioridade (enum('critica','alta','media','baixa')), prazo (date), pontos (tinyint unsigned), ordem (int), horas_estimadas (decimal(5,1)), horas_trabalhadas (decimal(5,1)), chamado_origem_id (int unsigned), criado_em (datetime), atualizado_em (datetime)
+- **tarefas_comentarios**: id (int unsigned), tarefa_id (int unsigned), usuario_id (int unsigned), conteudo (text), criado_em (datetime)
+- **tarefas_tags**: id (int unsigned), tarefa_id (int unsigned), tag (varchar(50))
+- **termos_fotos**: id (int unsigned), termo_id (int unsigned), nome_original (varchar(255)), nome_arquivo (varchar(255)), tamanho (int unsigned), tipo_mime (varchar(100)), descricao (varchar(255)), criado_em (datetime)
+- **termos_responsabilidade**: id (int unsigned), codigo (varchar(30)), ativo_id (int unsigned), usuario_nome (varchar(200)), usuario_cargo (varchar(150)), usuario_departamento (varchar(150)), usuario_telefone (varchar(20)), usuario_email (varchar(200)), tecnico_id (int unsigned), tecnico_assinatura (longtext), usuario_assinatura (longtext), token (varchar(64)), condicoes (text), status (enum('pendente','assinado','cancelado')), data_entrega (datetime), data_assinatura_tecnico (datetime), data_assinatura_usuario (datetime), ip_assinatura_usuario (varchar(45)), criado_em (datetime), atualizado_em (datetime)
+- **timesheet_registros**: id (int unsigned), usuario_id (int unsigned), chamado_id (int unsigned), projeto_id (int unsigned), data (date), hora_inicio (time), hora_fim (time), duracao_minutos (int), descricao (text), tipo (enum('chamado','projeto','interno','reuniao','treinamento','outro')), status (enum('em_andamento','concluido','aprovado','rejeitado')), aprovado_por (int unsigned), aprovado_em (datetime), custo_hora (decimal(10,2)), criado_em (datetime), atualizado_em (datetime)
+- **usuario_modulos**: id (int unsigned), usuario_id (int unsigned), modulo (varchar(50)), acesso (enum('leitura','escrita','admin')), concedido_por (int unsigned), criado_em (datetime)
+- **usuarios**: id (int unsigned), nome (varchar(150)), email (varchar(200)), telefone (varchar(20)), senha (varchar(255)), tipo (enum('admin','gestor','tecnico')), avatar (varchar(255)), cargo (varchar(100)), departamento (varchar(100)), departamento_id (int unsigned), ativo (tinyint(1)), tema (varchar(10)), ultimo_login (datetime), criado_em (datetime), atualizado_em (datetime)
+
+**Regras SQL (MYSQL):**
+- Use LIMIT 300000 | Use crase (`) para nomes
+
+
+### FONTE: DataSystem ERP (alias: `datasystem`, tipo: API DataSystem ERP)
+URL Base: https://integracaodatasystem.useserver.com.br
+
+**IMPORTANTE: Esta é uma API REST do ERP DataSystem (sistema de gestão de varejo/moda).**
+A autenticação é automática (JWT). Você NÃO precisa se preocupar com tokens.
+
+**Formato de chamada API:**
+```api:datasystem
+GET /api/v1/endpoint?param1=valor1&param2=valor2
+```
+
+**REGRAS IMPORTANTES:**
+- Datas SEMPRE no formato yyyy-mm-dd (ex: 2026-03-27)
+- Use itensPorPagina=50 e pagina=1 como padrão
+- A resposta vem como { totalItens: N, itens: [...] }
+- Use campoOrdem=emissao e ordem=DESC para vendas recentes
+- Para 'vendas de hoje', use dataVendaInicio e dataVendaFim com a data atual
+- Para 'vendas do mês', use o primeiro e último dia do mês
+- Use APENAS GET para consultas de dados
+
+**Endpoints Disponíveis:**
+
+**GET /api/v1/vendas** - Buscar vendas por período (máx 365 dias)
+  Obrigatórios: `dataVendaInicio` (string - Data início (yyyy-mm-dd)), `dataVendaFim` (string - Data fim (yyyy-mm-dd)), `campoOrdem` (string - Campo para ordenar (ex: emissao)), `ordem` (string - ASC ou DESC), `itensPorPagina` (integer - Qtd itens por página), `pagina` (integer - Número da página)
+  Opcionais: `loja` (Filtrar por loja), `excluidas` (1=sim, 2=não, 0=todas)
+  Retorna: loja, codigo, hora, emissao, valorTotal, difTroca, desconto, acrescimo, creditoLoja, creditoTroca, bonusValor, nota, serieNf, tipoVenda, tipoVendaDescricao, cliente{loja,codigo,nome,cpf}, itens[{referencia,cor,tamanho,quantidade,valorUnitario,desconto}], parcelas[{valor,plano,cartao}], usuario{codigo,nome}
+
+**GET /api/v1/clientes** - Buscar clientes cadastrados
+  Obrigatórios: `campoOrdem` (string - Campo para ordenar (ex: nome)), `ordem` (string - ASC ou DESC), `itensPorPagina` (integer - Qtd itens por página), `pagina` (integer - Número da página)
+  Retorna: loja, codigo, tipoPessoa, nome, sobrenome, cpf, rg, email, telefone1, telefone2, cep, endereco, numero, bairro, cidade, estado, nascimento, sexo, cadastro, limite, bloqueado, ultCompra, datUltAlt
+
+**GET /api/v1/clientes/cpfCnpj/{cpfCnpj}** - Buscar cliente por CPF ou CNPJ
+  Obrigatórios: `cpfCnpj` (string - CPF ou CNPJ (somente números))
+  Retorna: loja, codigo, nome, sobrenome, cpf, email, telefone1, cidade, estado, limite, bloqueado
+
+**GET /api/v1/produtos** - Buscar produtos por data de última compra
+  Obrigatórios: `dataUltimaCompraInicio` (string - Data início (yyyy-mm-dd)), `dataUltimaCompraFim` (string - Data fim (yyyy-mm-dd)), `campoOrdem` (string - Campo para ordenar), `ordem` (string - ASC ou DESC), `itensPorPagina` (integer - Qtd itens por página), `pagina` (integer - Número da página)
+  Retorna: referencia, descricao, marca, departamento, classe, tipo, cor, tamanho, preco, precoPromocao, custoMedio, colecao, status, codBarra, dataUltimaCompra
+
+**GET /api/v1/lojas** - Buscar lojas (filiais)
+  Opcionais: `codigo` (Filtrar por código da loja), `cnpj` (Filtrar por CNPJ)
+  Retorna: codigo, descricao, filial, razaoSocial, nome, estado, endereco, cep, numero, bairro, cidade, telefone1, telefone2, email, url, cnpj, insc
+
+**GET /api/v1/vendedores** - Buscar vendedores
+  Obrigatórios: `datUltAlt` (string - Data última alteração (yyyy-mm-dd)), `loja` (integer - Código da loja), `status` (integer - 0=todos, 1=ativos, 2=inativos), `itensPorPagina` (integer - Qtd itens por página), `pagina` (integer - Número da página)
+  Retorna: loja, codigo, nome, cpf
+
+**GET /api/v1/saldos** - Buscar saldos de estoque por loja
+  Obrigatórios: `loja` (integer - Código da loja), `itensPorPagina` (integer - Qtd itens por página), `pagina` (integer - Número da página)
+  Opcionais: `referencia` (Filtrar por referência), `todosProdutos` (Incluir todos os produtos)
+  Retorna: referencia, descricao, cor, tamanho, saldo, custoMedio, precoVarejo
+
+**GET /api/v1/contas-a-pagar** - Buscar registros de Contas a Pagar
+  Obrigatórios: `dataHoraInicio` (string - Data início (yyyy-mm-dd)), `dataHoraFim` (string - Data fim (yyyy-mm-dd)), `tipoData` (integer - Tipo de data para filtro), `pagina` (integer - Número da página), `itensPorPagina` (integer - Qtd itens por página)
+  Opcionais: `codigoLoja` (Filtrar por loja)
+  Retorna: codigo, loja, fornecedor, duplicata, valor, valorPago, dataVencimento, dataPagamento, status
+
+**GET /api/v1/contas-a-receber** - Buscar contas a receber
+  Obrigatórios: `itensPorPagina` (integer - Qtd itens por página), `pagina` (integer - Número da página)
+  Opcionais: `loja` (Filtrar por loja), `dataVencimentoInicio` (Data vencimento início), `dataVencimentoFim` (Data vencimento fim)
+  Retorna: loja, cliente, nome, parcela, valor, valorPago, dataVencimento, dataPagamento, status
+
+**GET /api/v1/entradas-estoque** - Buscar itens de entrada de estoque
+  Obrigatórios: `dataInicio` (string - Data início (yyyy-mm-dd)), `dataFim` (string - Data fim (yyyy-mm-dd)), `itensPorPagina` (integer - Qtd itens por página), `pagina` (integer - Número da página)
+  Opcionais: `lojaDestino` (Filtrar por loja destino), `fornecedor` (Filtrar por fornecedor)
+  Retorna: loja, numero, fornecedor, dataEntrada, referencia, cor, tamanho, quantidade, custoUnitario, custoTotal
+
+**GET /api/v1/fornecedor** - Buscar fornecedores
+  Retorna: codigo, nome, cnpj, telefone, email, endereco, cidade, estado
+
+**GET /api/v1/departamentos** - Buscar departamentos de produtos
+  Retorna: codigo, descricao
+
+**GET /api/v1/marcas** - Buscar marcas de produtos
+  Retorna: codigo, descricao
+
+**GET /api/v1/cores** - Buscar cores de produtos
+  Retorna: codigo, descricao
+
+**GET /api/v1/pedidos-compras** - Buscar pedidos de compra (máx 365 dias)
+  Obrigatórios: `dataInicio` (string - Data início (yyyy-mm-dd)), `dataFim` (string - Data fim (yyyy-mm-dd)), `itensPorPagina` (integer - Qtd itens por página), `pagina` (integer - Número da página)
+  Opcionais: `lojaDestino` (Filtrar por loja destino)
+  Retorna: numero, lojaDestino, fornecedor, dataEmissao, status, valorTotal, itens
+
+**GET /api/v1/planos-pagamento** - Buscar planos de pagamento
+  Opcionais: `datUltAlt` (Filtrar por data última alteração)
+  Retorna: codigo, descricao, parcelas, taxaJuros
+
+**GET /api/v1/colecoes** - Buscar coleções de produtos
+  Retorna: codigo, descricao
+
+**GET /api/v1/modelos** - Buscar modelos de produtos
+  Retorna: codigo, descricao
+
+**GET /api/v1/classes** - Buscar classes de produtos
+  Retorna: codigo, descricao
+
+**GET /api/v1/tipos** - Buscar tipos de produtos
+  Retorna: codigo, descricao
+
+**Exemplos de uso:**
+- Vendas de hoje: `GET /api/v1/vendas?dataVendaInicio=2026-03-27&dataVendaFim=2026-03-27&campoOrdem=emissao&ordem=DESC&itensPorPagina=50&pagina=1`
+- Buscar cliente por CPF: `GET /api/v1/clientes/cpfCnpj/12345678900`
+- Estoque da loja 1: `GET /api/v1/saldos?loja=1&itensPorPagina=50&pagina=1`
+- Listar lojas: `GET /api/v1/lojas`
+
+
+### REGRAS GERAIS PARA CONSULTAS:
+- Quando gerar uma query SQL ou chamada API, SEMPRE indique a fonte com o formato:
+  ```sql:ALIAS
+  SELECT ...
+  ```
+  ou ```api:ALIAS
+  GET /endpoint
+  ```
+- Se a pergunta pode envolver mais de uma fonte, gere MÚLTIPLAS consultas (uma para cada fonte)
+- Use APENAS SELECT (nunca INSERT, UPDATE, DELETE, DROP, ALTER)
+- NÃO explique a query SQL na resposta
+- Após gerar o SQL, AGUARDE os resultados
+- NUNCA invente dados. Se não encontrar, diga que não há registros
+- NUNCA termine a query SQL com ponto e vírgula (;)
+- Se a pergunta não requer dados, responda normalmente sem SQL/API

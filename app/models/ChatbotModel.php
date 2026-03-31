@@ -16,6 +16,7 @@ class ChatbotModel {
     private $config = [];
     private $iaConfig = [];
     private $evolutionConfig = [];
+    private $fontesConns = []; // Cache de conexões por fonte_id
 
     public function __construct() {
         $this->db = Database::getInstance();
@@ -97,6 +98,1514 @@ class ChatbotModel {
 
     public function getEvolutionConfig($key, $default = '') {
         return $this->evolutionConfig[$key] ?? $default;
+    }
+
+    // ==========================================
+    //  FONTES DE DADOS MÚLTIPLAS
+    // ==========================================
+
+    /**
+     * Listar todas as fontes de dados
+     */
+    public function listarFontesDados($apenasAtivas = false) {
+        $sql = "SELECT * FROM chatbot_fontes_dados";
+        if ($apenasAtivas) {
+            $sql .= " WHERE ativo = 1";
+        }
+        $sql .= " ORDER BY ordem ASC, nome ASC";
+        return $this->db->fetchAll($sql);
+    }
+
+    /**
+     * Obter uma fonte de dados por ID
+     */
+    public function getFonteDados($id) {
+        return $this->db->fetch("SELECT * FROM chatbot_fontes_dados WHERE id = ?", [$id]);
+    }
+
+    /**
+     * Obter uma fonte de dados por alias
+     */
+    public function getFonteDadosByAlias($alias) {
+        return $this->db->fetch("SELECT * FROM chatbot_fontes_dados WHERE alias = ?", [$alias]);
+    }
+
+    /**
+     * Criar uma nova fonte de dados
+     */
+    public function criarFonteDados($dados) {
+        // Sanitizar alias
+        $dados['alias'] = preg_replace('/[^a-z0-9_]/', '', strtolower($dados['alias'] ?? ''));
+        if (empty($dados['alias'])) {
+            throw new \Exception('Alias é obrigatório e deve conter apenas letras minúsculas, números e _');
+        }
+
+        // Verificar duplicata de alias
+        $existe = $this->db->fetch("SELECT id FROM chatbot_fontes_dados WHERE alias = ?", [$dados['alias']]);
+        if ($existe) {
+            throw new \Exception('Já existe uma fonte com o alias "' . $dados['alias'] . '"');
+        }
+
+        // Definir ordem automática
+        if (!isset($dados['ordem'])) {
+            $maxOrdem = $this->db->fetchColumn("SELECT MAX(ordem) FROM chatbot_fontes_dados");
+            $dados['ordem'] = ($maxOrdem ?? 0) + 1;
+        }
+
+        // Tratar relacionamentos e endpoints como JSON
+        if (isset($dados['relacionamentos']) && is_array($dados['relacionamentos'])) {
+            $dados['relacionamentos'] = json_encode($dados['relacionamentos'], JSON_UNESCAPED_UNICODE);
+        }
+        if (isset($dados['api_endpoints']) && is_array($dados['api_endpoints'])) {
+            $dados['api_endpoints'] = json_encode($dados['api_endpoints'], JSON_UNESCAPED_UNICODE);
+        }
+
+        $id = $this->db->insert('chatbot_fontes_dados', $dados);
+        $this->limparCacheContextoDB();
+        return $id;
+    }
+
+    /**
+     * Atualizar uma fonte de dados existente
+     */
+    public function atualizarFonteDados($id, $dados) {
+        // Sanitizar alias se presente
+        if (isset($dados['alias'])) {
+            $dados['alias'] = preg_replace('/[^a-z0-9_]/', '', strtolower($dados['alias']));
+            if (empty($dados['alias'])) {
+                throw new \Exception('Alias é obrigatório');
+            }
+            // Verificar duplicata
+            $existe = $this->db->fetch("SELECT id FROM chatbot_fontes_dados WHERE alias = ? AND id != ?", [$dados['alias'], $id]);
+            if ($existe) {
+                throw new \Exception('Já existe uma fonte com o alias "' . $dados['alias'] . '"');
+            }
+        }
+
+        // Tratar relacionamentos e endpoints como JSON
+        if (isset($dados['relacionamentos']) && is_array($dados['relacionamentos'])) {
+            $dados['relacionamentos'] = json_encode($dados['relacionamentos'], JSON_UNESCAPED_UNICODE);
+        }
+        if (isset($dados['api_endpoints']) && is_array($dados['api_endpoints'])) {
+            $dados['api_endpoints'] = json_encode($dados['api_endpoints'], JSON_UNESCAPED_UNICODE);
+        }
+
+        $this->db->update('chatbot_fontes_dados', $dados, 'id = ?', [$id]);
+        
+        // Limpar conexão cacheada
+        unset($this->fontesConns[$id]);
+        $this->limparCacheContextoDB();
+        return true;
+    }
+
+    /**
+     * Remover uma fonte de dados
+     */
+    public function removerFonteDados($id) {
+        $this->db->delete('chatbot_fontes_dados', 'id = ?', [$id]);
+        unset($this->fontesConns[$id]);
+        $this->limparCacheContextoDB();
+        return true;
+    }
+
+    /**
+     * Ativar/desativar uma fonte de dados
+     */
+    public function toggleFonteDados($id) {
+        $fonte = $this->db->fetch("SELECT ativo FROM chatbot_fontes_dados WHERE id = ?", [$id]);
+        if (!$fonte) return false;
+        $novoStatus = $fonte['ativo'] ? 0 : 1;
+        $this->db->update('chatbot_fontes_dados', ['ativo' => $novoStatus], 'id = ?', [$id]);
+        $this->limparCacheContextoDB();
+        return $novoStatus;
+    }
+
+    /**
+     * Testar conexão de uma fonte de dados específica
+     */
+    public function testarFonteDadosConexao($id) {
+        $fonte = $this->getFonteDados($id);
+        if (!$fonte) {
+            return ['success' => false, 'message' => 'Fonte não encontrada'];
+        }
+
+        $resultado = $this->testarConexaoFonte($fonte);
+
+        // Atualizar resultado do teste
+        $this->db->update('chatbot_fontes_dados', [
+            'ultimo_teste' => date('Y-m-d H:i:s'),
+            'ultimo_teste_ok' => $resultado['success'] ? 1 : 0,
+        ], 'id = ?', [$id]);
+
+        return $resultado;
+    }
+
+    /**
+     * Testar conexão de uma fonte (interna)
+     */
+    private function testarConexaoFonte($fonte) {
+        if ($fonte['tipo'] === 'api') {
+            if (($fonte['api_template'] ?? '') === 'datasystem') {
+                return $this->testarConexaoDataSystem($fonte);
+            }
+            return $this->testarConexaoFonteAPI($fonte);
+        }
+
+        try {
+            $db = $this->getExternalDBForFonte($fonte);
+            $tables = $this->listarTabelasExternas($db, $fonte['tipo']);
+            return [
+                'success' => true,
+                'tipo' => $fonte['tipo'],
+                'tables' => $tables,
+                'message' => count($tables) . ' tabelas encontradas (' . strtoupper($fonte['tipo']) . ')',
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'tipo' => $fonte['tipo'],
+                'message' => $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Testar conexão com API REST de uma fonte
+     */
+    private function testarConexaoFonteAPI($fonte) {
+        $apiUrl = $fonte['api_url'] ?? '';
+        if (empty($apiUrl)) {
+            return ['success' => false, 'tipo' => 'api', 'message' => 'URL da API não configurada'];
+        }
+
+        try {
+            $headers = $this->buildFonteAPIHeaders($fonte);
+            $ch = curl_init(rtrim($apiUrl, '/'));
+            curl_setopt_array($ch, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 15,
+                CURLOPT_HTTPHEADER => $headers,
+                CURLOPT_NOBODY => false,
+            ]);
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $error = curl_error($ch);
+            curl_close($ch);
+
+            if ($error) {
+                return ['success' => false, 'tipo' => 'api', 'message' => 'cURL: ' . $error];
+            }
+
+            return [
+                'success' => $httpCode >= 200 && $httpCode < 400,
+                'tipo' => 'api',
+                'http_code' => $httpCode,
+                'message' => $httpCode >= 200 && $httpCode < 400
+                    ? "API acessível (HTTP {$httpCode})"
+                    : "API retornou HTTP {$httpCode}",
+            ];
+        } catch (\Exception $e) {
+            return ['success' => false, 'tipo' => 'api', 'message' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Obter schema de uma fonte de dados específica
+     */
+    public function getFonteSchema($id) {
+        $fonte = $this->getFonteDados($id);
+        if (!$fonte) throw new \Exception('Fonte não encontrada');
+
+        if ($fonte['tipo'] === 'api') {
+            if (($fonte['api_template'] ?? '') === 'datasystem') {
+                return $this->getDataSystemSchemaInfo($fonte);
+            }
+            return $this->getFonteAPIEndpointsInfo($fonte);
+        }
+
+        $db = $this->getExternalDBForFonte($fonte);
+        $tables = $this->listarTabelasExternas($db, $fonte['tipo']);
+        $tabelasPermitidas = $fonte['tabelas_permitidas'] ?? '';
+        $permitidas = !empty($tabelasPermitidas)
+            ? array_map('trim', explode(',', $tabelasPermitidas))
+            : $tables;
+
+        $schema = [];
+        foreach ($tables as $table) {
+            $cols = $this->listarColunasExterna($db, $fonte['tipo'], $table);
+            $count = $this->contarRegistrosExterna($db, $fonte['tipo'], $table);
+            $schema[] = [
+                'table' => $table,
+                'columns' => $cols,
+                'row_count' => $count,
+                'permitted' => in_array($table, $permitidas),
+            ];
+        }
+        return $schema;
+    }
+
+    /**
+     * Info de endpoints de uma fonte API
+     */
+    private function getFonteAPIEndpointsInfo($fonte) {
+        $endpoints = $fonte['api_endpoints'] ?? '';
+        if (empty($endpoints)) return [];
+        $parsed = json_decode($endpoints, true);
+        if (!is_array($parsed)) return [];
+
+        $result = [];
+        foreach ($parsed as $ep) {
+            $result[] = [
+                'table' => ($ep['method'] ?? 'GET') . ' ' . ($ep['path'] ?? ''),
+                'columns' => array_map(function($p) {
+                    return ['Field' => $p['name'] ?? $p, 'Type' => $p['type'] ?? 'string'];
+                }, $ep['params'] ?? []),
+                'row_count' => $ep['description'] ?? '',
+                'permitted' => true,
+            ];
+        }
+        return $result;
+    }
+
+    /**
+     * Salvar relacionamentos de uma fonte de dados
+     */
+    public function salvarFonteRelacionamentos($id, $relacionamentos) {
+        $json = json_encode($relacionamentos, JSON_UNESCAPED_UNICODE);
+        $this->db->update('chatbot_fontes_dados', ['relacionamentos' => $json], 'id = ?', [$id]);
+        $this->limparCacheContextoDB();
+        return true;
+    }
+
+    /**
+     * Obter relacionamentos de uma fonte de dados
+     */
+    public function getFonteRelacionamentos($id) {
+        $fonte = $this->getFonteDados($id);
+        if (!$fonte) return [];
+        $rels = json_decode($fonte['relacionamentos'] ?? '[]', true);
+        return is_array($rels) ? $rels : [];
+    }
+
+    /**
+     * Conexão PDO para uma fonte de dados específica
+     */
+    private function getExternalDBForFonte($fonte) {
+        $id = $fonte['id'] ?? 0;
+        if (isset($this->fontesConns[$id]) && $this->fontesConns[$id]) {
+            return $this->fontesConns[$id];
+        }
+
+        $tipo = $fonte['tipo'];
+        if ($tipo === 'api') {
+            throw new \Exception('Fonte de dados é API REST, não banco de dados');
+        }
+
+        $host = $fonte['db_host'] ?? '';
+        $port = $fonte['db_port'] ?? '';
+        $name = $fonte['db_name'] ?? '';
+        $user = $fonte['db_user'] ?? '';
+        $pass = $fonte['db_pass'] ?? '';
+
+        switch ($tipo) {
+            case 'mysql':
+                $port = $port ?: '3306';
+                $dsn = "mysql:host={$host};port={$port};dbname={$name};charset=utf8mb4";
+                break;
+            case 'pgsql':
+                $port = $port ?: '5432';
+                $dsn = "pgsql:host={$host};port={$port};dbname={$name}";
+                break;
+            case 'sqlserver':
+                $port = $port ?: '1433';
+                $dsn = "sqlsrv:Server={$host},{$port};Database={$name}";
+                break;
+            case 'sqlite':
+                $dsn = "sqlite:{$host}";
+                $user = null;
+                $pass = null;
+                break;
+            default:
+                throw new \Exception("Driver não suportado: {$tipo}");
+        }
+
+        if ($tipo !== 'sqlite' && (empty($host) || empty($name))) {
+            throw new \Exception('Banco de dados não configurado na fonte "' . ($fonte['nome'] ?? '') . '"');
+        }
+
+        $options = [
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+            \PDO::ATTR_TIMEOUT => 10,
+        ];
+
+        $conn = new \PDO($dsn, $user, $pass, $options);
+        if ($tipo === 'pgsql') {
+            $conn->exec("SET client_encoding TO 'UTF8'");
+        }
+
+        $this->fontesConns[$id] = $conn;
+        return $conn;
+    }
+
+    /**
+     * Headers de autenticação para uma fonte API
+     */
+    private function buildFonteAPIHeaders($fonte) {
+        $headers = ['Content-Type: application/json', 'Accept: application/json'];
+        $authTipo = $fonte['api_auth_tipo'] ?? 'none';
+        $apiKey = $fonte['api_key'] ?? '';
+
+        switch ($authTipo) {
+            case 'bearer':
+                if ($apiKey) $headers[] = 'Authorization: Bearer ' . $apiKey;
+                break;
+            case 'apikey':
+                $headerName = $fonte['api_auth_header'] ?? 'Authorization';
+                if ($apiKey) $headers[] = $headerName . ': ' . $apiKey;
+                break;
+            case 'basic':
+                $user = $fonte['api_auth_user'] ?? '';
+                $pass = $fonte['api_auth_pass'] ?? '';
+                if ($user) $headers[] = 'Authorization: Basic ' . base64_encode($user . ':' . $pass);
+                break;
+        }
+        return $headers;
+    }
+
+    /**
+     * Chamar API REST de uma fonte específica
+     */
+    public function callFonteAPI($fonte, $method, $path, $body = null) {
+        $baseUrl = rtrim($fonte['api_url'] ?? '', '/');
+        if (empty($baseUrl)) {
+            throw new \Exception('URL da API não configurada na fonte "' . ($fonte['nome'] ?? '') . '"');
+        }
+
+        $url = $baseUrl . '/' . ltrim($path, '/');
+        $headers = $this->buildFonteAPIHeaders($fonte);
+
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTPHEADER => $headers,
+        ]);
+
+        $method = strtoupper($method);
+        if ($method === 'POST') {
+            curl_setopt($ch, CURLOPT_POST, true);
+            if ($body) curl_setopt($ch, CURLOPT_POSTFIELDS, is_string($body) ? $body : json_encode($body));
+        } elseif ($method !== 'GET') {
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+            if ($body) curl_setopt($ch, CURLOPT_POSTFIELDS, is_string($body) ? $body : json_encode($body));
+        }
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        if ($error) throw new \Exception('cURL: ' . $error);
+
+        return [
+            'http_code' => $httpCode,
+            'body' => $response,
+            'data' => json_decode($response, true),
+        ];
+    }
+
+    // ==========================================
+    //  DATASYSTEM ERP (template: datasystem)
+    // ==========================================
+
+    /**
+     * Definição dos endpoints padrão do DataSystem ERP
+     * Usado para popular o contexto da IA e para o schema visual
+     */
+    public static function getDataSystemEndpoints() {
+        return [
+            [
+                'path' => '/api/v1/vendas',
+                'method' => 'GET',
+                'description' => 'Buscar vendas por período (máx 365 dias)',
+                'params' => [
+                    ['name' => 'dataVendaInicio', 'type' => 'string', 'required' => true, 'description' => 'Data início (yyyy-mm-dd)'],
+                    ['name' => 'dataVendaFim', 'type' => 'string', 'required' => true, 'description' => 'Data fim (yyyy-mm-dd)'],
+                    ['name' => 'campoOrdem', 'type' => 'string', 'required' => true, 'description' => 'Campo para ordenar (ex: emissao)'],
+                    ['name' => 'ordem', 'type' => 'string', 'required' => true, 'description' => 'ASC ou DESC'],
+                    ['name' => 'itensPorPagina', 'type' => 'integer', 'required' => true, 'description' => 'Qtd itens por página'],
+                    ['name' => 'pagina', 'type' => 'integer', 'required' => true, 'description' => 'Número da página'],
+                    ['name' => 'loja', 'type' => 'integer', 'required' => false, 'description' => 'Filtrar por loja'],
+                    ['name' => 'excluidas', 'type' => 'integer', 'required' => false, 'description' => '1=sim, 2=não, 0=todas'],
+                ],
+                'response_fields' => 'loja, codigo, hora, emissao, valorTotal, difTroca, desconto, acrescimo, creditoLoja, creditoTroca, bonusValor, nota, serieNf, tipoVenda, tipoVendaDescricao, cliente{loja,codigo,nome,cpf}, itens[{referencia,cor,tamanho,quantidade,valorUnitario,desconto}], parcelas[{valor,plano,cartao}], usuario{codigo,nome}',
+            ],
+            [
+                'path' => '/api/v1/clientes',
+                'method' => 'GET',
+                'description' => 'Buscar clientes cadastrados',
+                'params' => [
+                    ['name' => 'campoOrdem', 'type' => 'string', 'required' => true, 'description' => 'Campo para ordenar (ex: nome)'],
+                    ['name' => 'ordem', 'type' => 'string', 'required' => true, 'description' => 'ASC ou DESC'],
+                    ['name' => 'itensPorPagina', 'type' => 'integer', 'required' => true, 'description' => 'Qtd itens por página'],
+                    ['name' => 'pagina', 'type' => 'integer', 'required' => true, 'description' => 'Número da página'],
+                ],
+                'response_fields' => 'loja, codigo, tipoPessoa, nome, sobrenome, cpf, rg, email, telefone1, telefone2, cep, endereco, numero, bairro, cidade, estado, nascimento, sexo, cadastro, limite, bloqueado, ultCompra, datUltAlt',
+            ],
+            [
+                'path' => '/api/v1/clientes/cpfCnpj/{cpfCnpj}',
+                'method' => 'GET',
+                'description' => 'Buscar cliente por CPF ou CNPJ',
+                'params' => [
+                    ['name' => 'cpfCnpj', 'type' => 'string', 'required' => true, 'description' => 'CPF ou CNPJ (somente números)'],
+                ],
+                'response_fields' => 'loja, codigo, nome, sobrenome, cpf, email, telefone1, cidade, estado, limite, bloqueado',
+            ],
+            [
+                'path' => '/api/v1/produtos',
+                'method' => 'GET',
+                'description' => 'Buscar produtos por data de última compra',
+                'params' => [
+                    ['name' => 'dataUltimaCompraInicio', 'type' => 'string', 'required' => true, 'description' => 'Data início (yyyy-mm-dd)'],
+                    ['name' => 'dataUltimaCompraFim', 'type' => 'string', 'required' => true, 'description' => 'Data fim (yyyy-mm-dd)'],
+                    ['name' => 'campoOrdem', 'type' => 'string', 'required' => true, 'description' => 'Campo para ordenar'],
+                    ['name' => 'ordem', 'type' => 'string', 'required' => true, 'description' => 'ASC ou DESC'],
+                    ['name' => 'itensPorPagina', 'type' => 'integer', 'required' => true, 'description' => 'Qtd itens por página'],
+                    ['name' => 'pagina', 'type' => 'integer', 'required' => true, 'description' => 'Número da página'],
+                ],
+                'response_fields' => 'referencia, descricao, marca, departamento, classe, tipo, cor, tamanho, preco, precoPromocao, custoMedio, colecao, status, codBarra, dataUltimaCompra',
+            ],
+            [
+                'path' => '/api/v1/lojas',
+                'method' => 'GET',
+                'description' => 'Buscar lojas (filiais)',
+                'params' => [
+                    ['name' => 'codigo', 'type' => 'integer', 'required' => false, 'description' => 'Filtrar por código da loja'],
+                    ['name' => 'cnpj', 'type' => 'string', 'required' => false, 'description' => 'Filtrar por CNPJ'],
+                ],
+                'response_fields' => 'codigo, descricao, filial, razaoSocial, nome, estado, endereco, cep, numero, bairro, cidade, telefone1, telefone2, email, url, cnpj, insc',
+            ],
+            [
+                'path' => '/api/v1/vendedores',
+                'method' => 'GET',
+                'description' => 'Buscar vendedores',
+                'params' => [
+                    ['name' => 'datUltAlt', 'type' => 'string', 'required' => true, 'description' => 'Data última alteração (yyyy-mm-dd)'],
+                    ['name' => 'loja', 'type' => 'integer', 'required' => true, 'description' => 'Código da loja'],
+                    ['name' => 'status', 'type' => 'integer', 'required' => true, 'description' => '0=todos, 1=ativos, 2=inativos'],
+                    ['name' => 'itensPorPagina', 'type' => 'integer', 'required' => true, 'description' => 'Qtd itens por página'],
+                    ['name' => 'pagina', 'type' => 'integer', 'required' => true, 'description' => 'Número da página'],
+                ],
+                'response_fields' => 'loja, codigo, nome, cpf',
+            ],
+            [
+                'path' => '/api/v1/saldos',
+                'method' => 'GET',
+                'description' => 'Buscar saldos de estoque por loja',
+                'params' => [
+                    ['name' => 'loja', 'type' => 'integer', 'required' => true, 'description' => 'Código da loja'],
+                    ['name' => 'itensPorPagina', 'type' => 'integer', 'required' => true, 'description' => 'Qtd itens por página'],
+                    ['name' => 'pagina', 'type' => 'integer', 'required' => true, 'description' => 'Número da página'],
+                    ['name' => 'referencia', 'type' => 'string', 'required' => false, 'description' => 'Filtrar por referência'],
+                    ['name' => 'todosProdutos', 'type' => 'integer', 'required' => false, 'description' => 'Incluir todos os produtos'],
+                ],
+                'response_fields' => 'referencia, descricao, cor, tamanho, saldo, custoMedio, precoVarejo',
+            ],
+            [
+                'path' => '/api/v1/contas-a-pagar',
+                'method' => 'GET',
+                'description' => 'Buscar registros de Contas a Pagar',
+                'params' => [
+                    ['name' => 'dataHoraInicio', 'type' => 'string', 'required' => true, 'description' => 'Data início (yyyy-mm-dd)'],
+                    ['name' => 'dataHoraFim', 'type' => 'string', 'required' => true, 'description' => 'Data fim (yyyy-mm-dd)'],
+                    ['name' => 'tipoData', 'type' => 'integer', 'required' => true, 'description' => 'Tipo de data para filtro'],
+                    ['name' => 'pagina', 'type' => 'integer', 'required' => true, 'description' => 'Número da página'],
+                    ['name' => 'itensPorPagina', 'type' => 'integer', 'required' => true, 'description' => 'Qtd itens por página'],
+                    ['name' => 'codigoLoja', 'type' => 'integer', 'required' => false, 'description' => 'Filtrar por loja'],
+                ],
+                'response_fields' => 'codigo, loja, fornecedor, duplicata, valor, valorPago, dataVencimento, dataPagamento, status',
+            ],
+            [
+                'path' => '/api/v1/contas-a-receber',
+                'method' => 'GET',
+                'description' => 'Buscar contas a receber',
+                'params' => [
+                    ['name' => 'itensPorPagina', 'type' => 'integer', 'required' => true, 'description' => 'Qtd itens por página'],
+                    ['name' => 'pagina', 'type' => 'integer', 'required' => true, 'description' => 'Número da página'],
+                    ['name' => 'loja', 'type' => 'integer', 'required' => false, 'description' => 'Filtrar por loja'],
+                    ['name' => 'dataVencimentoInicio', 'type' => 'string', 'required' => false, 'description' => 'Data vencimento início'],
+                    ['name' => 'dataVencimentoFim', 'type' => 'string', 'required' => false, 'description' => 'Data vencimento fim'],
+                ],
+                'response_fields' => 'loja, cliente, nome, parcela, valor, valorPago, dataVencimento, dataPagamento, status',
+            ],
+            [
+                'path' => '/api/v1/entradas-estoque',
+                'method' => 'GET',
+                'description' => 'Buscar itens de entrada de estoque',
+                'params' => [
+                    ['name' => 'dataInicio', 'type' => 'string', 'required' => true, 'description' => 'Data início (yyyy-mm-dd)'],
+                    ['name' => 'dataFim', 'type' => 'string', 'required' => true, 'description' => 'Data fim (yyyy-mm-dd)'],
+                    ['name' => 'itensPorPagina', 'type' => 'integer', 'required' => true, 'description' => 'Qtd itens por página'],
+                    ['name' => 'pagina', 'type' => 'integer', 'required' => true, 'description' => 'Número da página'],
+                    ['name' => 'lojaDestino', 'type' => 'integer', 'required' => false, 'description' => 'Filtrar por loja destino'],
+                    ['name' => 'fornecedor', 'type' => 'integer', 'required' => false, 'description' => 'Filtrar por fornecedor'],
+                ],
+                'response_fields' => 'loja, numero, fornecedor, dataEntrada, referencia, cor, tamanho, quantidade, custoUnitario, custoTotal',
+            ],
+            [
+                'path' => '/api/v1/fornecedor',
+                'method' => 'GET',
+                'description' => 'Buscar fornecedores',
+                'params' => [],
+                'response_fields' => 'codigo, nome, cnpj, telefone, email, endereco, cidade, estado',
+            ],
+            [
+                'path' => '/api/v1/departamentos',
+                'method' => 'GET',
+                'description' => 'Buscar departamentos de produtos',
+                'params' => [],
+                'response_fields' => 'codigo, descricao',
+            ],
+            [
+                'path' => '/api/v1/marcas',
+                'method' => 'GET',
+                'description' => 'Buscar marcas de produtos',
+                'params' => [],
+                'response_fields' => 'codigo, descricao',
+            ],
+            [
+                'path' => '/api/v1/cores',
+                'method' => 'GET',
+                'description' => 'Buscar cores de produtos',
+                'params' => [],
+                'response_fields' => 'codigo, descricao',
+            ],
+            [
+                'path' => '/api/v1/pedidos-compras',
+                'method' => 'GET',
+                'description' => 'Buscar pedidos de compra (máx 365 dias)',
+                'params' => [
+                    ['name' => 'dataInicio', 'type' => 'string', 'required' => true, 'description' => 'Data início (yyyy-mm-dd)'],
+                    ['name' => 'dataFim', 'type' => 'string', 'required' => true, 'description' => 'Data fim (yyyy-mm-dd)'],
+                    ['name' => 'itensPorPagina', 'type' => 'integer', 'required' => true, 'description' => 'Qtd itens por página'],
+                    ['name' => 'pagina', 'type' => 'integer', 'required' => true, 'description' => 'Número da página'],
+                    ['name' => 'lojaDestino', 'type' => 'integer', 'required' => false, 'description' => 'Filtrar por loja destino'],
+                ],
+                'response_fields' => 'numero, lojaDestino, fornecedor, dataEmissao, status, valorTotal, itens',
+            ],
+            [
+                'path' => '/api/v1/planos-pagamento',
+                'method' => 'GET',
+                'description' => 'Buscar planos de pagamento',
+                'params' => [
+                    ['name' => 'datUltAlt', 'type' => 'string', 'required' => false, 'description' => 'Filtrar por data última alteração'],
+                ],
+                'response_fields' => 'codigo, descricao, parcelas, taxaJuros',
+            ],
+            [
+                'path' => '/api/v1/colecoes',
+                'method' => 'GET',
+                'description' => 'Buscar coleções de produtos',
+                'params' => [],
+                'response_fields' => 'codigo, descricao',
+            ],
+            [
+                'path' => '/api/v1/modelos',
+                'method' => 'GET',
+                'description' => 'Buscar modelos de produtos',
+                'params' => [],
+                'response_fields' => 'codigo, descricao',
+            ],
+            [
+                'path' => '/api/v1/classes',
+                'method' => 'GET',
+                'description' => 'Buscar classes de produtos',
+                'params' => [],
+                'response_fields' => 'codigo, descricao',
+            ],
+            [
+                'path' => '/api/v1/tipos',
+                'method' => 'GET',
+                'description' => 'Buscar tipos de produtos',
+                'params' => [],
+                'response_fields' => 'codigo, descricao',
+            ],
+        ];
+    }
+
+    /**
+     * Autenticar na API DataSystem e obter token JWT
+     * Retorna o token JWT ou lança exceção em caso de falha
+     */
+    private function authenticateDataSystem($fonte) {
+        $baseUrl = rtrim($fonte['api_url'] ?? '', '/');
+        $cnpj = $fonte['api_auth_user'] ?? '';
+        $hash = $fonte['api_key'] ?? '';
+
+        if (empty($baseUrl) || empty($cnpj) || empty($hash)) {
+            throw new \Exception('DataSystem: URL, CNPJ e Hash são obrigatórios');
+        }
+
+        // Verificar cache de token
+        $tokenCache = $fonte['api_token_cache'] ?? '';
+        $tokenExpires = $fonte['api_token_expires'] ?? '';
+        if (!empty($tokenCache) && !empty($tokenExpires) && strtotime($tokenExpires) > time()) {
+            return $tokenCache;
+        }
+
+        // Autenticar
+        $ch = curl_init($baseUrl . '/api/v1/autenticar');
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 15,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode(['cnpj' => $cnpj, 'hash' => $hash]),
+            CURLOPT_HTTPHEADER => ['Content-Type: application/json', 'Accept: application/json'],
+        ]);
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        if ($error) throw new \Exception('DataSystem Auth cURL: ' . $error);
+        if ($httpCode !== 200) throw new \Exception('DataSystem Auth falhou (HTTP ' . $httpCode . '): ' . substr($response, 0, 200));
+
+        $data = json_decode($response, true);
+        $token = $data['token'] ?? '';
+        if (empty($token)) throw new \Exception('DataSystem: token não retornado na autenticação');
+
+        // Salvar token em cache (válido por 23h - margem de segurança)
+        $expiresAt = date('Y-m-d H:i:s', time() + 82800);
+        $this->db->update('chatbot_fontes_dados', [
+            'api_token_cache' => $token,
+            'api_token_expires' => $expiresAt,
+        ], 'id = ?', [$fonte['id']]);
+
+        return $token;
+    }
+
+    /**
+     * Chamar um endpoint da API DataSystem com autenticação automática
+     */
+    public function callDataSystemAPI($fonte, $method, $path, $queryParams = [], $body = null, $sessaoId = null) {
+        $startTime = microtime(true);
+        $token = $this->authenticateDataSystem($fonte);
+        $baseUrl = rtrim($fonte['api_url'] ?? '', '/');
+
+        $url = $baseUrl . '/' . ltrim($path, '/');
+        if (!empty($queryParams)) {
+            $url .= '?' . http_build_query($queryParams);
+        }
+
+        $endpointLog = $path . (!empty($queryParams) ? '?' . http_build_query($queryParams) : '');
+
+        $headers = [
+            'Content-Type: application/json',
+            'Accept: application/json',
+            'Authorization: Bearer ' . $token,
+        ];
+
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTPHEADER => $headers,
+        ]);
+
+        if (strtoupper($method) === 'POST') {
+            curl_setopt($ch, CURLOPT_POST, true);
+            if ($body) curl_setopt($ch, CURLOPT_POSTFIELDS, is_string($body) ? $body : json_encode($body));
+        }
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        if ($error) {
+            $this->logDataSystemCall($fonte, $method, $endpointLog, $queryParams, $body, 0, null, $error, false, $startTime, $sessaoId);
+            throw new \Exception('DataSystem cURL: ' . $error);
+        }
+
+        // Se 401, invalidar token e tentar novamente (uma vez)
+        if ($httpCode === 401) {
+            $this->db->update('chatbot_fontes_dados', [
+                'api_token_cache' => null,
+                'api_token_expires' => null,
+            ], 'id = ?', [$fonte['id']]);
+            $fonte['api_token_cache'] = '';
+            $fonte['api_token_expires'] = '';
+
+            $token = $this->authenticateDataSystem($fonte);
+            $headers[2] = 'Authorization: Bearer ' . $token;
+
+            $ch = curl_init();
+            curl_setopt_array($ch, [
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTPHEADER => $headers,
+            ]);
+            if (strtoupper($method) === 'POST') {
+                curl_setopt($ch, CURLOPT_POST, true);
+                if ($body) curl_setopt($ch, CURLOPT_POSTFIELDS, is_string($body) ? $body : json_encode($body));
+            }
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+        }
+
+        if ($httpCode >= 400) {
+            $this->logDataSystemCall($fonte, $method, $endpointLog, $queryParams, $body, $httpCode, $response, 'HTTP ' . $httpCode, false, $startTime, $sessaoId);
+            throw new \Exception('DataSystem HTTP ' . $httpCode . ': ' . substr($response, 0, 300));
+        }
+
+        // Log sucesso
+        $this->logDataSystemCall($fonte, $method, $endpointLog, $queryParams, $body, $httpCode, $response, null, true, $startTime, $sessaoId);
+
+        $data = json_decode($response, true);
+        return [
+            'http_code' => $httpCode,
+            'body' => $response,
+            'data' => $data,
+            'itens' => $data['itens'] ?? (is_array($data) && isset($data[0]) ? $data : []),
+            'totalItens' => $data['totalItens'] ?? count($data['itens'] ?? []),
+        ];
+    }
+
+    /**
+     * Gravar log de chamada DataSystem no banco
+     */
+    private function logDataSystemCall($fonte, $method, $endpoint, $queryParams, $body, $httpCode, $response, $erro, $sucesso, $startTime, $sessaoId = null) {
+        try {
+            $duracaoMs = (int)((microtime(true) - $startTime) * 1000);
+            $payloadData = [];
+            if (!empty($queryParams)) $payloadData['query'] = $queryParams;
+            if (!empty($body)) $payloadData['body'] = $body;
+
+            $this->db->insert('chatbot_datasystem_logs', [
+                'fonte_id'      => $fonte['id'] ?? null,
+                'fonte_nome'    => $fonte['nome'] ?? $fonte['alias'] ?? 'DataSystem',
+                'method'        => strtoupper($method),
+                'endpoint'      => mb_substr($endpoint, 0, 500),
+                'payload'       => !empty($payloadData) ? json_encode($payloadData, JSON_UNESCAPED_UNICODE) : null,
+                'http_code'     => $httpCode ?: null,
+                'response_body' => $response,
+                'response_size' => $response ? strlen($response) : 0,
+                'duracao_ms'    => $duracaoMs,
+                'sucesso'       => $sucesso ? 1 : 0,
+                'erro'          => $erro ? mb_substr($erro, 0, 500) : null,
+                'sessao_id'     => $sessaoId,
+            ]);
+        } catch (\Exception $e) {
+            // Silenciar erros de log para não atrapalhar o fluxo principal
+            error_log('DataSystem log error: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Listar logs de chamadas DataSystem
+     */
+    public function getDataSystemLogs($limite = 100, $filtro = 'all') {
+        $where = '1=1';
+        $params = [];
+
+        if ($filtro === 'errors') {
+            $where .= ' AND sucesso = 0';
+        } elseif ($filtro === 'success') {
+            $where .= ' AND sucesso = 1';
+        }
+
+        return $this->db->fetchAll(
+            "SELECT id, fonte_id, fonte_nome, method, endpoint, payload, http_code,
+                    response_body, response_size, duracao_ms, sucesso, erro, sessao_id, criado_em
+             FROM chatbot_datasystem_logs
+             WHERE {$where}
+             ORDER BY id DESC
+             LIMIT ?",
+            array_merge($params, [$limite])
+        );
+    }
+
+    /**
+     * Limpar logs DataSystem
+     */
+    public function clearDataSystemLogs() {
+        $this->db->query("DELETE FROM chatbot_datasystem_logs");
+    }
+
+    /**
+     * Estatísticas dos logs DataSystem
+     */
+    public function getDataSystemLogStats() {
+        $total = (int)$this->db->fetchColumn("SELECT COUNT(*) FROM chatbot_datasystem_logs");
+        $erros = (int)$this->db->fetchColumn("SELECT COUNT(*) FROM chatbot_datasystem_logs WHERE sucesso = 0");
+        $hoje = (int)$this->db->fetchColumn("SELECT COUNT(*) FROM chatbot_datasystem_logs WHERE DATE(criado_em) = CURDATE()");
+        $avgMs = (int)$this->db->fetchColumn("SELECT COALESCE(AVG(duracao_ms), 0) FROM chatbot_datasystem_logs WHERE sucesso = 1");
+
+        return [
+            'total' => $total,
+            'erros' => $erros,
+            'sucesso' => $total - $erros,
+            'hoje' => $hoje,
+            'avg_ms' => $avgMs,
+        ];
+    }
+
+    /**
+     * Testar conexão com DataSystem (autentica e testa 1 endpoint)
+     */
+    private function testarConexaoDataSystem($fonte) {
+        try {
+            $token = $this->authenticateDataSystem($fonte);
+
+            // Testar /api/v1/lojas (simples, sem params obrigatórios)
+            $result = $this->callDataSystemAPI($fonte, 'GET', '/api/v1/lojas');
+            $lojas = $result['itens'] ?? $result['data'] ?? [];
+            $qtd = is_array($lojas) ? count($lojas) : 0;
+
+            return [
+                'success' => true,
+                'tipo' => 'api',
+                'message' => "✅ DataSystem autenticado com sucesso! {$qtd} loja(s) encontrada(s).",
+                'tables' => self::getDataSystemEndpoints(),
+                'details' => [
+                    'token' => substr($token, 0, 20) . '...',
+                    'lojas' => $qtd,
+                ],
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'tipo' => 'api',
+                'message' => 'DataSystem: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Gera o schema visual dos endpoints DataSystem para o diagrama
+     */
+    private function getDataSystemSchemaInfo($fonte) {
+        $endpoints = self::getDataSystemEndpoints();
+        $result = [];
+        foreach ($endpoints as $ep) {
+            $cols = [];
+            // Params como "colunas" do endpoint
+            foreach ($ep['params'] as $p) {
+                $cols[] = [
+                    'Field' => $p['name'],
+                    'Type' => ($p['required'] ? '* ' : '') . $p['type'],
+                    'Key' => $p['required'] ? 'REQ' : '',
+                ];
+            }
+            // Response fields como colunas adicionais
+            if (!empty($ep['response_fields'])) {
+                $respFields = array_map('trim', explode(',', preg_replace('/\{[^}]+\}|\[[^\]]+\]/', '', $ep['response_fields'])));
+                foreach ($respFields as $rf) {
+                    if (empty($rf)) continue;
+                    $cols[] = [
+                        'Field' => '→ ' . $rf,
+                        'Type' => 'response',
+                        'Key' => '',
+                    ];
+                }
+            }
+
+            $result[] = [
+                'table' => $ep['method'] . ' ' . $ep['path'],
+                'columns' => $cols,
+                'row_count' => $ep['description'],
+                'permitted' => true,
+            ];
+        }
+        return $result;
+    }
+
+    /**
+     * Contexto DataSystem para o prompt da IA (rico e detalhado)
+     */
+    private function getContextoDataSystem($fonte) {
+        $alias = $fonte['alias'];
+        $nome = $fonte['nome'];
+        $descricao = $fonte['descricao'] ?? $fonte['api_descricao'] ?? '';
+        $baseUrl = $fonte['api_url'] ?? '';
+
+        $prompt = "### FONTE: {$nome} (alias: `{$alias}`, tipo: API DataSystem ERP)\n";
+        if ($descricao) $prompt .= "Descrição: {$descricao}\n";
+        $prompt .= "URL Base: {$baseUrl}\n\n";
+
+        $prompt .= "**IMPORTANTE: Esta é uma API REST do ERP DataSystem (sistema de gestão de varejo/moda).**\n";
+        $prompt .= "A autenticação é automática (JWT). Você NÃO precisa se preocupar com tokens.\n\n";
+
+        $prompt .= "**Formato de chamada API:**\n";
+        $prompt .= "```api:{$alias}\nGET /api/v1/endpoint?param1=valor1&param2=valor2\n```\n\n";
+
+        $prompt .= "**REGRAS IMPORTANTES:**\n";
+        $prompt .= "- Datas SEMPRE no formato yyyy-mm-dd (ex: 2026-03-27)\n";
+        $prompt .= "- Use itensPorPagina=50 e pagina=1 como padrão\n";
+        $prompt .= "- A resposta vem como { totalItens: N, itens: [...] }\n";
+        $prompt .= "- Use campoOrdem=emissao e ordem=DESC para vendas recentes\n";
+        $prompt .= "- Para 'vendas de hoje', use dataVendaInicio e dataVendaFim com a data atual\n";
+        $prompt .= "- Para 'vendas do mês', use o primeiro e último dia do mês\n";
+        $prompt .= "- Use APENAS GET para consultas de dados\n\n";
+
+        $endpoints = self::getDataSystemEndpoints();
+        $prompt .= "**Endpoints Disponíveis:**\n\n";
+
+        foreach ($endpoints as $ep) {
+            $prompt .= "**{$ep['method']} {$ep['path']}** - {$ep['description']}\n";
+
+            if (!empty($ep['params'])) {
+                $required = array_filter($ep['params'], fn($p) => $p['required']);
+                $optional = array_filter($ep['params'], fn($p) => !$p['required']);
+
+                if (!empty($required)) {
+                    $prompt .= "  Obrigatórios: " . implode(', ', array_map(fn($p) => "`{$p['name']}` ({$p['type']} - {$p['description']})", $required)) . "\n";
+                }
+                if (!empty($optional)) {
+                    $prompt .= "  Opcionais: " . implode(', ', array_map(fn($p) => "`{$p['name']}` ({$p['description']})", $optional)) . "\n";
+                }
+            }
+
+            if (!empty($ep['response_fields'])) {
+                $prompt .= "  Retorna: {$ep['response_fields']}\n";
+            }
+            $prompt .= "\n";
+        }
+
+        $prompt .= "**Exemplos de uso:**\n";
+        $prompt .= "- Vendas de hoje: `GET /api/v1/vendas?dataVendaInicio=2026-03-27&dataVendaFim=2026-03-27&campoOrdem=emissao&ordem=DESC&itensPorPagina=50&pagina=1`\n";
+        $prompt .= "- Buscar cliente por CPF: `GET /api/v1/clientes/cpfCnpj/12345678900`\n";
+        $prompt .= "- Estoque da loja 1: `GET /api/v1/saldos?loja=1&itensPorPagina=50&pagina=1`\n";
+        $prompt .= "- Listar lojas: `GET /api/v1/lojas`\n";
+
+        return $prompt;
+    }
+
+    /**
+     * Executar chamada API DataSystem a partir do bloco da IA
+     * Entende o formato: GET /api/v1/endpoint?param=value
+     */
+    private function executarConsultaDataSystem($fonte, $apiCall, $sessaoId) {
+        $lines = explode("\n", trim($apiCall));
+        $firstLine = trim($lines[0]);
+
+        // Parse: GET /api/v1/endpoint?param1=val&param2=val
+        if (!preg_match('/^(GET|POST)\s+(\/\S+)/i', $firstLine, $parts)) {
+            return null;
+        }
+
+        $method = strtoupper($parts[1]);
+        $fullPath = $parts[2];
+
+        // Separar path de query string
+        $queryParams = [];
+        if (strpos($fullPath, '?') !== false) {
+            list($path, $qs) = explode('?', $fullPath, 2);
+            parse_str($qs, $queryParams);
+        } else {
+            $path = $fullPath;
+        }
+
+        if ($method !== 'GET') return null; // Segurança: só GET
+
+        try {
+            $result = $this->callDataSystemAPI($fonte, $method, $path, $queryParams, null, $sessaoId);
+            $itens = $result['itens'] ?? [];
+            $totalItens = $result['totalItens'] ?? 0;
+
+            $textoResultado = '';
+            if (!empty($itens) && is_array($itens)) {
+                // Formatar como tabela/lista
+                if (isset($itens[0]) && is_array($itens[0])) {
+                    $textoResultado = "Total: {$totalItens} registros (mostrando " . count($itens) . ")\n\n";
+                    $textoResultado .= $this->formatarResultadoSQL($itens);
+                } else {
+                    $partes = [];
+                    foreach ($itens as $k => $v) {
+                        $partes[] = "*{$k}:* " . (is_array($v) ? json_encode($v, JSON_UNESCAPED_UNICODE) : $v);
+                    }
+                    $textoResultado = implode("\n", $partes);
+                }
+            } elseif (is_array($result['data'])) {
+                // Resposta pode ser array direto (ex: lojas)
+                $dados = $result['data'];
+                if (isset($dados[0]) && is_array($dados[0])) {
+                    $textoResultado = $this->formatarResultadoSQL($dados);
+                } elseif (!empty($dados)) {
+                    $partes = [];
+                    foreach ($dados as $k => $v) {
+                        $partes[] = "*{$k}:* " . (is_array($v) ? json_encode($v, JSON_UNESCAPED_UNICODE) : $v);
+                    }
+                    $textoResultado = implode("\n", $partes);
+                }
+            }
+
+            return [
+                'sql' => $method . ' ' . $fullPath,
+                'dados' => $itens ?: $result['data'],
+                'resposta_final' => !empty($textoResultado) ? $textoResultado : 'API DataSystem não retornou dados para essa consulta. 🤔',
+            ];
+        } catch (\Exception $e) {
+            $logFile = (defined('BASE_PATH') ? BASE_PATH : __DIR__ . '/../..') . '/storage/logs/webhook_chatbot.log';
+            file_put_contents($logFile, date('[Y-m-d H:i:s] ') . "DATASYSTEM ERRO [{$fonte['alias']}]: {$fullPath} | {$e->getMessage()}\n", FILE_APPEND);
+
+            return [
+                'sql' => $method . ' ' . $fullPath,
+                'dados' => null,
+                'resposta_final' => "Erro ao consultar DataSystem: " . $e->getMessage() . " 😅",
+            ];
+        }
+    }
+
+    // ==========================================
+    //  CONTEXTO MULTI-FONTE PARA A IA
+    // ==========================================
+
+    /**
+     * Gera o contexto combinado de TODAS as fontes de dados ativas
+     * para inclusão no system prompt da IA
+     */
+    private function getContextoMultiFontes() {
+        $fontes = $this->listarFontesDados(true); // apenas ativas
+        if (empty($fontes)) return null;
+
+        // Cache em arquivo
+        $cacheDir = __DIR__ . '/../../storage/cache';
+        if (!is_dir($cacheDir)) mkdir($cacheDir, 0755, true);
+
+        $cacheKey = md5('multifontes_' . json_encode(array_map(function($f) {
+            return $f['id'] . '_' . $f['atualizado_em'];
+        }, $fontes)));
+        $cacheFile = $cacheDir . '/db_context_multi_' . $cacheKey . '.cache';
+        $cacheTTL = 300;
+
+        if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < $cacheTTL) {
+            $cached = file_get_contents($cacheFile);
+            if (!empty($cached)) return $cached;
+        }
+
+        $contextoTotal = "## FONTES DE DADOS DISPONÍVEIS\n";
+        $contextoTotal .= "Você tem acesso a " . count($fontes) . " fonte(s) de dados. ";
+        $contextoTotal .= "Cada fonte tem um **alias** único que você DEVE usar para identificar de qual fonte buscar dados.\n\n";
+
+        $fontesSQL = [];
+        $fontesAPI = [];
+
+        foreach ($fontes as $fonte) {
+            $alias = $fonte['alias'];
+            $nome = $fonte['nome'];
+
+            if ($fonte['tipo'] === 'api') {
+                $ctx = $this->getContextoFonteAPI($fonte);
+                if ($ctx) {
+                    $fontesAPI[] = $alias;
+                    $contextoTotal .= $ctx . "\n\n";
+                }
+            } else {
+                $ctx = $this->getContextoFonteSQL($fonte);
+                if ($ctx) {
+                    $fontesSQL[] = $alias;
+                    $contextoTotal .= $ctx . "\n\n";
+                }
+            }
+        }
+
+        // Regras gerais
+        $contextoTotal .= "### REGRAS GERAIS PARA CONSULTAS:\n";
+        
+        if (count($fontes) > 1) {
+            $contextoTotal .= "- Quando gerar uma query SQL ou chamada API, SEMPRE indique a fonte com o formato:\n";
+            $contextoTotal .= "  ```sql:ALIAS\n  SELECT ...\n  ```\n";
+            $contextoTotal .= "  ou ```api:ALIAS\n  GET /endpoint\n  ```\n";
+            $contextoTotal .= "- Se a pergunta pode envolver mais de uma fonte, gere MÚLTIPLAS consultas (uma para cada fonte)\n";
+        } else {
+            $alias = $fontes[0]['alias'] ?? 'principal';
+            if ($fontes[0]['tipo'] === 'api') {
+                $contextoTotal .= "- Envolva chamadas API entre: ```api:{$alias}\nGET /endpoint\n```\n";
+            } else {
+                $contextoTotal .= "- Envolva queries SQL entre: ```sql:{$alias}\nSELECT ...\n```\n";
+            }
+        }
+
+        $contextoTotal .= "- Use APENAS SELECT (nunca INSERT, UPDATE, DELETE, DROP, ALTER)\n";
+        $contextoTotal .= "- NÃO explique a query SQL na resposta\n";
+        $contextoTotal .= "- Após gerar o SQL, AGUARDE os resultados\n";
+        $contextoTotal .= "- NUNCA invente dados. Se não encontrar, diga que não há registros\n";
+        $contextoTotal .= "- NUNCA termine a query SQL com ponto e vírgula (;)\n";
+        $contextoTotal .= "- Se a pergunta não requer dados, responda normalmente sem SQL/API\n";
+
+        // Salvar cache
+        if (!empty($contextoTotal)) {
+            file_put_contents($cacheFile, $contextoTotal);
+        }
+
+        return $contextoTotal;
+    }
+
+    /**
+     * Gera contexto para uma fonte SQL individual
+     */
+    private function getContextoFonteSQL($fonte) {
+        $tipo = $fonte['tipo'];
+        $alias = $fonte['alias'];
+        $nome = $fonte['nome'];
+        $host = $fonte['db_host'] ?? '';
+
+        if (empty($host) && $tipo !== 'sqlite') return null;
+
+        try {
+            $extDb = $this->getExternalDBForFonte($fonte);
+            $dbName = $fonte['db_name'] ?? '';
+            $descricao = $fonte['descricao'] ?? '';
+            $tabelasPermitidas = $fonte['tabelas_permitidas'] ?? '';
+            $maxRows = $fonte['max_rows'] ?? 50;
+
+            $tablesRaw = $this->listarTabelasExternas($extDb, $tipo);
+            $permitidas = !empty($tabelasPermitidas)
+                ? array_map('trim', explode(',', $tabelasPermitidas))
+                : $tablesRaw;
+
+            $tables = [];
+            foreach ($tablesRaw as $table) {
+                if (!in_array($table, $permitidas)) continue;
+                $cols = $this->listarColunasExterna($extDb, $tipo, $table);
+                $colDefs = [];
+                foreach ($cols as $col) {
+                    $colDefs[] = $col['Field'] . ' (' . $col['Type'] . ')';
+                }
+                $tables[$table] = $colDefs;
+            }
+
+            // Relacionamentos
+            $relacionamentos = json_decode($fonte['relacionamentos'] ?? '[]', true);
+            if (!is_array($relacionamentos)) $relacionamentos = [];
+
+            $driverLabel = strtoupper($tipo);
+            $prompt = "### FONTE: {$nome} (alias: `{$alias}`, driver: {$driverLabel})\n";
+            if ($descricao) $prompt .= "Descrição: {$descricao}\n";
+            $prompt .= "Banco: `{$dbName}` | Máximo linhas: {$maxRows}\n\n";
+            $prompt .= "**Tabelas e Colunas:**\n";
+            foreach ($tables as $table => $cols) {
+                $prompt .= "- **{$table}**: " . implode(', ', $cols) . "\n";
+            }
+
+            if (!empty($relacionamentos)) {
+                $prompt .= "\n**Relacionamentos (JOINs):**\n";
+                foreach ($relacionamentos as $rel) {
+                    $joinStr = "JOIN {$rel['ref_tabela']} ON {$rel['ref_tabela']}.{$rel['ref_coluna']} = {$rel['tabela']}.{$rel['coluna']}";
+                    $descCol = !empty($rel['coluna_descricao']) ? " → use {$rel['ref_tabela']}.{$rel['coluna_descricao']} para nome" : '';
+                    $prompt .= "- `{$rel['tabela']}.{$rel['coluna']}` → `{$rel['ref_tabela']}.{$rel['ref_coluna']}` ({$joinStr}{$descCol})\n";
+                }
+                $prompt .= "- **SEMPRE use os JOINs acima** para trazer NOMES ao invés de IDs\n";
+            }
+
+            // Regras específicas por driver
+            $prompt .= "\n**Regras SQL ({$driverLabel}):**\n";
+            if ($tipo === 'mysql') {
+                $prompt .= "- Use LIMIT {$maxRows} | Use crase (`) para nomes\n";
+            } elseif ($tipo === 'pgsql') {
+                $prompt .= "- Use LIMIT {$maxRows} | Aspas duplas para nomes com maiúsculas\n";
+            } elseif ($tipo === 'sqlserver') {
+                $prompt .= "- Use TOP {$maxRows} | Use colchetes [] para nomes\n";
+            } elseif ($tipo === 'sqlite') {
+                $prompt .= "- Use LIMIT {$maxRows}\n";
+            }
+
+            return $prompt;
+        } catch (\Exception $e) {
+            return "### FONTE: {$nome} (alias: `{$alias}`)\nErro ao conectar: " . $e->getMessage();
+        }
+    }
+
+    /**
+     * Gera contexto para uma fonte API individual
+     */
+    private function getContextoFonteAPI($fonte) {
+        // DataSystem tem contexto especializado
+        if (($fonte['api_template'] ?? '') === 'datasystem') {
+            return $this->getContextoDataSystem($fonte);
+        }
+
+        $apiUrl = $fonte['api_url'] ?? '';
+        if (empty($apiUrl)) return null;
+
+        $alias = $fonte['alias'];
+        $nome = $fonte['nome'];
+        $descricao = $fonte['api_descricao'] ?? $fonte['descricao'] ?? '';
+
+        $prompt = "### FONTE: {$nome} (alias: `{$alias}`, tipo: API REST)\n";
+        if ($descricao) $prompt .= "Descrição: {$descricao}\n";
+        $prompt .= "URL Base: {$apiUrl}\n\n";
+
+        $endpointsJson = $fonte['api_endpoints'] ?? '';
+        if (!empty($endpointsJson)) {
+            $endpoints = json_decode($endpointsJson, true);
+            if (is_array($endpoints)) {
+                $prompt .= "**Endpoints Disponíveis:**\n";
+                foreach ($endpoints as $ep) {
+                    $method = strtoupper($ep['method'] ?? 'GET');
+                    $path = $ep['path'] ?? '';
+                    $desc = $ep['description'] ?? '';
+                    $prompt .= "- **{$method} {$path}**";
+                    if ($desc) $prompt .= " - {$desc}";
+                    $prompt .= "\n";
+                    if (!empty($ep['params'])) {
+                        foreach ($ep['params'] as $p) {
+                            $pName = is_array($p) ? ($p['name'] ?? '') : $p;
+                            $pType = is_array($p) ? ($p['type'] ?? 'string') : 'string';
+                            $pDesc = is_array($p) ? ($p['description'] ?? '') : '';
+                            $prompt .= "  - `{$pName}` ({$pType})";
+                            if ($pDesc) $prompt .= " - {$pDesc}";
+                            $prompt .= "\n";
+                        }
+                    }
+                }
+            }
+        }
+
+        $prompt .= "\n**Regras API:** Use APENAS GET para leitura\n";
+        return $prompt;
+    }
+
+    /**
+     * Processa SQL/API extraído da resposta da IA, roteando para a fonte correta
+     * Suporta formato: ```sql:alias\nSELECT...\n``` ou ```sql\nSELECT...\n```
+     */
+    private function processarConsultaMultiFonte($content, $sessaoId) {
+        $resultados = [];
+        $logFile = (defined('BASE_PATH') ? BASE_PATH : __DIR__ . '/../..') . '/storage/logs/webhook_chatbot.log';
+
+        // 1. Extrair blocos com alias: ```sql:alias ... ``` ou ```api:alias ... ```
+        $pattern = '/```(?:(sql|api|mysql|pgsql|postgresql|sqlite|sqlserver|tsql)(?::([a-z0-9_]+))?)\s*\R([\s\S]*?)```/i';
+        preg_match_all($pattern, $content, $matches, PREG_SET_ORDER);
+
+        if (empty($matches)) {
+            // Fallback: tentar formato antigo sem alias
+            return $this->processarConsultaMultiFonteFallback($content, $sessaoId);
+        }
+
+        $fontes = $this->listarFontesDados(true);
+        $fontesMap = [];
+        foreach ($fontes as $f) {
+            $fontesMap[$f['alias']] = $f;
+        }
+
+        // Se só tem uma fonte, usar ela como default
+        $defaultFonte = count($fontes) === 1 ? $fontes[0] : null;
+
+        foreach ($matches as $match) {
+            $tipoBloco = strtolower($match[1]);
+            $alias = strtolower($match[2] ?? '');
+            $queryBody = trim($match[3]);
+
+            if (empty($queryBody)) continue;
+
+            // Resolver fonte
+            $fonte = null;
+            if (!empty($alias) && isset($fontesMap[$alias])) {
+                $fonte = $fontesMap[$alias];
+            } elseif ($defaultFonte) {
+                $fonte = $defaultFonte;
+            } else {
+                // Tentar adivinhar pela primeira fonte do tipo correspondente
+                foreach ($fontes as $f) {
+                    if ($tipoBloco === 'api' && $f['tipo'] === 'api') { $fonte = $f; break; }
+                    if ($tipoBloco !== 'api' && $f['tipo'] !== 'api') { $fonte = $f; break; }
+                }
+            }
+
+            if (!$fonte) continue;
+
+            if ($fonte['tipo'] === 'api') {
+                $resultado = $this->executarConsultaAPIFonte($fonte, $queryBody, $sessaoId);
+            } else {
+                $resultado = $this->executarConsultaSQLFonte($fonte, $queryBody, $sessaoId);
+            }
+
+            if ($resultado) {
+                $resultado['fonte_alias'] = $fonte['alias'];
+                $resultado['fonte_nome'] = $fonte['nome'];
+                $resultados[] = $resultado;
+            }
+        }
+
+        if (empty($resultados)) return null;
+
+        // Combinar resultados
+        return $this->combinarResultadosFontes($resultados, $content);
+    }
+
+    /**
+     * Fallback: processar consulta sem alias (compatibilidade com formato antigo)
+     */
+    private function processarConsultaMultiFonteFallback($content, $sessaoId) {
+        $fontes = $this->listarFontesDados(true);
+        if (empty($fontes)) return null;
+
+        // Usar a primeira fonte ativa como default
+        $fonte = $fontes[0];
+
+        if ($fonte['tipo'] === 'api') {
+            // Tentar extrair bloco ```api ... ```
+            if (!preg_match('/```(?:api)\s*\R([\s\S]*?)```/i', $content, $match)) {
+                return null;
+            }
+            $resultado = $this->executarConsultaAPIFonte($fonte, trim($match[1]), $sessaoId);
+        } else {
+            // Tentar extrair SQL
+            $sql = $this->extrairSQLDoTexto($content);
+            if (empty($sql)) return null;
+            $resultado = $this->executarConsultaSQLFonte($fonte, $sql, $sessaoId);
+        }
+
+        if (!$resultado) return null;
+
+        $resultado['fonte_alias'] = $fonte['alias'];
+        $resultado['fonte_nome'] = $fonte['nome'];
+
+        return $this->combinarResultadosFontes([$resultado], $content);
+    }
+
+    /**
+     * Executar SQL em uma fonte específica
+     */
+    private function executarConsultaSQLFonte($fonte, $sql, $sessaoId) {
+        $sql = rtrim($sql, '; \t\n\r');
+        $sqlUpper = strtoupper(trim($sql));
+
+        // Segurança
+        if (!str_starts_with($sqlUpper, 'SELECT') && !str_starts_with($sqlUpper, 'WITH')) return null;
+        if (!preg_match('/\bSELECT\b/i', $sql)) return null;
+
+        $blocked = ['INSERT', 'UPDATE', 'DELETE', 'DROP', 'ALTER', 'CREATE', 'TRUNCATE', 'EXEC', 'GRANT', 'REVOKE'];
+        foreach ($blocked as $cmd) {
+            if (preg_match('/\b' . $cmd . '\b/i', $sql)) return null;
+        }
+
+        $tipo = $fonte['tipo'];
+        $maxRows = (int)($fonte['max_rows'] ?? 50);
+
+        if ($tipo === 'sqlserver') {
+            if (!preg_match('/\bTOP\b/i', $sql)) {
+                $sql = preg_replace('/^SELECT\b/i', "SELECT TOP {$maxRows}", $sql);
+            }
+        } else {
+            if (!preg_match('/\bLIMIT\b/i', $sql)) {
+                $sql .= " LIMIT {$maxRows}";
+            }
+        }
+
+        try {
+            $extDb = $this->getExternalDBForFonte($fonte);
+            $stmt = $extDb->query($sql);
+            $dados = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            return [
+                'sql' => $sql,
+                'dados' => $dados,
+                'resposta_final' => !empty($dados) ? $this->formatarRespostaRapida('', $dados) : "Não encontrei dados para essa consulta. 🤔",
+            ];
+        } catch (\Exception $e) {
+            $logFile = (defined('BASE_PATH') ? BASE_PATH : __DIR__ . '/../..') . '/storage/logs/webhook_chatbot.log';
+            file_put_contents($logFile, date('[Y-m-d H:i:s] ') . "SQL ERRO [{$fonte['alias']}]: {$sql} | {$e->getMessage()}\n", FILE_APPEND);
+
+            return [
+                'sql' => $sql,
+                'dados' => null,
+                'resposta_final' => "Não consegui buscar informação na fonte \"{$fonte['nome']}\" agora. 😅",
+            ];
+        }
+    }
+
+    /**
+     * Executar chamada API em uma fonte específica
+     */
+    private function executarConsultaAPIFonte($fonte, $apiCall, $sessaoId) {
+        // DataSystem tem executor especializado com auth JWT
+        if (($fonte['api_template'] ?? '') === 'datasystem') {
+            return $this->executarConsultaDataSystem($fonte, $apiCall, $sessaoId);
+        }
+
+        $lines = explode("\n", $apiCall, 2);
+        $firstLine = trim($lines[0]);
+        $body = isset($lines[1]) ? trim($lines[1]) : null;
+
+        if (!preg_match('/^(GET|POST|PUT|PATCH)\s+(\/\S*)$/i', $firstLine, $parts)) {
+            return null;
+        }
+
+        $method = strtoupper($parts[1]);
+        $path = $parts[2];
+
+        if (!in_array($method, ['GET', 'POST'])) return null;
+
+        try {
+            $result = $this->callFonteAPI($fonte, $method, $path, $body ? json_decode($body, true) : null);
+            $dados = $result['data'];
+
+            $textoResultado = '';
+            if (is_array($dados)) {
+                if (isset($dados[0]) && is_array($dados[0])) {
+                    $textoResultado = $this->formatarResultadoSQL($dados);
+                } else {
+                    $parts = [];
+                    foreach ($dados as $k => $v) {
+                        $parts[] = "*{$k}:* " . (is_array($v) ? json_encode($v) : $v);
+                    }
+                    $textoResultado = implode("\n", $parts);
+                }
+            }
+
+            return [
+                'sql' => $method . ' ' . $path,
+                'dados' => $dados,
+                'resposta_final' => !empty($textoResultado) ? $textoResultado : 'API não retornou dados.',
+            ];
+        } catch (\Exception $e) {
+            return [
+                'sql' => $method . ' ' . $path,
+                'dados' => null,
+                'resposta_final' => "Erro na API \"{$fonte['nome']}\": " . $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Combinar resultados de múltiplas fontes em uma resposta unificada
+     */
+    private function combinarResultadosFontes($resultados, $contentOriginal) {
+        if (count($resultados) === 1) {
+            return $resultados[0];
+        }
+
+        // Múltiplos resultados: combinar
+        $sqlCombinado = [];
+        $dadosCombinados = [];
+        $respostasCombinadas = [];
+
+        foreach ($resultados as $r) {
+            $sqlCombinado[] = "[{$r['fonte_nome']}] {$r['sql']}";
+            if (!empty($r['dados'])) {
+                $dadosCombinados = array_merge($dadosCombinados, is_array($r['dados']) ? $r['dados'] : []);
+            }
+            if (!empty($r['resposta_final'])) {
+                $label = count($resultados) > 1 ? "📊 *{$r['fonte_nome']}:*\n" : '';
+                $respostasCombinadas[] = $label . $r['resposta_final'];
+            }
+        }
+
+        return [
+            'sql' => implode("\n", $sqlCombinado),
+            'dados' => $dadosCombinados,
+            'resposta_final' => implode("\n\n", $respostasCombinadas),
+            'fonte_alias' => 'multi',
+            'fonte_nome' => 'Múltiplas fontes',
+        ];
     }
 
     public function isAtivo() {
@@ -371,26 +1880,35 @@ class ChatbotModel {
         // Verificar se a IA gerou uma query SQL ou chamada API
         $sqlResult = null;
         if ($this->getConfig('chatbot_db_ativo') === '1') {
-            $hasQuery = preg_match('/```(sql|api)\s*\n/i', $content);
+            $hasQuery = preg_match('/```(?:sql|api|mysql|pgsql|postgresql|sqlite|sqlserver|tsql)(?::[a-z0-9_]+)?\s*\R/i', $content)
+                || preg_match('/(?:^|\R)\s*sql\s*:?\s*\R/i', $content)
+                || preg_match('/(?:^|\R)\s*(WITH|SELECT)\b/i', $content);
 
-            if ($hasQuery && $numero) {
-                // Enviar mensagem de "buscando" imediatamente
-                $buscandoMsgs = [
-                    "🔍 Deixa eu consultar isso pra você...",
-                    "🔍 Um momento, estou buscando essa informação...",
-                    "🔍 Consultando os dados, já volto...",
-                ];
-                try {
-                    $this->enviarWhatsApp($numero, $buscandoMsgs[array_rand($buscandoMsgs)]);
-                } catch (\Exception $e) { /* silenciar */ }
+            // Tentar multi-fonte primeiro
+            $fontesAtivas = $this->listarFontesDados(true);
+            if (!empty($fontesAtivas)) {
+                $sqlResult = $this->processarConsultaMultiFonte($content, $session['id']);
+            } else {
+                // Fallback: fonte única antiga
+                $sqlResult = $this->processarSQLDaResposta($content, $session['id']);
             }
 
-            $sqlResult = $this->processarSQLDaResposta($content, $session['id']);
+            // Se a IA indicou consulta, mas não conseguimos executar/parsing,
+            // não enviar texto técnico/enrolado para o usuário.
+            if ($hasQuery && !$sqlResult) {
+                $content = "Tive dificuldade para interpretar a consulta agora. Pode repetir a pergunta em uma frase curta? Ex.: \"Qual marca campeã de vendas e o estoque dela?\"";
+            }
 
             // Se teve resultado de consulta COM dados, formatar direto em PHP (SEM segunda chamada à IA!)
             if ($sqlResult && !empty($sqlResult['dados'])) {
                 $startFmt = microtime(true);
                 $respostaAmigavel = $this->formatarRespostaRapida($mensagem, $sqlResult['dados']);
+                if ($this->getConfig('chatbot_timeline_raciocinio', '1') === '1') {
+                    $timeline = $this->montarTimelineRaciocinio($mensagem, $sqlResult);
+                    if ($timeline !== '') {
+                        $respostaAmigavel = $timeline . "\n\n" . $respostaAmigavel;
+                    }
+                }
                 $duraFmt = round((microtime(true) - $startFmt) * 1000);
                 file_put_contents($logFile, date('[Y-m-d H:i:s] ') . "FMT PHP [{$duraFmt}ms]: " . mb_substr($respostaAmigavel, 0, 100) . "\n", FILE_APPEND);
                 
@@ -428,6 +1946,140 @@ class ChatbotModel {
     }
 
     /**
+     * Linha do tempo curta do raciocínio (transparência sem vazar SQL).
+     */
+    private function montarTimelineRaciocinio($pergunta, array $sqlResult) {
+        $p = mb_strtolower((string) $pergunta, 'UTF-8');
+        $nReg = isset($sqlResult['dados']) && is_array($sqlResult['dados']) ? count($sqlResult['dados']) : 0;
+
+        $foco = 'sua pergunta';
+        if (preg_match('/\b(marca|marcas|ranking|top|campe|lider)\b/u', $p)) {
+            $foco = 'ranking de marcas (vendas e estoque)';
+        } elseif (preg_match('/\b(estoque|saldo|dispon[ií]vel)\b/u', $p)) {
+            $foco = 'posicoes de estoque';
+        } elseif (preg_match('/\b(venda|vendas|faturamento)\b/u', $p)) {
+            $foco = 'volume de vendas';
+        } elseif (preg_match('/\b(pedido|pedidos)\b/u', $p)) {
+            $foco = 'pedidos';
+        } elseif (preg_match('/\b(cliente|clientes)\b/u', $p)) {
+            $foco = 'dados de clientes';
+        }
+
+        $linhas = [
+            '🧠 *Como cheguei aqui*',
+            '1️⃣ Li sua mensagem e identifiquei que voce queria saber sobre *' . $foco . '*.',
+            '2️⃣ Consultei os dados reais no seu banco (sem chutar numeros).',
+        ];
+        if ($nReg > 0) {
+            $linhas[] = '3️⃣ Organizei o resultado em ' . $nReg . ' registro' . ($nReg > 1 ? 's' : '') . ' para ficar facil de ler.';
+        } else {
+            $linhas[] = '3️⃣ Cruzei as informacoes e montei a resposta abaixo.';
+        }
+
+        return implode("\n", $linhas);
+    }
+
+    /**
+     * Normaliza nome de coluna para comparacao (acentos, espacos).
+     */
+    private function normalizarNomeColunaParaMatch($nome) {
+        $n = mb_strtolower(trim((string) $nome), 'UTF-8');
+        $n = preg_replace('/\s+/', '_', $n);
+        return $n;
+    }
+
+    /**
+     * Detecta colunas de marca + vendas + estoque com nomes variados (SQL/alias).
+     *
+     * @return array{marca: string, vendas: string, estoque: string}|null
+     */
+    private function detectarColunasRankingMarcaVendasEstoque(array $colunas) {
+        $marcaKey = null;
+        $vendasKey = null;
+        $estoqueKey = null;
+
+        foreach ($colunas as $c) {
+            $nm = $this->normalizarNomeColunaParaMatch($c);
+            if ($estoqueKey === null && preg_match('/(estoque|stock|saldo|invent|dispon)/u', $nm)) {
+                $estoqueKey = $c;
+            }
+        }
+        foreach ($colunas as $c) {
+            if ($c === $estoqueKey) {
+                continue;
+            }
+            $nm = $this->normalizarNomeColunaParaMatch($c);
+            if ($marcaKey === null && preg_match('/(marca|brand|fabricante)/u', $nm) && !preg_match('/(vend|estoque|qtd|quant)/u', $nm)) {
+                $marcaKey = $c;
+            }
+        }
+        foreach ($colunas as $c) {
+            if ($c === $estoqueKey || $c === $marcaKey) {
+                continue;
+            }
+            $nm = $this->normalizarNomeColunaParaMatch($c);
+            if ($vendasKey === null && preg_match('/(vend|unidad|qtd|quant|fatur|sold|total)/u', $nm)) {
+                $vendasKey = $c;
+            }
+        }
+
+        if ($marcaKey && $vendasKey && $estoqueKey) {
+            return ['marca' => $marcaKey, 'vendas' => $vendasKey, 'estoque' => $estoqueKey];
+        }
+
+        return null;
+    }
+
+    private function formatarNumeroBr($val) {
+        if ($val === null || $val === '') {
+            return '-';
+        }
+        if (is_numeric($val)) {
+            $f = (float) $val;
+            return number_format($f, (floor($f) == $f ? 0 : 2), ',', '.');
+        }
+        return (string) $val;
+    }
+
+    /**
+     * Ranking estilo "Top N" com medalhas (ex.: marcas).
+     */
+    private function formatarRankingMarcasTopN(array $dados, array $keys, $pergunta) {
+        $n = count($dados);
+        $p = mb_strtolower((string) $pergunta, 'UTF-8');
+        $titulo = '📊 Top ' . $n . ' Marcas Mais Vendidas';
+        if (preg_match('/\b(campe|s[oó]\s*marca|uma\s*marca|qual\s*marca)\b/u', $p) && $n === 1) {
+            $titulo = '📊 Marca em destaque';
+        }
+
+        $linhas = [$titulo, ''];
+        $medalhas = ['🥇', '🥈', '🥉'];
+
+        foreach ($dados as $i => $row) {
+            $pos = $i + 1;
+            $marca = $row[$keys['marca']] ?? '-';
+            $v = $this->formatarNumeroBr($row[$keys['vendas']] ?? null);
+            $e = $this->formatarNumeroBr($row[$keys['estoque']] ?? null);
+
+            $estoqueNum = is_numeric($row[$keys['estoque']] ?? null) ? (float) $row[$keys['estoque']] : null;
+            $avisoEstoque = ($estoqueNum !== null && $estoqueNum <= 0) ? ' ⚠️' : '';
+
+            if ($i < 3) {
+                $prefixo = $medalhas[$i] . ' ' . $pos . 'º — *' . $marca . '*';
+            } else {
+                $prefixo = $pos . 'º — *' . $marca . '*';
+            }
+
+            $linhas[] = $prefixo;
+            $linhas[] = 'Vendas: ' . $v;
+            $linhas[] = 'Estoque: ' . $e . $avisoEstoque;
+            $linhas[] = '';
+        }
+
+        return rtrim(implode("\n", $linhas));
+    }
+
+    /**
      * Formata o resultado SQL de forma amigável SEM chamar a IA (resposta instantânea)
      */
     private function formatarRespostaRapida($pergunta, $dados) {
@@ -436,6 +2088,12 @@ class ChatbotModel {
         $totalRows = count($dados);
         $colunas = array_keys($dados[0]);
         $numColunas = count($colunas);
+
+        // Ranking de marcas: detecta colunas variadas (marca, Total vendido, Estoque total, etc.)
+        $rankingKeys = $this->detectarColunasRankingMarcaVendasEstoque($colunas);
+        if ($rankingKeys !== null && $totalRows >= 1) {
+            return $this->formatarRankingMarcasTopN($dados, $rankingKeys, $pergunta);
+        }
 
         // Caso 1: Resultado único (COUNT, SUM, etc.) — ex: [{"count": 1234}]
         if ($totalRows === 1 && $numColunas === 1) {
@@ -491,9 +2149,9 @@ class ChatbotModel {
             return implode("\n", $linhas);
         }
 
-        // Caso 4: Tabela genérica com múltiplas colunas
+        // Caso 4: Tabela genérica com múltiplas colunas (resposta enxuta)
         $maxShow = min($totalRows, 15);
-        $linhas = ["📋 Encontrei *{$totalRows}* registros:\n"];
+        $linhas = ["Encontrei esses dados para voce:\n"];
         
         for ($i = 0; $i < $maxShow; $i++) {
             $row = $dados[$i];
@@ -508,6 +2166,7 @@ class ChatbotModel {
         if ($totalRows > $maxShow) {
             $linhas[] = "\n_...e mais " . ($totalRows - $maxShow) . " registros_";
         }
+        $linhas[] = "\nSe quiser, eu refino por periodo, marca ou loja para ficar mais direto. 😉";
         return implode("\n", $linhas);
     }
 
@@ -558,9 +2217,13 @@ class ChatbotModel {
         // System prompt
         $systemPrompt = $this->getConfig('chatbot_ia_system_prompt');
 
-        // Adicionar contexto da base de dados se ativo
+        // Adicionar contexto das fontes de dados (multi-fonte)
         if ($this->getConfig('chatbot_db_ativo') === '1') {
-            $dbContexto = $this->getContextoBancoDados();
+            $dbContexto = $this->getContextoMultiFontes();
+            if (!$dbContexto) {
+                // Fallback para fonte única (compatibilidade)
+                $dbContexto = $this->getContextoBancoDados();
+            }
             if ($dbContexto) {
                 $systemPrompt .= "\n\n" . $dbContexto;
             }
@@ -866,19 +2529,22 @@ class ChatbotModel {
             return $this->processarAPIDaResposta($content, $sessaoId);
         }
 
-        // Processar bloco ```sql ...```
-        if (!preg_match('/```sql\s*\n([\s\S]*?)```/', $content, $match)) {
+        // Extrair SQL (aceita bloco markdown ou formato cru: "sql\nWITH..." / "SELECT ...")
+        $sql = $this->extrairSQLDoTexto($content);
+        if (empty($sql)) {
             return null;
         }
-
-        $sql = trim($match[1]);
 
         // Remover ponto e vírgula final (a IA às vezes gera)
         $sql = rtrim($sql, '; \t\n\r');
 
-        // SEGURANÇA: Só permitir SELECT
+        // SEGURANÇA: permitir SELECT e CTE (WITH ... SELECT)
         $sqlUpper = strtoupper(trim($sql));
-        if (!str_starts_with($sqlUpper, 'SELECT')) {
+        if (!str_starts_with($sqlUpper, 'SELECT') && !str_starts_with($sqlUpper, 'WITH')) {
+            return null;
+        }
+        // Mesmo com WITH, precisa conter SELECT em algum ponto
+        if (!preg_match('/\bSELECT\b/i', $sql)) {
             return null;
         }
 
@@ -909,14 +2575,11 @@ class ChatbotModel {
             $stmt = $extDb->query($sql);
             $dados = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-            $textoResultado = $this->formatarResultadoSQL($dados);
-
-            $respostaFinal = preg_replace('/```sql\s*\n[\s\S]*?```/', '', $content);
-            $respostaFinal = trim($respostaFinal);
-            if (!empty($textoResultado)) {
-                $respostaFinal .= "\n\n📊 *Resultado da consulta:*\n" . $textoResultado;
+            // Nunca vazar SQL/prompt técnico para o usuário final
+            if (!empty($dados)) {
+                $respostaFinal = $this->formatarRespostaRapida('', $dados);
             } else {
-                $respostaFinal .= "\n\n📊 Nenhum registro encontrado.";
+                $respostaFinal = "Não encontrei dados para essa consulta. 🤔";
             }
 
             return [
@@ -948,12 +2611,43 @@ class ChatbotModel {
     }
 
     /**
+     * Extrai uma query SQL de uma resposta da IA.
+     * Aceita:
+     * - Bloco markdown: ```sql ... ```
+     * - Formato cru: "sql\nWITH/SELECT ..."
+     * - SQL direto iniciando com WITH/SELECT
+     */
+    private function extrairSQLDoTexto($content) {
+        // 1) Bloco markdown com linguagem SQL
+        if (preg_match('/```(?:sql|mysql|pgsql|postgresql|sqlite|sqlserver|tsql)\s*\R([\s\S]*?)```/i', $content, $m)) {
+            return trim($m[1]);
+        }
+
+        // 2) Prefixo "sql" em linha própria, sem crases
+        if (preg_match('/(?:^|\R)\s*sql\s*:?\s*\R([\s\S]*)$/i', $content, $m)) {
+            $raw = trim($m[1]);
+            // Pega apenas o primeiro bloco antes de parágrafo explicativo
+            $raw = preg_split('/\R{2,}/', $raw)[0] ?? $raw;
+            return trim($raw);
+        }
+
+        // 3) SQL direto (WITH/SELECT) até o primeiro parágrafo separado
+        if (preg_match('/(?:^|\R)\s*((?:WITH|SELECT)\b[\s\S]*)$/i', $content, $m)) {
+            $raw = trim($m[1]);
+            $raw = preg_split('/\R{2,}/', $raw)[0] ?? $raw;
+            return trim($raw);
+        }
+
+        return null;
+    }
+
+    /**
      * Processa chamada API gerada pela IA na resposta
      * Formato: ```api\nGET /endpoint?param=value\n```
      * ou: ```api\nPOST /endpoint\n{"key":"value"}\n```
      */
     private function processarAPIDaResposta($content, $sessaoId) {
-        if (!preg_match('/```api\s*\n([\s\S]*?)```/', $content, $match)) {
+        if (!preg_match('/```(?:api)\s*\R([\s\S]*?)```/i', $content, $match)) {
             return null;
         }
 
@@ -996,7 +2690,7 @@ class ChatbotModel {
                 $textoResultado = $result['body'] ?? '';
             }
 
-            $respostaFinal = preg_replace('/```api\s*\n[\s\S]*?```/', '', $content);
+            $respostaFinal = preg_replace('/```(?:api)\s*\R[\s\S]*?```/i', '', $content);
             $respostaFinal = trim($respostaFinal);
             if (!empty($textoResultado)) {
                 $respostaFinal .= "\n\n📊 *Resultado da API:*\n" . $textoResultado;
@@ -1013,7 +2707,7 @@ class ChatbotModel {
             return [
                 'sql' => $method . ' ' . $path,
                 'dados' => null,
-                'resposta_final' => trim(preg_replace('/```api\s*\n[\s\S]*?```/', '', $content))
+                'resposta_final' => trim(preg_replace('/```(?:api)\s*\R[\s\S]*?```/i', '', $content))
                     . "\n\n⚠️ Erro na chamada API: " . $e->getMessage(),
             ];
         }
@@ -1558,6 +3252,73 @@ class ChatbotModel {
     }
 
     /**
+     * Envia uma resposta longa em múltiplas mensagens, para ficar mais fluido.
+     * Quebra por parágrafos e tamanho máximo aproximado.
+     */
+    public function enviarWhatsAppQuebrado($numero, $mensagem) {
+        $chunks = $this->quebrarMensagemWhatsApp($mensagem);
+        foreach ($chunks as $parte) {
+            if (trim($parte) === '') continue;
+            try {
+                $this->enviarWhatsApp($numero, $parte);
+            } catch (\Exception $e) {
+                // Se uma parte falhar, não interrompe as demais
+            }
+            // Pequeno intervalo para não parecer spam
+            usleep(200000); // 200ms
+        }
+    }
+
+    /**
+     * Quebra texto em partes menores, priorizando parágrafos.
+     */
+    private function quebrarMensagemWhatsApp($mensagem, $maxLen = 900) {
+        $mensagem = trim($mensagem);
+        if (mb_strlen($mensagem) <= $maxLen) {
+            return [$mensagem];
+        }
+
+        $partes = [];
+        $paragrafos = preg_split("/\n{2,}/u", $mensagem);
+        $buffer = '';
+
+        foreach ($paragrafos as $p) {
+            $p = trim($p);
+            if ($p === '') continue;
+
+            // Se o parágrafo sozinho já é muito grande, quebra “no bruto”
+            if (mb_strlen($p) > $maxLen) {
+                if ($buffer !== '') {
+                    $partes[] = trim($buffer);
+                    $buffer = '';
+                }
+                $offset = 0;
+                $len = mb_strlen($p);
+                while ($offset < $len) {
+                    $partes[] = trim(mb_substr($p, $offset, $maxLen));
+                    $offset += $maxLen;
+                }
+                continue;
+            }
+
+            if (mb_strlen($buffer) + mb_strlen("\n\n") + mb_strlen($p) <= $maxLen) {
+                $buffer = $buffer === '' ? $p : $buffer . "\n\n" . $p;
+            } else {
+                if ($buffer !== '') {
+                    $partes[] = trim($buffer);
+                }
+                $buffer = $p;
+            }
+        }
+
+        if ($buffer !== '') {
+            $partes[] = trim($buffer);
+        }
+
+        return $partes;
+    }
+
+    /**
      * Verificar status da conexão Evolution
      */
     public function checkEvolutionStatus() {
@@ -1911,7 +3672,13 @@ class ChatbotModel {
         // Processar SQL se houver
         $sqlResult = null;
         if ($this->getConfig('chatbot_db_ativo') === '1') {
-            $sqlResult = $this->processarSQLDaResposta($content, $session['id']);
+            // Tentar multi-fonte primeiro
+            $fontesAtivas = $this->listarFontesDados(true);
+            if (!empty($fontesAtivas)) {
+                $sqlResult = $this->processarConsultaMultiFonte($content, $session['id']);
+            } else {
+                $sqlResult = $this->processarSQLDaResposta($content, $session['id']);
+            }
 
             // Se teve resultado, gerar resposta amigável
             if ($sqlResult && !empty($sqlResult['dados'])) {

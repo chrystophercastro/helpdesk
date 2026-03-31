@@ -61,7 +61,7 @@ class Notificacao {
      * Registrar notificação no banco
      */
     public function registrar($tipo, $telefone, $mensagem, $status = 'pendente', $erro = null, $refTipo = null, $refId = null) {
-        return $this->db->insert('notificacoes', [
+        return $this->db->insert('notificacoes_whatsapp', [
             'tipo' => $tipo,
             'destinatario_telefone' => $telefone,
             'mensagem' => $mensagem,
@@ -119,8 +119,9 @@ class Notificacao {
         }
         $msgTecnico .= "🔗 *Acessar chamado:*\n{$linkInterno}";
 
-        // Enviar para todos os técnicos/gestores/admins
-        $this->notificarEquipe($msgTecnico);
+        // Enviar para pessoas do departamento do chamado + admins
+        $deptId = !empty($chamado['departamento_id']) ? (int)$chamado['departamento_id'] : 0;
+        $this->notificarEquipe($msgTecnico, $deptId);
     }
 
     /**
@@ -356,12 +357,23 @@ class Notificacao {
     /**
      * Notificar equipe técnica
      */
-    private function notificarEquipe($mensagem) {
-        $tecnicos = $this->db->fetchAll(
-            "SELECT telefone FROM usuarios WHERE tipo IN ('tecnico','gestor','admin') AND ativo = 1"
-        );
+    private function notificarEquipe($mensagem, $departamentoId = 0) {
+        if ($departamentoId) {
+            // Usuários do departamento + admins (sempre recebem)
+            $tecnicos = $this->db->fetchAll(
+                "SELECT telefone FROM usuarios WHERE ativo = 1 AND telefone IS NOT NULL AND telefone != '' AND (tipo = 'admin' OR departamento_id = ?)",
+                [$departamentoId]
+            );
+        } else {
+            // Sem departamento: somente admins
+            $tecnicos = $this->db->fetchAll(
+                "SELECT telefone FROM usuarios WHERE tipo = 'admin' AND ativo = 1 AND telefone IS NOT NULL AND telefone != ''"
+            );
+        }
         foreach ($tecnicos as $tec) {
-            $this->sendWhatsApp($tec['telefone'], $mensagem);
+            if (!empty($tec['telefone'])) {
+                $this->sendWhatsApp($tec['telefone'], $mensagem);
+            }
         }
     }
 
@@ -413,7 +425,7 @@ class Notificacao {
      */
     public function listar($limite = 50) {
         return $this->db->fetchAll(
-            "SELECT * FROM notificacoes ORDER BY criado_em DESC LIMIT ?", [$limite]
+            "SELECT * FROM notificacoes_whatsapp ORDER BY criado_em DESC LIMIT ?", [$limite]
         );
     }
 
@@ -421,7 +433,7 @@ class Notificacao {
      * Reenviar notificação
      */
     public function reenviar($id) {
-        $notif = $this->db->fetch("SELECT * FROM notificacoes WHERE id = ?", [$id]);
+        $notif = $this->db->fetch("SELECT * FROM notificacoes_whatsapp WHERE id = ?", [$id]);
         if ($notif) {
             return $this->sendWhatsApp($notif['destinatario_telefone'], $notif['mensagem']);
         }

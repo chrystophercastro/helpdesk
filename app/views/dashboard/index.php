@@ -409,13 +409,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const statusLabels = <?= json_encode(array_map(fn($s) => $s['label'], CHAMADO_STATUS)) ?>;
     const statusCores = <?= json_encode(array_map(fn($s) => $s['cor'], CHAMADO_STATUS)) ?>;
 
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const gridColor = isDark ? 'rgba(51,65,85,0.5)' : '#F3F4F6';
+    const tickColor = isDark ? '#94A3B8' : undefined;
+    const pointBorder = isDark ? '#111827' : '#fff';
+
     const chartDefaults = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
             legend: {
                 position: 'bottom',
-                labels: { padding: 14, usePointStyle: true, pointStyleWidth: 10, font: { size: 11, family: 'Inter' } }
+                labels: { padding: 14, usePointStyle: true, pointStyleWidth: 10, font: { size: 11, family: 'Inter' }, color: isDark ? '#CBD5E1' : undefined }
             }
         }
     };
@@ -444,7 +449,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 tension: 0.4,
                 pointRadius: dadosMensal.map((_, i) => i === mesAtual ? 6 : 3),
                 pointBackgroundColor: dadosMensal.map((_, i) => i === mesAtual ? '#4F46E5' : '#6366F1'),
-                pointBorderColor: '#fff',
+                pointBorderColor: pointBorder,
                 pointBorderWidth: 2,
                 borderWidth: 3
             }]
@@ -453,8 +458,8 @@ document.addEventListener('DOMContentLoaded', function() {
             ...chartDefaults,
             plugins: { legend: { display: false } },
             scales: {
-                y: { beginAtZero: true, grid: { color: '#F3F4F6' }, ticks: { font: { size: 11 } } },
-                x: { grid: { display: false }, ticks: { font: { size: 11 } } }
+                y: { beginAtZero: true, grid: { color: gridColor }, ticks: { font: { size: 11 }, color: tickColor } },
+                x: { grid: { display: false }, ticks: { font: { size: 11 }, color: tickColor } }
             },
             interaction: { intersect: false, mode: 'index' }
         }
@@ -509,8 +514,8 @@ document.addEventListener('DOMContentLoaded', function() {
             options: {
                 ...chartDefaults,
                 scales: {
-                    y: { beginAtZero: true, grid: { color: '#F3F4F6' }, ticks: { stepSize: 1, font: { size: 11 } } },
-                    x: { grid: { display: false }, ticks: { font: { size: 11 } } }
+                    y: { beginAtZero: true, grid: { color: gridColor }, ticks: { stepSize: 1, font: { size: 11 }, color: tickColor } },
+                    x: { grid: { display: false }, ticks: { font: { size: 11 }, color: tickColor } }
                 }
             }
         });

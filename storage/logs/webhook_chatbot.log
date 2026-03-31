@@ -79,3 +79,814 @@ JOIN depa
 [2026-03-23 13:29:12] PROCESSANDO: 556292530555 -> "Boa tarde"
 [2026-03-23 13:29:14] OK: Resposta enviada para 556292530555 (65 chars)
 [2026-03-23 13:31:12] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"94635410100335@lid","fromMe":false,"id":"4AB766B55F97C0E526CC","senderPn":"556292530555@s.whatsapp.net"},"pushName":"João Vitor","status":"DELIVERY_ACK","message":{"imageMessage":{"url":"https://mmg.whatsapp.net/o1/v/t24/f2/m233/AQMj9qx5uIxnVrOFuyBFFHfWOuDke1BsjHZ9nOOu1zyuEvyeUXjlQXR64m6C5DmJ_eE2hp7SxcCLJSL8vrMSLaAFwFMqw0WWDslnsuXyoQ?ccb=9-4&oh=01_Q5Aa4AFd8Qc8lxqK2z0e2p85fzcoqqKHuNBDUOZJSQsP7w1qHg&oe=69E8D
+[2026-03-24 10:01:29] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3EB0D7471D431B61901D32","participant":"82351786823823@lid"},"pushName":"Matheus","status":"DELIVERY_ACK","message":{"messageContextInfo":{"messageSecret":"YExcdl6O7mDet9XzYoRqAb5b+GvbO9Ti6qHGe3zUoBg=","limitSharingV2":{"sharingLimited":false,"trigger":"UNKNOWN","limitSharingSettingTimestamp":"0","initiatedByMe":false}},"conversation":"https://texas-center-dashbo
+[2026-03-24 10:03:40] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"2A7FC6473465A67A5EFC","participant":"82351786823823@lid"},"pushName":"Matheus","status":"DELIVERY_ACK","message":{"senderKeyDistributionMessage":{"groupId":"120363418009849750@g.us","axolotlSenderKeyDistributionMessage":"MwjwyeEDEAAaILGhTflKvzr0KoPLOalVOAxua5zwJC21zxqGVm88IMffIiEFFI6HOBDcTHU9Li0y0coO0+1vUr743wnN6pTlKD5LBGs="},"messageContextInfo":{"messageSecret
+[2026-03-24 10:07:01] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A5B60C2074544AFC5DC674CEECF1EC9E","participant":"10862022643772@lid"},"pushName":"Maiane Brandão","status":"DELIVERY_ACK","message":{"messageContextInfo":{"messageAddOnDurationInSecs":2592000,"messageAddOnExpiryType":"STATIC"},"pinInChatMessage":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3EB0D7471D431B61901D32","participant":"82351786823
+[2026-03-24 10:07:12] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3EB0BE77E0D01E404D9B7C","participant":"10862022643772@lid"},"pushName":"Maiane Brandão","status":"DELIVERY_ACK","message":{"senderKeyDistributionMessage":{"groupId":"120363418009849750@g.us","axolotlSenderKeyDistributionMessage":"Mwj/8PGCAhAAGiB9isms1J0Wpx8MiqcPu2/7Y7ruWOvO0xmIqLsEn/DEFyIhBUhOb8Lsxwx0sgvrCBn3gQOyqyzQ5WZJ/WaoJ3qCcbJN"},"messageContextInfo":{"dev
+[2026-03-24 10:10:44] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A524DFBF48DD652A77F5924CE823D19C","participant":"2161006112909@lid"},"pushName":"Karoline - Texas Center","status":"DELIVERY_ACK","message":{"messageContextInfo":{"messageSecret":"pQI8JeQ8csoFBQCrSUKw+iJ31dYXf5Z1N8J7GAeO6os="},"conversation":"Nossa ficou top agora"},"contextInfo":{"stanzaId":"3EB0D7471D431B61901D32","participant":"82351786823823@lid","quotedMess
+[2026-03-24 10:10:46] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A54A908348ABAB6FE5A2530277744AB7","participant":"2161006112909@lid"},"pushName":"Karoline - Texas Center","status":"DELIVERY_ACK","message":{"conversation":"Caraca","messageContextInfo":{"messageSecret":"u0Ho2ODqvQQuNZQMgERgWXuLP3yGmNPoRYDX26hV2lw="}},"messageType":"conversation","messageTimestamp":1774357846,"instanceId":"02689c02-3ea0-4bf8-b2fa-da98a5557974","
+[2026-03-24 10:11:14] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"2AF0479F0797369D7085","participant":"82351786823823@lid"},"pushName":"Matheus","status":"DELIVERY_ACK","message":{"conversation":"Calculadora de Frete também disponível","messageContextInfo":{"messageSecret":"IIhXQ9bu5mDtkJp9jItn52sIYd8kWeEktKQ3rL3td98="}},"messageType":"conversation","messageTimestamp":1774357875,"instanceId":"02689c02-3ea0-4bf8-b2fa-da98a555
+[2026-03-24 10:11:27] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A5EB80E6FE02EB3F9FA58CDEEBD7232F","participant":"2161006112909@lid"},"pushName":"Karoline - Texas Center","status":"DELIVERY_ACK","message":{"conversation":"Eu vi já testei kkkk","messageContextInfo":{"messageSecret":"8CoLgzJcJFXl8RjsjSqmh7cjzy1vv79PvcCmlRecUTo="}},"messageType":"conversation","messageTimestamp":1774357887,"instanceId":"02689c02-3ea0-4bf8-b2fa-
+[2026-03-24 10:11:30] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"2AE764C6E662F9A80FE6","participant":"82351786823823@lid"},"pushName":"Matheus","status":"DELIVERY_ACK","message":{"conversation":"Kakakakaka","messageContextInfo":{"messageSecret":"9M4woIjHkNCQrjv4eDk/x9NHGfnegKqYSEXnZsxujkI="}},"messageType":"conversation","messageTimestamp":1774357890,"instanceId":"02689c02-3ea0-4bf8-b2fa-da98a5557974","source":"unknown"},"des
+[2026-03-24 10:11:58] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A58545F71B0859C68BE2CD6A4DCDD1BE","participant":"10862022643772@lid"},"pushName":"Maiane Brandão","status":"DELIVERY_ACK","message":{"reactionMessage":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A5EB80E6FE02EB3F9FA58CDEEBD7232F","participant":"2161006112909@lid"},"text":"🚀","senderTimestampMs":"1774357918885"}},"messageType":"reactionM
+[2026-03-24 10:21:49] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"556285200581@s.whatsapp.net","fromMe":false,"id":"3EB06F75D2DCBAB9F0401C","senderLid":"10862022643772@lid"},"pushName":"Maiane Brandão","status":"DELIVERY_ACK","message":{"imageMessage":{"url":"https://mmg.whatsapp.net/o1/v/t24/f2/m232/AQNWXAibUzVsumRgPG6bjRdEWjX2RjcXDLOCxjkPixL9rRDmW9-jFAHVEowBIuiJlehStosLmRi4V4WfstBxOh1stZF7sZVgM-pDzMPsfw?ccb=9-4&oh=01_Q5Aa4AGqogwU-b_EjN2ACBoOFOO7TpYx_4oYwM0MlSAMznLb3g&o
+[2026-03-24 10:21:49] PROCESSANDO: 556285200581 -> "ué"
+[2026-03-24 10:21:50] OK: Resposta enviada para 556285200581 (65 chars)
+[2026-03-24 11:30:50] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3EB0AD14124A62C0AC65D5","participant":"10862022643772@lid"},"pushName":"Maiane Brandão","status":"DELIVERY_ACK","message":{"imageMessage":{"url":"https://mmg.whatsapp.net/o1/v/t24/f2/m232/AQNg9P40mCFoYO174nwpcDCUV7d2XduXtS9LrX-1LBrWoTnLk5TEL-DuQvTSi93WRxzJxd52FXS5PBCqK7tE-tpdWqNzZzSP8SvXMAxPVQ?ccb=9-4&oh=01_Q5Aa4AE7ujU_n4qrZLVeYf2jigzJs3cZO7LiprarkGqAZWFqGw&oe=
+[2026-03-24 11:35:22] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3EB0C50273B8E213FB6A47","participant":"191547219922951@lid"},"pushName":"Ana Camargo","status":"DELIVERY_ACK","message":{"senderKeyDistributionMessage":{"groupId":"120363418009849750@g.us","axolotlSenderKeyDistributionMessage":"MwjXrr+LBhACGiB6tTOM25vdj27EUkMf1dkh5y6IRvAdf0HPMGgqd48FCyIhBSkR8NUkoXdEDHwxypEd/QxKWdfsJnUu5Csly5PiAOkg"},"messageContextInfo":{"messag
+[2026-03-24 11:49:21] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3A8F98907878812ED484","participant":"91040455327867@lid"},"pushName":"Joao Antonio","status":"DELIVERY_ACK","message":{"senderKeyDistributionMessage":{"groupId":"120363418009849750@g.us","axolotlSenderKeyDistributionMessage":"MwiL64SFBRAAGiC452qYzve4m5HUIp/vCn8R/GUCCJnF8VnSJHIMUAcDyiIhBcJdV/AVC0w0pVKilTqPniwCsjoRfxnPaClScQaIU6Iz"},"messageContextInfo":{"messageS
+[2026-03-24 12:25:50] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A5E1334A6CD2C1283383A37755B55F90","participant":"10862022643772@lid"},"pushName":"Maiane Brandão","status":"DELIVERY_ACK","message":{"messageContextInfo":{"messageSecret":"rqgwVT07RG5aY+1SHUtYCTkivQdtZmzPcJx5Zf+hvAY="},"conversation":"@114946847330404 \n@80986524098669 \n@31070464536706 \n@6000723673342 \n@149053182619776 \n@2161006112909 \n@145441115140236 \n@
+[2026-03-24 12:25:50] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A59F8F0C2A0272B52F9E8D59195B2AF2","participant":"10862022643772@lid"},"pushName":"Maiane Brandão","status":"DELIVERY_ACK","message":{"reactionMessage":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3A8F98907878812ED484","participant":"91040455327867@lid"},"text":"🚀","senderTimestampMs":"1774364192898"}},"messageType":"reactionMessage","me
+[2026-03-24 12:25:50] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363401200833886@g.us","fromMe":false,"id":"A5D43732A50B09C69B2905B5FE308323","participant":"149053182619776@lid"},"pushName":"Júlio César - Texas Center","status":"DELIVERY_ACK","message":{"senderKeyDistributionMessage":{"groupId":"120363401200833886@g.us","axolotlSenderKeyDistributionMessage":"Mwi4weKYBBAAGiCgDhf14pYl2xX47xWGmbr0NWQMLElEk5y38Qq+jSoeISIhBTuSHrkzxkzzF+5a5IXGWWd1ac+5qs7FBN+zX8w6fN4Y"},"m
+[2026-03-24 12:32:21] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A5B42185C7CC667C9500EBAD8629C3C5","participant":"2161006112909@lid"},"pushName":"Karoline - Texas Center","status":"DELIVERY_ACK","message":{"senderKeyDistributionMessage":{"groupId":"120363418009849750@g.us","axolotlSenderKeyDistributionMessage":"MwiUw5DNBhAEGiB1KMefl2oj9OV1hKNkcNgdLnN49fgupveA8++UEE4ExiIhBcj11vc1cOzI6nEXk45yp6CDnoZ7y+9D2Rvzro02deJU"},"messageC
+[2026-03-24 12:38:51] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363401200833886@g.us","fromMe":false,"id":"ACBD3D7D6DCB1696C03802B3DE1B3C64","participant":"127152657817831@lid"},"pushName":"Victor Hugo","status":"DELIVERY_ACK","message":{"conversation":"SEDEX dia da postagem+ 2 dias úteis 80,99\n\nPAC dia da postagem+ 7 dias úteis: 38,19","messageContextInfo":{"messageSecret":"Sd86FaHk70aXsRfY5ShA8ayi1beqW6BNraHuXUKSBTQ="}},"messageType":"conversation","messageTime
+[2026-03-24 13:37:48] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A5970174285DC3A6A255109E8DD66BF2","participant":"2161006112909@lid"},"pushName":"Karoline - Texas Center","status":"DELIVERY_ACK","message":{"messageContextInfo":{"messageSecret":"ggLd/AqE2uuXv2BlG4s5LQMXJV0uk9fFuVEomxvB/Ig="},"conversation":"1 cliente minha já confirmou a presença"},"contextInfo":{"stanzaId":"3EB0AD14124A62C0AC65D5","participant":"10862022643
+[2026-03-24 13:55:15] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A5E2D5382195B77805DE13243B34B232","participant":"2161006112909@lid"},"pushName":"Karoline - Texas Center","status":"DELIVERY_ACK","message":{"conversation":"Thais Guimarães \n+55 62 8458-1382","messageContextInfo":{"messageSecret":"9+8j/wAkStO2a4oZoRIpqk41N08zorWlD9rm3fE5/pc="}},"messageType":"conversation","messageTimestamp":1774370761,"instanceId":"02689c02-3
+[2026-03-24 13:55:15] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A531A0599D786501887161DC0ECC2FCF","participant":"10862022643772@lid"},"pushName":"Maiane Brandão","status":"DELIVERY_ACK","message":{"messageContextInfo":{"messageSecret":"g0wco5CIM8/aGFMV51976yzyOdwSpyMrR5UhybOZKZ8="},"conversation":"🚀🚀🚀"},"contextInfo":{"stanzaId":"A5970174285DC3A6A255109E8DD66BF2","participant":"2161006112909@lid","quotedMessage":{"
+[2026-03-24 13:55:15] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3EB08619FA0A796E1F142C","participant":"10862022643772@lid"},"pushName":"Maiane Brandão","status":"DELIVERY_ACK","message":{"messageContextInfo":{"messageSecret":"INLqBfvyjGX7yvwRQk7X+MpR0K+FoZg/EBuMvfjmL3E=","limitSharingV2":{"trigger":"UNKNOWN","initiatedByMe":false}},"conversation":"Parabéns, Karol!"},"contextInfo":{"stanzaId":"A5E2D5382195B77805DE13243B34B2
+[2026-03-24 13:55:15] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3EB09CE71A2444B3265EFB","participant":"10862022643772@lid"},"pushName":"Maiane Brandão","status":"DELIVERY_ACK","message":{"senderKeyDistributionMessage":{"groupId":"120363418009849750@g.us","axolotlSenderKeyDistributionMessage":"MwiSq8m5BRAAGiDhdvvU027T1K0AdgmIoieRY8SyVT/0xwLumqcKaPIv0yIhBWs1Lxzn4ulWOvZu5uN92722vZMWysokfLefA3r8KYtf"},"messageContextInfo":{"mes
+[2026-03-24 13:55:15] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3EB05BBD8C7A4D0B8D6F77","participant":"10862022643772@lid"},"pushName":"Maiane Brandão","status":"DELIVERY_ACK","message":{"reactionMessage":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A5E2D5382195B77805DE13243B34B232","participant":"2161006112909@lid"},"text":"🚀","senderTimestampMs":"1774370977000"}},"messageType":"reactionMessage","m
+[2026-03-24 13:55:15] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A51791DA1CC4CF382D792729107626BD","participant":"2161006112909@lid"},"pushName":"Karoline - Texas Center","status":"DELIVERY_ACK","message":{"reactionMessage":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3EB08619FA0A796E1F142C","participant":"10862022643772@lid"},"text":"🙏🏼","senderTimestampMs":"1774371012326"}},"messageType":"reactio
+[2026-03-24 14:13:59] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A5AB67478D93E2373A124D4A269B8D22","participant":"149053182619776@lid"},"pushName":"Júlio César - Texas Center","status":"DELIVERY_ACK","message":{"senderKeyDistributionMessage":{"groupId":"120363418009849750@g.us","axolotlSenderKeyDistributionMessage":"Mwia+q3KBxAAGiBVTOo57h7cHBtVNy7ChenPUKoh7XTg5YJIpTY7376MpSIhBZsgY3UlRMwuP+Jjwg47Lmw+Ov7aPWxgaBNI4QJkqeNJ"},"m
+[2026-03-24 14:14:08] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A568B7237354BA91E3713A2759680E86","participant":"149053182619776@lid"},"pushName":"Júlio César - Texas Center","status":"DELIVERY_ACK","message":{"messageContextInfo":{"messageSecret":"fUZ8Hp5yN5dmb4YOXF4ASKJ5aLK4SEHYB+s7azv7uk8="},"conversation":"@10862022643772"},"contextInfo":{"mentionedJid":["10862022643772@lid"]},"messageType":"conversation","messageTimes
+[2026-03-24 15:02:26] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3EB040416A246919036F6A","participant":"10862022643772@lid"},"pushName":"Maiane Brandão","status":"DELIVERY_ACK","message":{"reactionMessage":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A5AB67478D93E2373A124D4A269B8D22","participant":"149053182619776@lid"},"text":"🚀","senderTimestampMs":"1774374378000"}},"messageType":"reactionMessage",
+[2026-03-24 15:02:43] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3EB09ECB25C62E7EB18602","participant":"10862022643772@lid"},"pushName":"Maiane Brandão","status":"DELIVERY_ACK","message":{"messageContextInfo":{"messageSecret":"PNOXAGgMckqCBzuCYiC7MMQ3ASY83Wc0CP0CRWdt5Zw=","limitSharingV2":{"trigger":"UNKNOWN","initiatedByMe":false}},"conversation":"AAEEEEE\nParabéns, Júlio! 🚀🚀🚀"},"contextInfo":{"stanzaId":"A5AB674
+[2026-03-24 15:03:42] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3EB0179E0E64F63E2E1E33","participant":"10862022643772@lid"},"pushName":"Maiane Brandão","status":"DELIVERY_ACK","message":{"reactionMessage":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A5AB67478D93E2373A124D4A269B8D22","participant":"149053182619776@lid"},"text":"","senderTimestampMs":"1774374402000"}},"messageType":"reactionMessage","mes
+[2026-03-24 15:05:21] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"2A524E936035940A1400","participant":"82351786823823@lid"},"pushName":"Matheus","status":"DELIVERY_ACK","message":{"senderKeyDistributionMessage":{"groupId":"120363418009849750@g.us","axolotlSenderKeyDistributionMessage":"MwiC3I28BBAAGiC0wfrOObK5Um/ShRsHEyt4e+DbIYmDpS9y+JcFDQJobCIhBTaold7jMCV7XdxvqjrFNFaivxO0LqR+Q8JSyeGBUvBn"},"messageContextInfo":{"messageSecret
+[2026-03-24 15:31:36] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363402080689800@g.us","fromMe":false,"id":"2A2A889689AE43AB4F88","participant":"82351786823823@lid"},"pushName":"Matheus","status":"DELIVERY_ACK","message":{"senderKeyDistributionMessage":{"groupId":"120363402080689800@g.us","axolotlSenderKeyDistributionMessage":"MwjNrvjTAhAAGiCQTFyrDrtcisArjRFNY+Kd//XkU+Zzy15vk7aXyNh2yyIhBfckVFnf2DGf+c3A/wxq0K0O6TqM2ZGu1+4Tya67nsY3"},"messageContextInfo":{"messageSecret
+[2026-03-24 15:31:44] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363402080689800@g.us","fromMe":false,"id":"2A7BE0CCFFBA7905A441","participant":"82351786823823@lid"},"pushName":"Matheus","status":"DELIVERY_ACK","message":{"conversation":"Conseguimos pedir reposição?","messageContextInfo":{"messageSecret":"Q3Bg+j6Q3ru0XfsNauM9lDDvcRPECBhofGa8bkNa//c="}},"messageType":"conversation","messageTimestamp":1774377104,"instanceId":"02689c02-3ea0-4bf8-b2fa-da98a5557974","sou
+[2026-03-24 15:32:08] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363402080689800@g.us","fromMe":false,"id":"3A79C9AF08CC00540A67","participant":"180362873438293@lid"},"pushName":"Gabriel Viturino","status":"DELIVERY_ACK","message":{"senderKeyDistributionMessage":{"groupId":"120363402080689800@g.us","axolotlSenderKeyDistributionMessage":"MwiJsoTJARAAGiDwI0OuQgsSaotFRtKTZsVI+e/oMrGtBbrHcA26u3bhtiIhBemk5xQB39keQUyQxG/U47auesVQMnSECLqYXTPHWf4C"},"messageContextInfo":{"mes
+[2026-03-24 15:32:27] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363402080689800@g.us","fromMe":false,"id":"2A89FC40EE92F88E8172","participant":"82351786823823@lid"},"pushName":"Matheus","status":"DELIVERY_ACK","message":{"conversation":"DB5554","messageContextInfo":{"messageSecret":"01huQCK5KcA3jkVlCVZVR+K4GgPNyR57n0kwvBlqw1c="}},"messageType":"conversation","messageTimestamp":1774377148,"instanceId":"02689c02-3ea0-4bf8-b2fa-da98a5557974","source":"unknown"},"destina
+[2026-03-24 15:32:29] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363402080689800@g.us","fromMe":false,"id":"2A26812AD903C8C43350","participant":"82351786823823@lid"},"pushName":"Matheus","status":"DELIVERY_ACK","message":{"conversation":"Patriot","messageContextInfo":{"messageSecret":"W3fqIFDMfGEekkndLJCAPMcaosO06WV+Xu8I9obIu+8="}},"messageType":"conversation","messageTimestamp":1774377150,"instanceId":"02689c02-3ea0-4bf8-b2fa-da98a5557974","source":"unknown"},"destin
+[2026-03-24 15:33:21] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363402080689800@g.us","fromMe":false,"id":"3A369C9F2B8BC5614DE8","participant":"180362873438293@lid"},"pushName":"Gabriel Viturino","status":"DELIVERY_ACK","message":{"conversation":"Vou providenciar","messageContextInfo":{"messageSecret":"FrGPAbdMxG6Aekt9pA/hlCjEm+vy8u476ex1TDYlGK4="}},"messageType":"conversation","messageTimestamp":1774377201,"instanceId":"02689c02-3ea0-4bf8-b2fa-da98a5557974","source"
+[2026-03-24 15:33:28] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363402080689800@g.us","fromMe":false,"id":"3A7BBFA5BF27B56A181A","participant":"180362873438293@lid"},"pushName":"Gabriel Viturino","status":"DELIVERY_ACK","message":{"conversation":"A reposição da mesma","messageContextInfo":{"messageSecret":"FksRZjeVgHqhOKPZW0D3AR37biSwYUEm49yDuhdCM0k="}},"messageType":"conversation","messageTimestamp":1774377209,"instanceId":"02689c02-3ea0-4bf8-b2fa-da98a5557974","s
+[2026-03-25 17:17:03] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A5F033C32CB4B29C240FF38E2E0A992B","participant":"149053182619776@lid"},"pushName":"Júlio César - Texas Center","status":"DELIVERY_ACK","message":{"conversation":"Larissa de Sousa \n\n+55 62 9967-1509\n\nConfirmou via ligação!","messageContextInfo":{"messageSecret":"8VacqEOMvggEh/BCyOFDLPsItpGJ23hwCW6NhWzWyyE="}},"messageType":"conversation","messageTimestamp
+[2026-03-25 17:17:04] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"ACE85DE9B207AD61F55DCB1A9415048B","participant":"68857033130124@lid"},"pushName":"Ledson Montteiro","status":"DELIVERY_ACK","message":{"conversation":"Edimar \n62 9255-4042","messageContextInfo":{"messageSecret":"ICDDHOyiZ5AXeh8Vwn8l9AMEmu+rSSv8Ofm8UAwLMRU="}},"messageType":"conversation","messageTimestamp":1774469499,"instanceId":"02689c02-3ea0-4bf8-b2fa-da98a5
+[2026-03-25 17:17:06] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3EB02F64C83014DED2F271","participant":"10862022643772@lid"},"pushName":"Maiane Brandão","status":"DELIVERY_ACK","message":{"reactionMessage":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A5F033C32CB4B29C240FF38E2E0A992B","participant":"149053182619776@lid"},"text":"🚀","senderTimestampMs":"1774469821000"}},"messageType":"reactionMessage",
+[2026-03-25 17:17:29] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3EB098381E73C5F4F7E3E3","participant":"10862022643772@lid"},"pushName":"Maiane Brandão","status":"DELIVERY_ACK","message":{"messageContextInfo":{"messageSecret":"TPo2ImFr81/VfdWMwCtVjIybi04DCbL/sima/Z/EMAA=","limitSharingV2":{"trigger":"UNKNOWN","initiatedByMe":false}},"conversation":"Cliente da própria carteira, também!\nQue trouxe indicação e vai trazer n
+[2026-03-25 17:18:01] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB04ED75BAB1FCD0625AF","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Esta ai?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"7SwG6YFURg9pYg==","recip
+[2026-03-25 17:18:01] PROCESSANDO: 556293372731 -> "Esta ai?"
+[2026-03-25 17:18:09] IA OK [8296ms, 2914tok]: Estou sim! O Atlas está aqui e pronto para te ajudar.
+
+Precisa de algo? 😊
+[2026-03-25 17:18:09] TOTAL [8297ms, 2914tok]
+[2026-03-25 17:18:11] OK: Resposta enviada para 556293372731 (77 chars)
+[2026-03-25 17:18:11] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363402080689800@g.us","fromMe":false,"id":"3EB0B730F991CBE6E98E01","participant":"269805617692725@lid"},"pushName":"Gabriel Gomes","status":"DELIVERY_ACK","message":{"senderKeyDistributionMessage":{"groupId":"120363402080689800@g.us","axolotlSenderKeyDistributionMessage":"MwjEivz3BRAAGiA5JIO0F+7ynUKDMJtcjZnaz16MKAvpkcbLMvGSeFb5LiIhBew9FimxGo5rNq0G+ki2mRz3oMyaHg2IbO/hlaQv8spY"},"messageContextInfo":{"mess
+[2026-03-25 17:18:29] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB00C3785AA9422CA616A","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quantos produtos ativos tenho hoje?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash
+[2026-03-25 17:18:29] PROCESSANDO: 556293372731 -> "Quantos produtos ativos tenho hoje?"
+[2026-03-25 17:18:32] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A583F765DC3818EFEF8D83B2A3079FAF","participant":"149053182619776@lid"},"pushName":"Júlio César - Texas Center","status":"DELIVERY_ACK","message":{"senderKeyDistributionMessage":{"groupId":"120363418009849750@g.us","axolotlSenderKeyDistributionMessage":"Mwia+q3KBxAHGiBtmi47zJFeGEMBQFvhZ36uNxqGHxs0H8c6PDOJNk0JdyIhBZsgY3UlRMwuP+Jjwg47Lmw+Ov7aPWxgaBNI4QJkqeNJ"},"m
+[2026-03-25 17:18:41] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3EB00D259E7F02846449DC","participant":"10862022643772@lid"},"pushName":"Maiane Brandão","status":"DELIVERY_ACK","message":{"reactionMessage":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"A583F765DC3818EFEF8D83B2A3079FAF","participant":"149053182619776@lid"},"text":"🚀","senderTimestampMs":"1774469618000"}},"messageType":"reactionMessage",
+[2026-03-25 17:18:58] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363402080689800@g.us","fromMe":false,"id":"3EB028F78872D0C07EEA72","participant":"1413212065895@lid"},"pushName":"Marcel","status":"DELIVERY_ACK","message":{"imageMessage":{"url":"https://mmg.whatsapp.net/o1/v/t24/f2/m239/AQN79yG9Q6_v4-m0V0PJsHHDXZO_4Xr7W_dBNfDy3pMThtR4odyAwvJQoQI8TgsiYxRtMTnM6NvdnjAPXJYwQz-85hTddeOHPHyFZaOFzw?ccb=9-4&oh=01_Q5Aa4AFUOTmDG3D20N3-H6O5iOoONg6ZUQ8kN05-WuEJCLKr0A&oe=69EBAD73&_
+[2026-03-25 17:19:08] IA OK [38977ms, 5257tok]: Vou consultar!
+
+```sql
+SELECT COUNT(*) AS total_produtos_ativos
+FROM produtos
+WHERE ativo = 'S'
+LIMIT 30000
+```
+[2026-03-25 17:19:08] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363402080689800@g.us","fromMe":false,"id":"3EB04973C97C1CB6152DEF","participant":"269805617692725@lid"},"pushName":"Gabriel Gomes","status":"DELIVERY_ACK","message":{"conversation":"Top 🚀","messageContextInfo":{"messageSecret":"/dqGyVJZ4rySURoq1/GR2uR/Gp/i+2wX6dhHYyluvYc=","limitSharingV2":{"sharingLimited":false,"trigger":"UNKNOWN","limitSharingSettingTimestamp":"0","initiatedByMe":false}}},"messageT
+[2026-03-25 17:19:09] FMT PHP [0ms]: 📊 O total é *10.685*! 😊
+[2026-03-25 17:19:09] TOTAL [40144ms, 5257tok]
+[2026-03-25 17:19:11] OK: Resposta enviada para 556293372731 (30 chars)
+[2026-03-25 17:19:13] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363402080689800@g.us","fromMe":false,"id":"3EB0C74D7E9CF0A3D5DB9E","participant":"1413212065895@lid"},"pushName":"Marcel","status":"DELIVERY_ACK","message":{"senderKeyDistributionMessage":{"groupId":"120363402080689800@g.us","axolotlSenderKeyDistributionMessage":"Mwi8vZHOAhAAGiDWEwQe3vWL8qUWXGBtqCbueFiKoBU+Xav4mXoK7lZ/DCIhBR/ibf7Slw/QTqVVMd/IHPgDC9BRxV9hsnkQC67n4yAH"},"messageContextInfo":{"messageSecret
+[2026-03-25 17:19:16] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3EB0F7CA8867891C1F39B2","participant":"10862022643772@lid"},"pushName":"Maiane Brandão","status":"DELIVERY_ACK","message":{"reactionMessage":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"ACE85DE9B207AD61F55DCB1A9415048B","participant":"68857033130124@lid"},"text":"🚀","senderTimestampMs":"1774469615000"}},"messageType":"reactionMessage","
+[2026-03-25 17:19:41] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3EB072CC35B60D1E07C50F","participant":"10862022643772@lid"},"pushName":"Maiane Brandão","status":"DELIVERY_ACK","message":{"messageContextInfo":{"messageSecret":"Up4DOXL7UXR1JLjfiLzHh1pMagVwNtbcfHOWkF9TkP0=","limitSharingV2":{"trigger":"UNKNOWN","initiatedByMe":false}},"conversation":"Dá própria carteira! Parabéns 🚀🚀"},"contextInfo":{"stanzaId":"ACE85D
+[2026-03-25 17:20:09] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB04D8FBF9335E01F3D06","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quais minhas 5 principais grades?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":
+[2026-03-25 17:20:09] PROCESSANDO: 556293372731 -> "Quais minhas 5 principais grades?"
+[2026-03-25 17:20:19] IA OK [9998ms, 3643tok]: Vou consultar!
+
+```sql
+SELECT
+  g.descricao AS grade,
+  COUNT(*) AS quantidade
+FROM grade_produto gp
+JOIN grade g ON g.c
+[2026-03-25 17:20:20] FMT PHP [0ms]: 📊 Aqui estão os resultados:
+
+• *TAMANHO ÚNICO                 *: 4.530
+• *X NÃO UTILIZAR X          
+[2026-03-25 17:20:20] TOTAL [11208ms, 3643tok]
+[2026-03-25 17:20:21] OK: Resposta enviada para 556293372731 (277 chars)
+[2026-03-25 17:22:37] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363402080689800@g.us","fromMe":false,"id":"AC7B64AAFDFDD1ED590F3DCF11EF8E87","participant":"181475269980410@lid"},"pushName":"karenn Figueira","status":"DELIVERY_ACK","message":{"senderKeyDistributionMessage":{"groupId":"120363402080689800@g.us","axolotlSenderKeyDistributionMessage":"MwjBhNeVAxAAGiBfxM1XUOxH9CgfXll2MLa4efOJjJwcHjGEEzwGVxINzCIhBVO9JDqvwe1h6W5tc/oHQAQ//hW3N/hG6kaJDhErnPZ0"},"messageContext
+[2026-03-25 17:23:59] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"AC33C92BC815670B734FA58830FD62E3","participant":"68857033130124@lid"},"pushName":"Ledson Montteiro","status":"DELIVERY_ACK","message":{"conversation":"Milton Resio Netto \n62996839607\nConfirmação da lista","messageContextInfo":{"messageSecret":"RA1Zmacx7JQ72ZSaNQonv46kRYieH5+wiisDSfXLysw="}},"messageType":"conversation","messageTimestamp":1774470241,"instance
+[2026-03-25 17:25:27] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"AC09364A53C510159F85BB285D12892A","participant":"68857033130124@lid"},"pushName":"Ledson Montteiro","status":"DELIVERY_ACK","message":{"conversation":"Sergio Guimarães Machado \n62996978007\nConfirmação da lista","messageContextInfo":{"messageSecret":"p95sSEyZSECD5OlVCKsZTMI+DVnFSisM8t5Rgm9tApk="}},"messageType":"conversation","messageTimestamp":1774470329,"i
+[2026-03-25 17:26:12] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0AA053C84E2C5BCB19B","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Me fale sobre a empresa Texas Center","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHas
+[2026-03-25 17:26:13] PROCESSANDO: 556293372731 -> "Me fale sobre a empresa Texas Center"
+[2026-03-25 17:26:22] IA OK [9599ms, 3714tok]: Olá! Eu sou o Atlas, assistente virtual da Texas Center, criado pelo senhor Chrystopher Castro. 🤖
+
+No momento, não tenho
+[2026-03-25 17:26:22] TOTAL [9599ms, 3714tok]
+[2026-03-25 17:26:23] OK: Resposta enviada para 556293372731 (453 chars)
+[2026-03-25 17:41:09] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0F7A040CBE7B74FA8DA","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"A polo 6368 está quanto?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"7SwG6YF
+[2026-03-25 17:41:09] PROCESSANDO: 556293372731 -> "A polo 6368 está quanto?"
+[2026-03-25 17:41:19] IA OK [10376ms, 4157tok]: Vou consultar o preço para você!
+
+```sql
+SELECT
+  ps.descricao AS produto,
+  tp.precovarejo AS preco,
+  tpp.descricao AS
+[2026-03-25 17:41:20] TOTAL [11393ms, 4157tok]
+[2026-03-25 17:41:21] OK: Resposta enviada para 556293372731 (68 chars)
+[2026-03-25 17:48:12] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0BBF227617B1FFC97B1","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"QUantas variações de produtos tenho?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyH
+[2026-03-25 17:48:12] PROCESSANDO: 556293372731 -> "QUantas variações de produtos tenho?"
+[2026-03-25 17:48:16] IA OK [4101ms, 3751tok]: Vou consultar essa informação para você!
+
+```sql
+SELECT COUNT(*) as total_variacoes
+FROM produtos_sku
+```
+[2026-03-25 17:48:17] FMT PHP [0ms]: 📊 O total é *415.665*! 😊
+[2026-03-25 17:48:17] TOTAL [5095ms, 3751tok]
+[2026-03-25 17:48:18] OK: Resposta enviada para 556293372731 (31 chars)
+[2026-03-25 17:48:33] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB08AB127D204BE035B11","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"E as que são ativas?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"7SwG6YFURg9
+[2026-03-25 17:48:33] PROCESSANDO: 556293372731 -> "E as que são ativas?"
+[2026-03-25 17:48:43] IA OK [10248ms, 3986tok]: Vou consultar a quantidade de variações ativas para você!
+
+```sql
+SELECT status, COUNT(*) as quantidade
+FROM produtos_sk
+[2026-03-25 17:48:46] FMT PHP [0ms]: 📊 Aqui estão os resultados:
+
+• *Inativo*: 339.560
+• *Ativo*: 76.104
+• *erro*: 1
+
+*Total geral: 415.6
+[2026-03-25 17:48:46] TOTAL [13196ms, 3986tok]
+[2026-03-25 17:48:47] OK: Resposta enviada para 556293372731 (117 chars)
+[2026-03-25 17:49:27] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB04978420D371C25B18E","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Tenho algum produto com referencia 6368?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKe
+[2026-03-25 17:49:27] PROCESSANDO: 556293372731 -> "Tenho algum produto com referencia 6368?"
+[2026-03-25 17:49:38] IA OK [10559ms, 3952tok]: Vou consultar para você!
+
+```sql
+SELECT 
+    pa.codigo,
+    ps.descricao AS produto,
+    pa.referencia,
+    m.descricao 
+[2026-03-25 17:49:39] TOTAL [11907ms, 3952tok]
+[2026-03-25 17:49:40] OK: Resposta enviada para 556293372731 (59 chars)
+[2026-03-25 17:50:40] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0B91D885D876DA05242","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Tem produto com referência 6368","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"
+[2026-03-25 17:50:40] PROCESSANDO: 556293372731 -> "Tem produto com referência 6368"
+[2026-03-25 17:50:59] IA OK [18337ms, 3913tok]: Vou consultar na base de dados para você!
+
+```sql
+SELECT 
+    pa.codigo AS codigo_produto,
+    pa.referencia,
+    ps.des
+[2026-03-25 17:51:00] TOTAL [19813ms, 3913tok]
+[2026-03-25 17:51:01] OK: Resposta enviada para 556293372731 (76 chars)
+[2026-03-25 17:51:22] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB09F703FED84EF86BF72","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quais são os meus produtos mais caros e me fale por tabela de preço","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","senderAccountType":"E2EE","receiverAcc
+[2026-03-25 17:51:22] PROCESSANDO: 556293372731 -> "Quais são os meus produtos mais caros e me fale por tabela de preço"
+[2026-03-25 17:51:39] IA OK [17296ms, 4329tok]: Vou consultar os produtos mais caros organizados por tabela de preço para você!
+
+```sql
+WITH produtos_ranking AS (
+    S
+[2026-03-25 17:51:41] TOTAL [18469ms, 4329tok]
+[2026-03-25 17:51:42] OK: Resposta enviada para 556293372731 (685 chars)
+[2026-03-25 17:52:33] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB025C0D5966F73EFCDED","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"5 produtos mais caros que tenho dividido por tabela de preço","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","senderAccountType":"E2EE","receiverAccountType
+[2026-03-25 17:52:34] PROCESSANDO: 556293372731 -> "5 produtos mais caros que tenho dividido por tabela de preço"
+[2026-03-25 17:52:42] IA OK [8631ms, 4157tok]: Vou consultar os 5 produtos mais caros por tabela de preço para você!
+
+```sql
+WITH produtos_ranking AS (
+    SELECT 
+   
+[2026-03-25 17:52:43] TOTAL [9649ms, 4157tok]
+[2026-03-25 17:52:44] OK: Resposta enviada para 556293372731 (654 chars)
+[2026-03-25 17:53:19] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB07C24A3A49A0CD9B35A","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"5 produtos mais caros que tenho dividido por tabela de preço","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","senderAccountType":"E2EE","receiverAccountType
+[2026-03-25 17:53:19] PROCESSANDO: 556293372731 -> "5 produtos mais caros que tenho dividido por tabela de preço"
+[2026-03-25 17:53:33] IA OK [14503ms, 4454tok]: Vou consultar novamente para você!
+
+```sql
+WITH produtos_ranking AS (
+    SELECT 
+        tp_p.descricao AS tabela_preco
+[2026-03-25 17:53:35] TOTAL [15742ms, 4454tok]
+[2026-03-25 17:53:35] OK: Resposta enviada para 556293372731 (618 chars)
+[2026-03-25 17:56:12] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB03EF70DD7EEA8FB6E19","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"5 produtos mais caros que tenho dividido por tabela de preço","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","senderAccountType":"E2EE","receiverAccountType
+[2026-03-25 17:56:12] PROCESSANDO: 556293372731 -> "5 produtos mais caros que tenho dividido por tabela de preço"
+[2026-03-25 17:56:34] IA OK [21657ms, 5800tok]: Vou consultar!
+
+```sql
+WITH produtos_ranking AS (
+    SELECT 
+        tp_p.descricao AS tabela_preco,
+        p_sku.desc
+[2026-03-25 17:56:35] TOTAL [22699ms, 5800tok]
+[2026-03-25 17:56:36] OK: Resposta enviada para 556293372731 (601 chars)
+[2026-03-25 17:56:55] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0EADC90BECF50173013","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quais são as minhas tabelas de preço?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKey
+[2026-03-25 17:56:55] PROCESSANDO: 556293372731 -> "Quais são as minhas tabelas de preço?"
+[2026-03-25 17:56:57] IA OK [2115ms, 4439tok]: Vou consultar as tabelas de preço disponíveis para você!
+
+```sql
+SELECT 
+    codigo AS id,
+    descricao AS tabela_preco
+[2026-03-25 17:56:58] FMT PHP [0ms]: 📊 Aqui estão os resultados:
+
+• *2*: E-COOMERCE
+• *1*: LOJA
+[2026-03-25 17:56:58] TOTAL [3154ms, 4439tok]
+[2026-03-25 17:56:59] OK: Resposta enviada para 556293372731 (66 chars)
+[2026-03-25 17:57:25] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0BAD21C591C6C4F0FD0","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quanto está CHAPÉU  AMERICAN MINK 1000X?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipient
+[2026-03-25 17:57:26] PROCESSANDO: 556293372731 -> "Quanto está CHAPÉU  AMERICAN MINK 1000X?"
+[2026-03-25 17:57:34] IA OK [8324ms, 4939tok]: Vou consultar o preço desse chapéu para você!
+
+```sql
+SELECT 
+    p.descricao AS produto,
+    p.sku,
+    tp_p.descricao 
+[2026-03-25 17:57:36] FMT PHP [0ms]: 📋 Encontrei *20* registros:
+
+1. *Produto*: CHAPÉU  AMERICAN MINK 1000X | *Sku*: 108.040.301 | *Tabel
+[2026-03-25 17:57:36] TOTAL [10070ms, 4939tok]
+[2026-03-25 17:57:37] OK: Resposta enviada para 556293372731 (1679 chars)
+[2026-03-25 17:57:49] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB01E922DC19783D89439","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quero a nível de produto pai não sku","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyH
+[2026-03-25 17:57:49] PROCESSANDO: 556293372731 -> "Quero a nível de produto pai não sku"
+[2026-03-25 17:58:01] IA OK [11383ms, 5355tok]: Vou consultar no nível do produto pai para você!
+
+```sql
+SELECT DISTINCT
+    p.codigo AS codigo_produto,
+    p.descricao
+[2026-03-25 17:58:02] FMT PHP [0ms]: 📋 Encontrei *2* registros:
+
+1. *Codigo produto*: 10.804 | *Produto*: CHAPÉU  AMERICAN MINK 1000X | *
+[2026-03-25 17:58:02] TOTAL [12618ms, 5355tok]
+[2026-03-25 17:58:03] OK: Resposta enviada para 556293372731 (258 chars)
+[2026-03-25 18:13:06] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB04EB239AC4834D752FC","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Qual o estoque deste produto?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"7Sw
+[2026-03-25 18:13:06] PROCESSANDO: 556293372731 -> "Qual o estoque deste produto?"
+[2026-03-25 18:13:13] IA OK [7508ms, 5178tok]: Vou consultar o estoque do produto CHAPÉU AMERICAN MINK 1000X (código 10.804) para você!
+
+```sql
+SELECT 
+    l.descricao
+[2026-03-25 18:13:15] TOTAL [8600ms, 5178tok]
+[2026-03-25 18:13:16] OK: Resposta enviada para 556293372731 (125 chars)
+[2026-03-25 18:24:49] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3A17F8E68D3C34882FA8","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quantos produtos eu tenho ativo hoje?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"rtjjIzlQZloppQ==","senderTimestamp":"1774269418","recipientKeyHash":"7SwG6YFURg9pYg==","recipientTimestamp":"1773153363"},
+[2026-03-25 18:24:49] PROCESSANDO: 556293372731 -> "Quantos produtos eu tenho ativo hoje?"
+[2026-03-25 18:25:05] IA OK [16130ms, 4948tok]: Vou consultar!
+
+```sql
+SELECT COUNT(*) as total_produtos_ativos
+FROM produtos
+WHERE ativo = 'S'
+```
+[2026-03-25 18:25:06] FMT PHP [0ms]: 📊 O total é *10.685*! 😊
+[2026-03-25 18:25:07] TOTAL [17201ms, 4948tok]
+[2026-03-25 18:25:07] OK: Resposta enviada para 556293372731 (30 chars)
+[2026-03-26 12:52:33] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB09841C97002F86BBCC7","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Olá tudo bem?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"7SwG6YFURg9pYg==",
+[2026-03-26 12:52:33] PROCESSANDO: 556293372731 -> "Olá tudo bem?"
+[2026-03-26 12:52:46] IA OK [13182ms, 4589tok]: Olá! Tudo bem, obrigado! 😊
+
+Como posso te ajudar hoje?
+[2026-03-26 12:52:46] TOTAL [13187ms, 4589tok]
+[2026-03-26 12:52:46] OK: Resposta enviada para 556293372731 (58 chars)
+[2026-03-26 12:53:01] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0C6798C49D1478BADEC","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Me fala um negócio quero saber quantos produtos ativos eu tenho","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","senderAccountType":"E2EE","receiverAccountT
+[2026-03-26 12:53:01] PROCESSANDO: 556293372731 -> "Me fala um negócio quero saber quantos produtos ativos eu tenho"
+[2026-03-26 12:53:05] IA OK [3729ms, 4599tok]: Vou consultar isso para você!
+
+```sql
+SELECT COUNT(*) AS total_produtos_ativos
+FROM produtos_sku
+WHERE status = 'ATIVO'
+
+[2026-03-26 12:53:05] FMT PHP [0ms]: 📊 O total é *0*! 😊
+[2026-03-26 12:53:05] TOTAL [4269ms, 4599tok]
+[2026-03-26 12:53:06] OK: Resposta enviada para 556293372731 (25 chars)
+[2026-03-26 13:04:11] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB04CC1AD907D4D42C65F","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Esta errado você tem que ir na tabela produtos_sku e ver pelo campo status já grava isso na sua memória","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774269418","s
+[2026-03-26 13:04:11] PROCESSANDO: 556293372731 -> "Esta errado você tem que ir na tabela produtos_sku e ver pelo campo status já grava isso na sua memória"
+[2026-03-26 13:04:38] IA OK [26523ms, 4245tok]: Obrigado pela correção! 😊 
+
+Vou consultar corretamente na tabela `produtos_sku` filtrando pelo campo `status`:
+
+```sql
+S
+[2026-03-26 13:04:39] FMT PHP [0ms]: 📊 O total é *0*! 😊
+[2026-03-26 13:04:39] TOTAL [27103ms, 4245tok]
+[2026-03-26 13:04:39] OK: Resposta enviada para 556293372731 (25 chars)
+[2026-03-26 17:11:02] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB072AF2EDA7B02B7ED5C","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"No mes 10 de 2023 quanto eu vendi?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash"
+[2026-03-26 17:11:02] PROCESSANDO: 556293372731 -> "No mes 10 de 2023 quanto eu vendi?"
+[2026-03-26 17:11:26] IA OK [23389ms, 4109tok]: Vou consultar o total de vendas de outubro de 2023 para você!
+
+```sql
+SELECT 
+    COUNT(*) AS quantidade_vendas,
+    SUM
+[2026-03-26 17:11:26] FMT PHP [0ms]: 📋 Aqui está o resultado:
+
+• *Quantidade vendas*: 806
+• *Total vendido*: 844.831,72
+• *Ticket medio*:
+[2026-03-26 17:11:26] TOTAL [24204ms, 4109tok]
+[2026-03-26 17:11:27] OK: Resposta enviada para 556293372731 (119 chars)
+[2026-03-26 17:12:51] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB00640F4C0148594445A","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"O mesmo mes em 2024","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"7SwG6YFURg9pY
+[2026-03-26 17:12:51] PROCESSANDO: 556293372731 -> "O mesmo mes em 2024"
+[2026-03-26 17:12:59] IA OK [7804ms, 4132tok]: Vou consultar as vendas de outubro de 2024 para você!
+
+```sql
+SELECT 
+    COUNT(*) as quantidade_vendas,
+    ROUND(SUM(t
+[2026-03-26 17:13:00] FMT PHP [0ms]: 📋 Aqui está o resultado:
+
+• *Quantidade vendas*: 1.103
+• *Total vendido*: 1.177.842,76
+• *Ticket med
+[2026-03-26 17:13:00] TOTAL [8421ms, 4132tok]
+[2026-03-26 17:13:00] OK: Resposta enviada para 556293372731 (123 chars)
+[2026-03-26 17:13:35] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0D0740F2334F4192203","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"E em 2025? E me fale quanto eu cresci nos 3 anos","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","rec
+[2026-03-26 17:13:35] PROCESSANDO: 556293372731 -> "E em 2025? E me fale quanto eu cresci nos 3 anos"
+[2026-03-26 17:13:50] IA OK [15308ms, 4187tok]: Vou consultar os dados de outubro de 2025 e calcular a evolução dos 3 anos para você!
+
+```sql
+SELECT 
+    EXTRACT(YEAR F
+[2026-03-26 17:13:51] FMT PHP [0ms]: 📋 Encontrei *3* registros:
+
+1. *Ano*: 2.023 | *Quantidade vendas*: 806 | *Total vendido*: 844.831,72
+[2026-03-26 17:13:51] TOTAL [15996ms, 4187tok]
+[2026-03-26 17:13:52] OK: Resposta enviada para 556293372731 (334 chars)
+[2026-03-26 17:14:27] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0F041ED293626B33E23","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Qual o percentual de crescimento?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":
+[2026-03-26 17:14:27] PROCESSANDO: 556293372731 -> "Qual o percentual de crescimento?"
+[2026-03-26 17:14:57] IA OK [30618ms, 4549tok]: Aqui está a análise de crescimento do **outubro** ao longo dos anos:
+
+📈 **Crescimento 2023 → 2024**:
+• *Receita*: +39,4%
+[2026-03-26 17:14:57] TOTAL [30618ms, 4549tok]
+[2026-03-26 17:14:58] OK: Resposta enviada para 556293372731 (708 chars)
+[2026-03-26 17:15:31] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0B6B86EA36C4470401F","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Em 2024 quanto eu vendi em novembro?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHas
+[2026-03-26 17:15:31] PROCESSANDO: 556293372731 -> "Em 2024 quanto eu vendi em novembro?"
+[2026-03-26 17:15:47] IA OK [15422ms, 4564tok]: Vou consultar as vendas de novembro de 2024 para você!
+
+```sql
+SELECT 
+    COUNT(*) AS quantidade_vendas,
+    SUM(total)
+[2026-03-26 17:15:48] FMT PHP [0ms]: 📋 Aqui está o resultado:
+
+• *Quantidade vendas*: 2.671
+• *Total vendido*: 2.454.048,46
+• *Ticket med
+[2026-03-26 17:15:48] TOTAL [16975ms, 4564tok]
+[2026-03-26 17:15:49] OK: Resposta enviada para 556293372731 (121 chars)
+[2026-03-26 17:16:42] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0595A6AA1BA0EB3C527","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Meu melhor vendedor deste periodo de 2024","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientK
+[2026-03-26 17:16:42] PROCESSANDO: 556293372731 -> "Meu melhor vendedor deste periodo de 2024"
+[2026-03-26 17:17:01] IA OK [19432ms, 6950tok]: Vou consultar!
+
+```sql
+SELECT 
+    nomevendedor AS vendedor,
+    COUNT(*) AS quantidade_vendas,
+    SUM(total) AS total_
+[2026-03-26 17:17:02] FMT PHP [0ms]: 📋 Aqui está o resultado:
+
+• *Vendedor*: ALEX MATTOS
+• *Quantidade vendas*: 30
+• *Total vendido*: 3.8
+[2026-03-26 17:17:02] TOTAL [20027ms, 6950tok]
+[2026-03-26 17:17:02] OK: Resposta enviada para 556293372731 (150 chars)
+[2026-03-26 17:17:39] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0D9B6AF94904E81488D","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Não tem sentido porque o Alex? Sendo que em novembro de 2024 eu vendi 2454048,46 e só o alex vendeu 3802437,97?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550
+[2026-03-26 17:17:39] PROCESSANDO: 556293372731 -> "Não tem sentido porque o Alex? Sendo que em novembro de 2024 eu vendi 2454048,46 e só o alex vendeu 3802437,97?"
+[2026-03-26 17:17:56] IA OK [16485ms, 4727tok]: Você está absolutamente certo, peço desculpas pela confusão! 
+
+Isso não faz sentido mesmo — o valor do vendedor não pode
+[2026-03-26 17:17:56] TOTAL [16485ms, 4727tok]
+[2026-03-26 17:17:57] OK: Resposta enviada para 556293372731 (674 chars)
+[2026-03-26 17:18:27] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB09E068E1BDE02D43945","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Qual o melhor vendedor de novembro de 2024?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipien
+[2026-03-26 17:18:27] PROCESSANDO: 556293372731 -> "Qual o melhor vendedor de novembro de 2024?"
+[2026-03-26 17:18:51] IA OK [24013ms, 5092tok]: Vou consultar os dados de novembro de 2024 para identificar o melhor vendedor!
+
+```sql
+SELECT 
+    nomevendedor AS vende
+[2026-03-26 17:18:52] FMT PHP [0ms]: 📋 Aqui está o resultado:
+
+• *Vendedor*: ANTONIO NETO
+• *Quantidade vendas*: 219
+• *Total vendido*: 3
+[2026-03-26 17:18:52] TOTAL [24677ms, 5092tok]
+[2026-03-26 17:18:52] OK: Resposta enviada para 556293372731 (148 chars)
+[2026-03-26 17:21:40] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0108A23E430BDB54A6F","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Entendi, obrigado! Está certo acabei de validar dentro do banco de dados,  quanto eu vendi em novembro de 2025?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"17745500
+[2026-03-26 17:21:40] PROCESSANDO: 556293372731 -> "Entendi, obrigado! Está certo acabei de validar dentro do banco de dados,  quanto eu vendi em novembro de 2025?"
+[2026-03-26 17:22:00] IA OK [19967ms, 4826tok]: Vou consultar as vendas de novembro de 2025 para você.
+
+```sql
+SELECT 
+    COUNT(*) AS quantidade_vendas,
+    SUM(total)
+[2026-03-26 17:22:01] FMT PHP [0ms]: 📋 Aqui está o resultado:
+
+• *Quantidade vendas*: 847
+• *Total vendido*: 1.122.582,63
+• *Ticket medio
+[2026-03-26 17:22:01] TOTAL [20556ms, 4826tok]
+[2026-03-26 17:22:02] OK: Resposta enviada para 556293372731 (121 chars)
+[2026-03-26 17:28:48] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3A2311CCF0CA059F2576","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Faturamento de 2025","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"rtjjIzlQZloppQ==","senderTimestamp":"1774550025","recipientKeyHash":"7SwG6YFURg9pYg==","recipientTimestamp":"1773153363"},"deviceListMetadat
+[2026-03-26 17:28:48] PROCESSANDO: 556293372731 -> "Faturamento de 2025"
+[2026-03-26 17:29:13] IA OK [24601ms, 4715tok]: Vou consultar o faturamento total de 2025!
+
+```sql
+SELECT 
+    COUNT(*) as quantidade_vendas,
+    COALESCE(SUM(total), 0
+[2026-03-26 17:29:13] FMT PHP [0ms]: 📋 Aqui está o resultado:
+
+• *Quantidade vendas*: 23.837
+• *Total vendido*: 27.302.109,07
+• *Ticket m
+[2026-03-26 17:29:13] TOTAL [25198ms, 4715tok]
+[2026-03-26 17:29:14] OK: Resposta enviada para 556293372731 (125 chars)
+[2026-03-26 17:29:41] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3A0E953F69980610E54C","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Comparativo de 2025 para 2025 e o que você sugere para eu crescer em 2026","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"rtjjIzlQZloppQ==","senderTimestamp":"1774550025","recipientKeyHash":"7SwG6YFURg9pYg==
+[2026-03-26 17:29:41] PROCESSANDO: 556293372731 -> "Comparativo de 2025 para 2025 e o que você sugere para eu crescer em 2026"
+[2026-03-26 17:30:05] IA OK [24203ms, 4491tok]: Vou consultar os dados de 2024 para fazer o comparativo!
+
+```sql
+SELECT 
+    COUNT(*) as quantidade_vendas,
+    SUM(tota
+[2026-03-26 17:30:06] FMT PHP [0ms]: 📋 Aqui está o resultado:
+
+• *Quantidade vendas*: 0
+• *Total vendido*: -
+• *Ticket medio*: -
+[2026-03-26 17:30:06] TOTAL [24839ms, 4491tok]
+[2026-03-26 17:30:06] OK: Resposta enviada para 556293372731 (101 chars)
+[2026-03-26 17:30:21] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3A9D412A3CE44A6AC6B0","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Comparativo de 2024 para 2025 e o que você sugere para eu crescer em 2026","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"rtjjIzlQZloppQ==","senderTimestamp":"1774550025","recipientKeyHash":"7SwG6YFURg9pYg==
+[2026-03-26 17:30:21] PROCESSANDO: 556293372731 -> "Comparativo de 2024 para 2025 e o que você sugere para eu crescer em 2026"
+[2026-03-26 17:31:26] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3A9D412A3CE44A6AC6B0","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Comparativo de 2024 para 2025 e o que você sugere para eu crescer em 2026","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"rtjjIzlQZloppQ==","senderTimestamp":"1774550025","recipientKeyHash":"7SwG6YFURg9pYg==
+[2026-03-26 17:31:51] ERRO IA [90010ms]: cURL error: Operation timed out after 90007 milliseconds with 0 bytes received
+[2026-03-26 17:31:51] ERRO processarMensagem: cURL error: Operation timed out after 90007 milliseconds with 0 bytes received
+[2026-03-26 17:31:51] OK: Resposta enviada para 556293372731 (69 chars)
+[2026-03-27 11:24:23] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363418009849750@g.us","fromMe":false,"id":"3A29A56C6E0A841344DA","participant":"91040455327867@lid"},"pushName":"Joao Antonio","status":"DELIVERY_ACK","message":{"senderKeyDistributionMessage":{"groupId":"120363418009849750@g.us","axolotlSenderKeyDistributionMessage":"Mwj/ivbTBxAAGiDDTuyPDwT8ghGqgnHp9LdO7/l7TeDr5Wr3MfpcMqkH1CIhBTHoXnSUJKaTlBoR33d7NAEkcq+/lzs16VhVOfOSs54e"},"messageContextInfo":{"deviceLi
+[2026-03-27 11:48:33] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"11536332521569@lid","fromMe":false,"id":"3A6F1A3C9BEE650A2DC7","senderPn":"5517996607575@s.whatsapp.net"},"pushName":"GV","status":"DELIVERY_ACK","message":{"conversation":"Tudo jóia","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"nswLpXdqqYuVdQ==","senderTimestamp":"1774020368","recipientKeyHash":"7SwG6YFURg9pYg==","recipientTimestamp":"1773153363"},"deviceListMetadataVersion":2,"messageSecr
+[2026-03-27 11:48:33] PROCESSANDO: 5517996607575 -> "Tudo jóia"
+[2026-03-27 11:48:34] OK: Resposta enviada para 5517996607575 (65 chars)
+[2026-03-27 11:50:04] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"11536332521569@lid","fromMe":false,"id":"3AE5BF8E4146489D568D","senderPn":"5517996607575@s.whatsapp.net"},"pushName":"GV","status":"DELIVERY_ACK","message":{"conversation":"Da goyazes","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"nswLpXdqqYuVdQ==","senderTimestamp":"1774020368","recipientKeyHash":"7SwG6YFURg9pYg==","recipientTimestamp":"1773153363"},"deviceListMetadataVersion":2,"messageSecr
+[2026-03-27 11:50:04] PROCESSANDO: 5517996607575 -> "Da goyazes"
+[2026-03-27 11:50:04] OK: Resposta enviada para 5517996607575 (65 chars)
+[2026-03-27 13:39:40] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0D8BD7F5A6486972227","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quantos produtos eu vendi?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"7SwG6Y
+[2026-03-27 13:39:40] PROCESSANDO: 556293372731 -> "Quantos produtos eu vendi?"
+[2026-03-27 13:39:49] IA OK [8884ms, 4424tok]: Vou consultar o total de produtos vendidos para você!
+
+```sql
+SELECT 
+    SUM(quantidadeproduto) as total_itens_vendidos
+[2026-03-27 13:39:51] FMT PHP [0ms]: 📋 Aqui está o resultado:
+
+• *Total itens vendidos*: 24.513
+• *Total skus diferentes*: 8.591
+[2026-03-27 13:39:51] TOTAL [10373ms, 4424tok]
+[2026-03-27 13:39:51] OK: Resposta enviada para 556293372731 (99 chars)
+[2026-03-27 13:40:19] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0CC2EB4E53B82D4553E","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Qual foi o produto mais vendido?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"
+[2026-03-27 13:40:19] PROCESSANDO: 556293372731 -> "Qual foi o produto mais vendido?"
+[2026-03-27 13:40:27] IA OK [7826ms, 4233tok]: Vou consultar!
+
+```sql
+SELECT 
+    ps.descricao AS produto,
+    SUM(vi.quantidadeproduto) AS quantidade_vendida,
+    COU
+[2026-03-27 13:40:30] FMT PHP [0ms]: 📋 Encontrei *5* registros:
+
+1. *Produto*: CAMISETA BF MASC TXC | *Quantidade vendida*: 1.090 | *Quan
+[2026-03-27 13:40:31] TOTAL [11496ms, 4233tok]
+[2026-03-27 13:40:31] OK: Resposta enviada para 556293372731 (480 chars)
+[2026-03-27 13:41:31] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB05A1C9E0FEBA0F74F82","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Qual a marca campeã de vendas?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"7
+[2026-03-27 13:41:31] PROCESSANDO: 556293372731 -> "Qual a marca campeã de vendas?"
+[2026-03-27 13:41:40] IA OK [8634ms, 4576tok]: A marca campeã de vendas é **TXC**, com grande vantagem sobre as concorrentes:
+
+📊 **Top 5 Marcas (por quantidade vendida
+[2026-03-27 13:41:40] TOTAL [8635ms, 4576tok]
+[2026-03-27 13:41:40] OK: Resposta enviada para 556293372731 (551 chars)
+[2026-03-27 13:44:56] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3A53C71458DF2F8BFA35","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Alguma ideia de campanha para ela?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"rtjjIzlQZloppQ==","senderTimestamp":"1774550025","recipientKeyHash":"7SwG6YFURg9pYg==","recipientTimestamp":"1773153363"},"de
+[2026-03-27 13:44:56] PROCESSANDO: 556293372731 -> "Alguma ideia de campanha para ela?"
+[2026-03-27 13:45:23] IA OK [27339ms, 5084tok]: Com base no desempenho da TXC como líder absoluta (39% das vendas), aqui vão algumas ideias estratégicas:
+
+## 🎯 **Campan
+[2026-03-27 13:45:23] TOTAL [27340ms, 5084tok]
+[2026-03-27 13:45:24] OK: Resposta enviada para 556293372731 (1576 chars)
+[2026-03-27 13:46:23] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3AFD4123B429AB3CB5E2","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Por favor busque","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"rtjjIzlQZloppQ==","senderTimestamp":"1774550025","recipientKeyHash":"7SwG6YFURg9pYg==","recipientTimestamp":"1773153363"},"deviceListMetadataVe
+[2026-03-27 13:46:23] PROCESSANDO: 556293372731 -> "Por favor busque"
+[2026-03-27 13:46:38] IA OK [14808ms, 5248tok]: Vou consultar o estoque disponível dos produtos TXC para avaliarmos a viabilidade das campanhas!
+
+```sql
+SELECT 
+    ps.
+[2026-03-27 13:46:38] TOTAL [15582ms, 5248tok]
+[2026-03-27 13:46:39] OK: Resposta enviada para 556293372731 (131 chars)
+[2026-03-27 13:51:14] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3A705477290BBFC1F504","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Atlas pesquise tudo sobre a Texas CENTER","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"rtjjIzlQZloppQ==","senderTimestamp":"1774550025","recipientKeyHash":"7SwG6YFURg9pYg==","recipientTimestamp":"1773153363
+[2026-03-27 13:51:14] PROCESSANDO: 556293372731 -> "Atlas pesquise tudo sobre a Texas CENTER"
+[2026-03-27 13:51:24] IA OK [10032ms, 5185tok]: Não tenho informação suficiente para responder com precisão.
+
+Meu acesso é exclusivamente ao banco de dados operacional 
+[2026-03-27 13:51:24] TOTAL [10032ms, 5185tok]
+[2026-03-27 13:51:25] OK: Resposta enviada para 556293372731 (518 chars)
+[2026-03-27 14:23:15] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB07B967ED0EF1BDC6B68","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Qual minha marca campeã de vendas e quanto de estoque tenho dela?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccoun
+[2026-03-27 14:23:15] PROCESSANDO: 556293372731 -> "Qual minha marca campeã de vendas e quanto de estoque tenho dela?"
+[2026-03-27 14:23:38] IA OK [22693ms, 5740tok]: Vou consultar a marca campeã de vendas e o estoque disponível dela!
+
+```sql
+WITH marca_campeao AS (
+    SELECT 
+        
+[2026-03-27 14:23:38] TOTAL [23186ms, 5740tok]
+[2026-03-27 14:23:39] OK: Resposta enviada para 556293372731 (834 chars)
+[2026-03-27 14:28:09] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363402080689800@g.us","fromMe":false,"id":"2A6E6AF44D48C86A7CE3","participant":"161851916705896@lid"},"pushName":"Cintia Cox","status":"DELIVERY_ACK","message":{"senderKeyDistributionMessage":{"groupId":"120363402080689800@g.us","axolotlSenderKeyDistributionMessage":"MwjNpdymBxADGiAl4Fxt3MM7sJdPoOUMfhuXt2vvPuHXZ37ZpuNtX+05qCIhBaP7wdaKvXV3HqdiXzZDW4yGYVuXcbjZNITbMZ5v05Bd"},"messageContextInfo":{"messageSe
+[2026-03-27 14:28:09] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363402080689800@g.us","fromMe":false,"id":"2AB413FA767857593480","participant":"161851916705896@lid"},"pushName":"Cintia Cox","status":"DELIVERY_ACK","message":{"imageMessage":{"url":"https://mmg.whatsapp.net/o1/v/t24/f2/m269/AQMsZscDl3RxqYKZWNEbFY0A_BoeW4jk3aYW86J2E0-mAl6B8iTkPcO_upWyjszCDY35gRRJjKs6m4aTmWiEOG2mdSR1330-GhV4OBnA3A?ccb=9-4&oh=01_Q5Aa4AHfXbOVyLA4H4HNWQF1NnJsN-gssRO2qPC9NXeAp4AbGg&oe=69EE25
+[2026-03-27 14:28:10] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363402080689800@g.us","fromMe":false,"id":"2AF3D70E50187EDDF3CE","participant":"161851916705896@lid"},"pushName":"Cintia Cox","status":"DELIVERY_ACK","message":{"imageMessage":{"url":"https://mmg.whatsapp.net/o1/v/t24/f2/m239/AQOXdvkTRXVEh8enmWZ4WxBb2B2Le4GtrwB-uNmkz2oTKkEnZ-jeHGIyHGfoZLq9q_RTkgZJ5njAb38QbGrSeDHpZrYW27bXNmZZcgHE2g?ccb=9-4&oh=01_Q5Aa4AFoSmBC7xwGvRei2e9Bw0ogrB0VY5LjpAW7NmqcryM1kA&oe=69EDF9
+[2026-03-27 14:28:12] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363402080689800@g.us","fromMe":false,"id":"2A6A013CF40062EEA4C3","participant":"161851916705896@lid"},"pushName":"Cintia Cox","status":"DELIVERY_ACK","message":{"imageMessage":{"url":"https://mmg.whatsapp.net/o1/v/t24/f2/m269/AQPPv3fVaIyHnWnVG12e47Xfyet6C6C_VUoEQ5ny_UCEPar_tVu3WBw8bMzq_HbYc-kXQpyiugtPUOPPHFdw80B-zXA8JQKvc4sSEJ0J4w?ccb=9-4&oh=01_Q5Aa4AHDnGkgmnFgyfxsswBrK_DMJcrD53pHWFFjgn-3CVR9qg&oe=69EE02
+[2026-03-27 14:28:13] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363402080689800@g.us","fromMe":false,"id":"2A6A56CED85DA4CF0C1F","participant":"161851916705896@lid"},"pushName":"Cintia Cox","status":"DELIVERY_ACK","message":{"imageMessage":{"url":"https://mmg.whatsapp.net/o1/v/t24/f2/m235/AQOWneWJheLdzGazGW8UQv8L-DDS9-SuGv_IF5gugmA15bNSYpzkydlO2xTXSeyy9CeLVVY-ADKggdD8L7iHR_W24eJpOs3I-p8yQrJJSg?ccb=9-4&oh=01_Q5Aa4AHH-eB2wILebaENYEjLj7JoUNJtmQ4dPO_s-ebQthMmkQ&oe=69EE25
+[2026-03-27 14:28:13] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363402080689800@g.us","fromMe":false,"id":"2AECDB70E4E5CFFE7808","participant":"161851916705896@lid"},"pushName":"Cintia Cox","status":"DELIVERY_ACK","message":{"conversation":"Tamanho 50 ","messageContextInfo":{"messageSecret":"JLddDJKthgBv1n1gcEb08ooVcKdPxcS2T3M9wbt2NY8="}},"messageType":"conversation","messageTimestamp":1774632495,"instanceId":"02689c02-3ea0-4bf8-b2fa-da98a5557974","source":"unknown"}
+[2026-03-27 14:28:58] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB021C0C01BA9528C1BDD","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Qual minha marca campeã de vendas e quanto de estoque tenho dela?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccoun
+[2026-03-27 14:28:58] PROCESSANDO: 556293372731 -> "Qual minha marca campeã de vendas e quanto de estoque tenho dela?"
+[2026-03-27 14:29:05] IA OK [7681ms, 5577tok]: Vou consultar a marca campeã de vendas e o estoque disponível dela!
+
+```sql
+WITH vendas_por_marca AS (
+    SELECT 
+     
+[2026-03-27 14:29:06] TOTAL [8142ms, 5577tok]
+[2026-03-27 14:29:06] OK: Resposta enviada para 556293372731 (860 chars)
+[2026-03-27 14:35:04] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0E642CDAC7DB0EEE2C0","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Qual minha marca campeã de vendas e quanto de estoque tenho dela?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccoun
+[2026-03-27 14:35:04] PROCESSANDO: 556293372731 -> Qual minha marca campeã de vendas e quanto de estoque tenho dela?
+[2026-03-27 14:35:14] IA OK [9230ms, 5585tok]: Vou consultar essas informações para você!
+
+```sql
+WITH marca_campeao AS (
+    SELECT 
+        m.codigo AS marca_codigo,
+[2026-03-27 14:35:14] TOTAL [10009ms, 5585tok]
+[2026-03-27 14:35:14] SQL DETECTADO
+OK: enviada
+[2026-03-27 14:40:36] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3A6B83250C03EA85648A","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Na sua última análise tinha sido Txc agora é Nike? Não está tendo bom senso","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"rtjjIzlQZloppQ==","senderTimestamp":"1774550025","recipientKeyHash":"7SwG6YFURg
+[2026-03-27 14:40:36] PROCESSANDO: 556293372731 -> Na sua última análise tinha sido Txc agora é Nike? Não está tendo bom senso
+[2026-03-27 14:40:54] IA OK [18571ms, 5769tok]: Entendi sua preocupação! Preciso esclarecer alguns pontos importantes:
+
+🧠 **Sobre a memória**: Eu não mantenho histórico
+[2026-03-27 14:40:54] TOTAL [18572ms, 5769tok]
+OK: enviada
+[2026-03-27 14:41:53] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3AFDF19255BBA5E780F4","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Então você está me dando dados fictícios? Isso é inaceitável","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"rtjjIzlQZloppQ==","senderTimestamp":"1774550025","recipientKeyHash":"7SwG6YFURg9pYg==","recip
+[2026-03-27 14:41:53] PROCESSANDO: 556293372731 -> Então você está me dando dados fictícios? Isso é inaceitável
+[2026-03-27 14:42:39] IA OK [45582ms, 6500tok]: **NÃO, eu nunca invento dados.** E peço desculpas se houve confusão.
+
+Deixa eu esclarecer o que aconteceu:
+
+1. **Eu gere
+[2026-03-27 14:42:39] TOTAL [45583ms, 6500tok]
+[2026-03-27 14:42:39] SQL DETECTADO
+[2026-03-27 14:42:59] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3AFDF19255BBA5E780F4","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Então você está me dando dados fictícios? Isso é inaceitável","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"rtjjIzlQZloppQ==","senderTimestamp":"1774550025","recipientKeyHash":"7SwG6YFURg9pYg==","recip
+OK: enviada
+[2026-03-27 14:43:29] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3AA74F28BFDF9586E1B5","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Todo o período em todas as lojas","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"rtjjIzlQZloppQ==","senderTimestamp":"1774550025","recipientKeyHash":"7SwG6YFURg9pYg==","recipientTimestamp":"1773153363"},"dev
+[2026-03-27 14:43:29] PROCESSANDO: 556293372731 -> Todo o período em todas as lojas
+[2026-03-27 14:43:36] IA OK [7495ms, 5927tok]: Entendido! Vou buscar a marca campeã de vendas considerando **todo o histórico** e **todas as lojas**, junto com o estoq
+[2026-03-27 14:43:36] TOTAL [7895ms, 5927tok]
+[2026-03-27 14:43:36] SQL DETECTADO
+OK: enviada
+[2026-03-27 15:33:19] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0C5570C0AD798EEEE78","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Qual minha marca campeã de vendas e quanto de estoque tenho dela?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccoun
+[2026-03-27 15:33:19] PROCESSANDO: 556293372731 -> "Qual minha marca campeã de vendas e quanto de estoque tenho dela?"
+[2026-03-27 15:33:44] IA OK [25308ms, 6240tok]: Vou buscar essa informação no seu banco de dados agora!
+
+```sql
+WITH marca_campea AS (
+    SELECT 
+        m.codigo AS m
+[2026-03-27 15:33:45] TOTAL [25880ms, 6240tok]
+[2026-03-27 15:33:45] OK: Resposta enviada para 556293372731 (1035 chars)
+[2026-03-27 15:37:04] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB00EBD9EED04C0C5DC59","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Qual minha marca campeã de vendas e quanto de estoque tenho dela?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccoun
+[2026-03-27 15:37:04] PROCESSANDO: 556293372731 -> "Qual minha marca campeã de vendas e quanto de estoque tenho dela?"
+[2026-03-27 15:37:27] IA OK [22925ms, 6763tok]: Estou processando a consulta no seu banco de dados agora mesmo.
+
+**Status:** Aguardando o retorno dos dados reais do sis
+[2026-03-27 15:37:27] TOTAL [22926ms, 6763tok]
+[2026-03-27 15:37:28] OK: Resposta enviada para 556293372731 (939 chars)
+[2026-03-27 15:48:05] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0F183C37AE4B11DAA68","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Qual minha marca campeã de vendas e quanto de estoque tenho dela?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccoun
+[2026-03-27 15:48:05] PROCESSANDO: 556293372731 -> "Qual minha marca campeã de vendas e quanto de estoque tenho dela?"
+[2026-03-27 15:48:42] IA OK [37262ms, 7180tok]: Peço desculpas pela repetição sem resposta concreta. Preciso ser transparente:
+
+**Eu gerei a consulta SQL necessária**, 
+[2026-03-27 15:48:44] FMT PHP [0ms]: 📋 Aqui está o resultado:
+
+• *Marca*: Txc Brand
+• *Unidades vendidas*: 4.182
+• *Estoque atual*: 8.200
+[2026-03-27 15:48:44] TOTAL [38669ms, 7180tok]
+[2026-03-27 15:48:44] OK: Resposta enviada para 556293372731 (110 chars)
+[2026-03-27 15:50:26] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0C6E705441A3339A4A9","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Qual minha marca campeã de vendas e quanto de estoque tenho dela?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccoun
+[2026-03-27 15:50:26] PROCESSANDO: 556293372731 -> "Qual minha marca campeã de vendas e quanto de estoque tenho dela?"
+[2026-03-27 15:50:38] IA OK [11575ms, 5737tok]: Vou consultar novamente os dados atualizados do seu banco para garantir a informação mais precisa:
+
+```sql
+WITH marca_ca
+[2026-03-27 15:50:39] FMT PHP [0ms]: 📋 Aqui está o resultado:
+
+• *Marca*: Txc Brand
+• *Unidades vendidas*: 4.182
+• *Estoque atual*: 8.200
+[2026-03-27 15:50:39] TOTAL [12334ms, 5737tok]
+[2026-03-27 15:50:41] OK: Resposta enviada para 556293372731 (110 chars)
+[2026-03-27 15:52:16] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB033834FAE2B9CFADDAD","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Qual meu ranking das 5 marcar mais vendidas e qual o estoque de cada uma","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiver
+[2026-03-27 15:52:16] PROCESSANDO: 556293372731 -> "Qual meu ranking das 5 marcar mais vendidas e qual o estoque de cada uma"
+[2026-03-27 15:52:46] IA OK [29607ms, 7001tok]: Vou consultar o ranking das 5 marcas mais vendidas junto com o estoque atual de cada uma!
+
+```sql
+SELECT 
+    m.descrica
+[2026-03-27 15:52:46] FMT PHP [0ms]: 📋 Encontrei *5* registros:
+
+1. *Marca*: Txc Brand | *Unidades vendidas*: 4.404 | *Estoque atual*: 3
+
+[2026-03-27 15:52:46] TOTAL [30005ms, 7001tok]
+[2026-03-27 15:52:47] OK: Resposta enviada para 556293372731 (397 chars)
+[2026-03-27 15:54:45] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0911B1728279AC19F01","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Qual meu ranking das 5 marcar mais vendidas e qual o estoque de cada uma","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiver
+[2026-03-27 15:54:45] PROCESSANDO: 556293372731 -> "Qual meu ranking das 5 marcar mais vendidas e qual o estoque de cada uma"
+[2026-03-27 15:55:16] IA OK [31057ms, 5769tok]: Vou consultar o ranking atualizado das suas 5 marcas mais vendidas e o estoque disponível de cada uma!
+
+```sql
+SELECT 
+ 
+[2026-03-27 15:55:17] FMT PHP [0ms]: Encontrei esses dados para voce:
+
+1. *Marca nome*: Txc Brand | *Total vendido*: 4.404 | *Estoque tot
+[2026-03-27 15:55:17] TOTAL [31422ms, 5769tok]
+[2026-03-27 15:55:17] OK: Resposta enviada para 556293372731 (483 chars)
+[2026-03-27 16:01:50] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB07CBB3BCD96ED807B2F","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Qual meu ranking das 5 marcar mais vendidas e qual o estoque de cada uma","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiver
+[2026-03-27 16:01:51] PROCESSANDO: 556293372731 -> "Qual meu ranking das 5 marcar mais vendidas e qual o estoque de cada uma"
+[2026-03-27 16:02:15] IA OK [24289ms, 5433tok]: Aqui está o seu **Top 5 de marcas** em vendas e a situação atual do estoque:
+
+🏆 **1. Txc Brand** — 4.404 unidades vendid
+[2026-03-27 16:02:15] TOTAL [24290ms, 5433tok]
+[2026-03-27 16:02:17] OK: Resposta enviada para 556293372731 (1363 chars)
+[2026-03-27 16:19:11] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3A286BC40073687BD25D","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quanto eu vendi hoje?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"rtjjIzlQZloppQ==","senderTimestamp":"1774550025","recipientKeyHash":"7SwG6YFURg9pYg==","recipientTimestamp":"1773153363"},"deviceListMetad
+[2026-03-27 16:19:11] PROCESSANDO: 556293372731 -> "Quanto eu vendi hoje?"
+[2026-03-27 16:19:19] IA OK [7267ms, 5301tok]: Vou consultar suas vendas de hoje!
+
+```sql
+SELECT 
+    COUNT(*) as numero_vendas,
+    COALESCE(SUM(total), 0) as total_v
+[2026-03-27 16:19:19] FMT PHP [0ms]: 🧠 *Como cheguei aqui*
+1️⃣ Li sua mensagem e identifiquei que voce queria saber sobre *sua pergunta*.
+[2026-03-27 16:19:19] TOTAL [7526ms, 5301tok]
+[2026-03-27 16:19:20] OK: Resposta enviada para 556293372731 (342 chars)
+[2026-03-27 16:33:11] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0EA902CCAD32B1F1C5F","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quanto vendi na black friday de 2025","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHas
+[2026-03-27 16:33:11] PROCESSANDO: 556293372731 -> "Quanto vendi na black friday de 2025"
+[2026-03-27 16:33:27] IA OK [14815ms, 5560tok]: Vou consultar suas vendas na Black Friday de 2025 (28 de novembro de 2025)!
+
+```sql
+SELECT 
+    COUNT(*) as numero_venda
+[2026-03-27 16:33:27] FMT PHP [0ms]: 🧠 *Como cheguei aqui*
+1️⃣ Li sua mensagem e identifiquei que voce queria saber sobre *sua pergunta*.
+[2026-03-27 16:33:27] TOTAL [14859ms, 5560tok]
+[2026-03-27 16:33:28] OK: Resposta enviada para 556293372731 (355 chars)
+[2026-03-27 16:33:52] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB090834E37B533268179","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Que dia que foi esse mesmo?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"7SwG6
+[2026-03-27 16:33:52] PROCESSANDO: 556293372731 -> "Que dia que foi esse mesmo?"
+[2026-03-27 16:34:03] IA OK [10135ms, 5397tok]: A **Black Friday de 2025** foi no dia **28 de novembro** (última sexta-feira do mês).
+
+Quer que eu detalhe as vendas des
+[2026-03-27 16:34:03] TOTAL [10136ms, 5397tok]
+[2026-03-27 16:34:03] OK: Resposta enviada para 556293372731 (445 chars)
+[2026-03-27 16:34:35] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB06C0E357129315BFE70","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Faça um comparativo da black de 2024 e 2025","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipie
+[2026-03-27 16:34:35] PROCESSANDO: 556293372731 -> "Faça um comparativo da black de 2024 e 2025"
+[2026-03-27 16:34:46] IA OK [11423ms, 5542tok]: Vou consultar os dados das Black Fridays de 2024 e 2025 para você!```sql
+SELECT 
+    EXTRACT(YEAR FROM datacompra) as an
+[2026-03-27 16:34:47] FMT PHP [0ms]: 🧠 *Como cheguei aqui*
+1️⃣ Li sua mensagem e identifiquei que voce queria saber sobre *sua pergunta*.
+[2026-03-27 16:34:47] TOTAL [11508ms, 5542tok]
+[2026-03-27 16:34:47] OK: Resposta enviada para 556293372731 (654 chars)
+[2026-03-27 16:38:02] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0147B433465324900E8","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Você está ficando inteligente!","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"
+[2026-03-27 16:38:02] PROCESSANDO: 556293372731 -> "Você está ficando inteligente!"
+[2026-03-27 16:38:09] IA OK [6716ms, 5194tok]: Obrigado! 😊 Fico feliz em saber que as análises estão fazendo sentido e trazendo valor de verdade.
+
+É gratificante ver o
+[2026-03-27 16:38:09] TOTAL [6717ms, 5194tok]
+[2026-03-27 16:38:09] OK: Resposta enviada para 556293372731 (489 chars)
+[2026-03-27 16:49:44] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB03E312F550872F22810","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Esta ai? QUantos produtos eu tenho?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash
+[2026-03-27 16:49:44] PROCESSANDO: 556293372731 -> "Esta ai? QUantos produtos eu tenho?"
+[2026-03-27 16:49:55] IA OK [10008ms, 5190tok]: Estou aqui sim! 😊
+
+Vou consultar seu catálogo para trazer esses números:
+
+```sql
+SELECT 
+    COUNT(DISTINCT p.codigo) as
+[2026-03-27 16:49:57] FMT PHP [0ms]: 🧠 *Como cheguei aqui*
+1️⃣ Li sua mensagem e identifiquei que voce queria saber sobre *sua pergunta*.
+[2026-03-27 16:49:57] TOTAL [12206ms, 5190tok]
+[2026-03-27 16:49:58] OK: Resposta enviada para 556293372731 (339 chars)
+[2026-03-27 16:50:22] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB007E2E83A8705DB4940","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Esta ai?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"7SwG6YFURg9pYg==","recip
+[2026-03-27 16:50:22] PROCESSANDO: 556293372731 -> "Esta ai?"
+[2026-03-27 16:51:09] IA OK [46649ms, 5130tok]: Estou sim! ✅ 
+
+Sobre sua pergunta de quantos produtos você tem:
+
+**Seu catálogo atual:**
+• **12.751 produtos** cadastrad
+[2026-03-27 16:51:10] TOTAL [46650ms, 5130tok]
+[2026-03-27 16:51:10] OK: Resposta enviada para 556293372731 (494 chars)
+[2026-03-27 17:19:30] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0C79B0061665B033AC7","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quanto eu vendi ano passado?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"7SwG
+[2026-03-27 17:19:30] PROCESSANDO: 556293372731 -> "Quanto eu vendi ano passado?"
+[2026-03-27 17:19:56] IA OK [24900ms, 5356tok]: 🧠 *Como cheguei aqui*
+1️⃣ Li sua mensagem e identifiquei que você queria saber sobre **vendas totais do ano passado (202
+[2026-03-27 17:19:56] FMT PHP [0ms]: 🧠 *Como cheguei aqui*
+1️⃣ Li sua mensagem e identifiquei que voce queria saber sobre *sua pergunta*.
+[2026-03-27 17:19:56] TOTAL [24948ms, 5356tok]
+[2026-03-27 17:19:57] OK: Resposta enviada para 556293372731 (406 chars)
+[2026-03-27 17:37:55] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0CA53D42241AE126964","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quantos projetos tenho hoje em dia?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash
+[2026-03-27 17:37:55] PROCESSANDO: 556293372731 -> "Quantos projetos tenho hoje em dia?"
+[2026-03-27 17:38:16] IA OK [20097ms, 15937tok]: ```sql:oraclex
+SELECT 
+    COUNT(*) as total_projetos,
+    SUM(CASE WHEN `status` = 'planejamento' THEN 1 ELSE 0 END) as
+[2026-03-27 17:38:16] FMT PHP [0ms]: 🧠 *Como cheguei aqui*
+1️⃣ Li sua mensagem e identifiquei que voce queria saber sobre *sua pergunta*.
+[2026-03-27 17:38:16] TOTAL [20099ms, 15937tok]
+[2026-03-27 17:38:17] OK: Resposta enviada para 556293372731 (411 chars)
+[2026-03-27 17:38:29] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0E43701903A88E3BAC2","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quem mais tem projeto?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"7SwG6YFURg
+[2026-03-27 17:38:30] PROCESSANDO: 556293372731 -> "Quem mais tem projeto?"
+[2026-03-27 17:38:50] IA OK [20203ms, 15255tok]: 🧠 *Como cheguei aqui*
+1️⃣ Li sua mensagem e identifiquei que voce queria saber sobre *sua pergunta*.
+2️⃣ Consultei os da
+[2026-03-27 17:38:50] TOTAL [20205ms, 15255tok]
+[2026-03-27 17:38:51] OK: Resposta enviada para 556293372731 (637 chars)
+[2026-03-27 18:11:46] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0621BEB569683F42F12","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quanto eu vendi hoje?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"7SwG6YFURg9
+[2026-03-27 18:11:46] PROCESSANDO: 556293372731 -> "Quanto eu vendi hoje?"
+[2026-03-27 18:12:06] IA OK [19924ms, 17709tok]: ```api:datasystem
+GET /api/v1/vendas?dataVendaInicio=2026-03-27&dataVendaFim=2026-03-27&campoOrdem=emissao&ordem=DESC&it
+[2026-03-27 18:12:06] DATASYSTEM ERRO [datasystem]: /api/v1/vendas?dataVendaInicio=2026-03-27&dataVendaFim=2026-03-27&campoOrdem=emissao&ordem=DESC&itensPorPagina=50&pagina=1 | DataSystem HTTP 400: "Erro na pesquisa de venda(s)"
+[2026-03-27 18:12:06] TOTAL [20100ms, 17709tok]
+[2026-03-27 18:12:07] OK: Resposta enviada para 556293372731 (86 chars)
+[2026-03-27 18:12:29] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0B5B8A34CCF06BF84F5","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Tem mais detalhes deste erro 400?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":
+[2026-03-27 18:12:29] PROCESSANDO: 556293372731 -> "Tem mais detalhes deste erro 400?"
+[2026-03-27 18:12:48] IA OK [18326ms, 18319tok]: Deixa eu tentar novamente buscar essas informações pra você...
+
+```api:datasystem
+GET /api/v1/vendas?dataVendaInicio=202
+[2026-03-27 18:12:48] DATASYSTEM ERRO [datasystem]: /api/v1/vendas?dataVendaInicio=2026-03-27&dataVendaFim=2026-03-27&campoOrdem=emissao&ordem=DESC&itensPorPagina=50&pagina=1 | DataSystem HTTP 400: "Erro na pesquisa de venda(s)"
+[2026-03-27 18:12:48] TOTAL [18493ms, 18319tok]
+[2026-03-27 18:12:49] OK: Resposta enviada para 556293372731 (86 chars)
+[2026-03-27 18:13:12] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB0BE5678EA799B2AFCA9","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quanto tenho de estoque?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"7SwG6YFU
+[2026-03-27 18:13:12] PROCESSANDO: 556293372731 -> "Quanto tenho de estoque?"
+[2026-03-27 18:13:23] IA OK [9900ms, 17550tok]: ```sql:principal
+SELECT 
+    SUM(e.quantidade) as total_pecas,
+    SUM(e.quantidade * COALESCE(tp.precocusto, 0)) as val
+[2026-03-27 18:13:23] FMT PHP [0ms]: 🧠 *Como cheguei aqui*
+1️⃣ Li sua mensagem e identifiquei que voce queria saber sobre *posicoes de es
+[2026-03-27 18:13:23] TOTAL [10143ms, 17550tok]
+[2026-03-27 18:13:24] OK: Resposta enviada para 556293372731 (381 chars)
+[2026-03-27 18:15:26] DATASYSTEM ERRO [datasystem]: /api/v1/vendas?dataVendaInicio=2026-03-27&dataVendaFim=2026-03-27&campoOrdem=emissao&ordem=DESC&itensPorPagina=50&pagina=1 | DataSystem HTTP 400: "Erro na pesquisa de venda(s)"
+[2026-03-27 18:16:44] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB077FAF07A5849B9DFE3","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quantos produtos tenho cadastrado no datasystem?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","rec
+[2026-03-27 18:16:44] PROCESSANDO: 556293372731 -> "Quantos produtos tenho cadastrado no datasystem?"
+[2026-03-27 18:16:52] IA OK [6788ms, 17638tok]: ```api:datasystem
+GET /api/v1/produtos?dataUltimaCompraInicio=2020-01-01&dataUltimaCompraFim=2025-12-31&campoOrdem=descr
+[2026-03-27 18:16:52] TOTAL [6944ms, 17638tok]
+[2026-03-27 18:16:53] OK: Resposta enviada para 556293372731 (59 chars)
+[2026-03-27 18:17:22] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB05F806BB7DB9FD770EF","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Me informe por completo a requisição que vc faz quando eu faço a pergunta quanto eu vendi hoje","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAcco
+[2026-03-27 18:17:22] PROCESSANDO: 556293372731 -> "Me informe por completo a requisição que vc faz quando eu faço a pergunta quanto eu vendi hoje"
+[2026-03-27 18:17:34] IA OK [10951ms, 17443tok]: Não posso compartilhar os detalhes técnicos das requisições ou consultas que realizo, pois minha função é entregar a inf
+[2026-03-27 18:17:34] TOTAL [10953ms, 17443tok]
+[2026-03-27 18:17:35] OK: Resposta enviada para 556293372731 (725 chars)
+[2026-03-27 18:17:52] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB02016703C52223B44D0","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quanto vendi hoje?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774550025","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"7SwG6YFURg9pYg
+[2026-03-27 18:17:52] PROCESSANDO: 556293372731 -> "Quanto vendi hoje?"
+[2026-03-27 18:18:10] IA OK [17531ms, 19085tok]: Não consegui obter os dados de vendas de hoje do DataSystem - o sistema retornou um erro na consulta (erro 400).
+
+Como a
+[2026-03-27 18:18:10] TOTAL [17532ms, 19085tok]
+[2026-03-27 18:18:12] OK: Resposta enviada para 556293372731 (705 chars)
+[2026-03-28 10:37:44] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB02B829B01E8F095508D","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quantos pedidos no ecommerce eu fiz hoje?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774645071","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientK
+[2026-03-28 10:37:44] PROCESSANDO: 556293372731 -> "Quantos pedidos no ecommerce eu fiz hoje?"
+[2026-03-28 10:38:17] IA OK [32144ms, 18945tok]: Não consigo distinguir especificamente os pedidos de **ecommerce** dos demais pedidos físicos com os dados disponíveis n
+[2026-03-28 10:38:17] TOTAL [32147ms, 18945tok]
+[2026-03-28 10:38:19] OK: Resposta enviada para 556293372731 (739 chars)
+[2026-03-28 10:40:19] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB093E5AA8698B8BC60A7","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quais são os canais de venda?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774645071","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"7S
+[2026-03-28 10:40:19] PROCESSANDO: 556293372731 -> "Quais são os canais de venda?"
+[2026-03-28 10:40:27] IA OK [6528ms, 17635tok]: Consultando os canais de venda disponíveis no sistema:
+
+```sql:principal
+SELECT DISTINCT tipoloja as canal
+FROM venda_he
+[2026-03-28 10:40:27] FMT PHP [0ms]: 🧠 *Como cheguei aqui*
+1️⃣ Li sua mensagem e identifiquei que voce queria saber sobre *volume de vend
+[2026-03-28 10:40:27] TOTAL [6623ms, 17635tok]
+[2026-03-28 10:40:29] OK: Resposta enviada para 556293372731 (401 chars)
+[2026-03-31 14:55:06] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"84005986775080@lid","fromMe":false,"id":"3EB045569A18B43590AF27","senderPn":"556293372731@s.whatsapp.net"},"pushName":"Chrystopher Castro","status":"DELIVERY_ACK","message":{"conversation":"Quanto eu vendi hoje?","messageContextInfo":{"deviceListMetadata":{"senderKeyHash":"gnaKyk77riHogA==","senderTimestamp":"1774974553","senderAccountType":"E2EE","receiverAccountType":"E2EE","recipientKeyHash":"nyaw/1lQiTs
+[2026-03-31 14:55:06] PROCESSANDO: 556293372731 -> "Quanto eu vendi hoje?"
+[2026-03-31 14:55:20] IA OK [12730ms, 18133tok]: Consultando suas vendas de hoje (27/03/2026) nos sistemas...
+
+```api:datasystem
+GET /api/v1/vendas?dataVendaInicio=2026-
+[2026-03-31 14:55:20] DATASYSTEM ERRO [datasystem]: /api/v1/vendas?dataVendaInicio=2026-03-27&dataVendaFim=2026-03-27&campoOrdem=emissao&ordem=DESC&itensPorPagina=50&pagina=1 | DataSystem HTTP 400: "Erro na pesquisa de venda(s)"
+[2026-03-31 14:55:20] TOTAL [13050ms, 18133tok]
+[2026-03-31 14:55:21] OK: Resposta enviada para 556293372731 (180 chars)
+[2026-03-31 15:28:48] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363401200833886@g.us","fromMe":false,"id":"A5233BA205E5B49A8220F4E35A9787A2","participant":"2161006112909@lid"},"pushName":"Karoline - Texas Center","status":"DELIVERY_ACK","message":{"senderKeyDistributionMessage":{"groupId":"120363401200833886@g.us","axolotlSenderKeyDistributionMessage":"MwjXmPnKBhADGiAY+DrfLYUGTrA3x+v/jSEujfNsvU7j3+1S9WymQwm9lSIhBZVzGWDFy3lxwLxDHydPKdZAkJzM9KDLCMxjBZSOwXQa"},"messageC
+[2026-03-31 15:53:25] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363401200833886@g.us","fromMe":false,"id":"ACB4897BD22391CB2912C50839BE34A9","participant":"68857033130124@lid"},"pushName":"Ledson Montteiro","status":"DELIVERY_ACK","message":{"senderKeyDistributionMessage":{"groupId":"120363401200833886@g.us","axolotlSenderKeyDistributionMessage":"MwiW4JOLBBAAGiBgxgRS9uTqY3HO8WUHJPao/Tt+DbiZcPngFh+HwH2j8iIhBUfkzCeadfTNsg/qO52u/760aULOSF/6B9E21eO4iIN3"},"messageContext
+[2026-03-31 15:53:30] [MSG] {"event":"messages.upsert","instance":"Reunião Texas Center","data":{"key":{"remoteJid":"120363401200833886@g.us","fromMe":false,"id":"A587B3EEBA19366EEE2E7DA307110FC5","participant":"2161006112909@lid"},"pushName":"Karoline - Texas Center","status":"DELIVERY_ACK","message":{"messageContextInfo":{"messageSecret":"6b8070pYHm4/+BBJlc94QXWASDMGz6O0ow6fq7rgliY="},"conversation":"@127152657817831  consegue me mandar o valor"},"contextInfo":{"stanzaId":"A54DA6D997181B586BA78DACD611A3EB","participant"

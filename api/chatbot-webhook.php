@@ -57,6 +57,45 @@ file_put_contents($logFile, date('[Y-m-d H:i:s] ') . "[MSG] " . substr($rawBody,
 require_once __DIR__ . '/../app/models/Database.php';
 require_once __DIR__ . '/../app/models/ChatbotModel.php';
 
+/**
+ * Gera uma mensagem de "estou consultando" mais humana e contextual.
+ */
+function gerarMensagemBuscandoHumana($nomeContato, $textoPergunta) {
+    $nome = trim((string) $nomeContato);
+    if ($nome === '') {
+        $nome = 'você';
+    } else {
+        // Usa só o primeiro nome para soar natural
+        $partesNome = preg_split('/\s+/', $nome);
+        $nome = $partesNome[0] ?? $nome;
+    }
+
+    $texto = mb_strtolower((string) $textoPergunta, 'UTF-8');
+    $tema = 'isso';
+
+    if (preg_match('/\b(estoque|saldo|dispon[ií]vel|invent[aá]rio)\b/u', $texto)) {
+        $tema = 'estoque';
+    } elseif (preg_match('/\b(venda|vendas|faturamento|receita)\b/u', $texto)) {
+        $tema = 'vendas';
+    } elseif (preg_match('/\b(pedido|pedidos|compra|compras)\b/u', $texto)) {
+        $tema = 'pedidos';
+    } elseif (preg_match('/\b(cliente|clientes)\b/u', $texto)) {
+        $tema = 'clientes';
+    } elseif (preg_match('/\b(produto|produtos|marca|marcas|sku)\b/u', $texto)) {
+        $tema = 'produtos';
+    } elseif (preg_match('/\b(financeiro|lucro|preju[ií]zo|custo|margem)\b/u', $texto)) {
+        $tema = 'financeiro';
+    }
+
+    $mensagens = [
+        "Perfeito, {$nome}! Ja estou consultando {$tema} para te responder com dados reais.",
+        "Boa, {$nome}! Vou puxar {$tema} no sistema agora e ja te trago certinho.",
+        "{$nome}, deixa comigo: estou cruzando os dados de {$tema} e ja volto com a resposta.",
+    ];
+
+    return $mensagens[array_rand($mensagens)];
+}
+
 try {
     $chatbot = new ChatbotModel();
 } catch (Exception $e) {
@@ -203,6 +242,14 @@ if (function_exists('fastcgi_finish_request')) {
 // Log do início do processamento
 file_put_contents($logFile, date('[Y-m-d H:i:s] ') . "PROCESSANDO: {$numero} -> \"{$texto}\"\n", FILE_APPEND);
 
+// Mensagem instantânea de feedback ao usuário (não bloquear esperando IA)
+try {
+    $msgHumana = gerarMensagemBuscandoHumana($nomeContato, $texto);
+    $chatbot->enviarWhatsApp($numero, $msgHumana);
+} catch (Exception $e) {
+    // Se falhar, segue o processamento normalmente
+}
+
 // PROCESSAR A MENSAGEM
 try {
     $resposta = $chatbot->processarMensagem($numero, $texto, $nomeContato);
@@ -214,7 +261,12 @@ try {
 // Enviar resposta via WhatsApp
 if (!empty($resposta)) {
     try {
-        $chatbot->enviarWhatsApp($numero, $resposta);
+        // Enviar de forma “quebrada” para ficar mais fluido no WhatsApp
+        if (method_exists($chatbot, 'enviarWhatsAppQuebrado')) {
+            $chatbot->enviarWhatsAppQuebrado($numero, $resposta);
+        } else {
+            $chatbot->enviarWhatsApp($numero, $resposta);
+        }
         file_put_contents($logFile, date('[Y-m-d H:i:s] ') . "OK: Resposta enviada para {$numero} (" . strlen($resposta) . " chars)\n", FILE_APPEND);
     } catch (Exception $e) {
         file_put_contents($logFile, date('[Y-m-d H:i:s] ') . "ERRO envio WhatsApp: " . $e->getMessage() . "\n", FILE_APPEND);
@@ -222,3 +274,6 @@ if (!empty($resposta)) {
 } else {
     file_put_contents($logFile, date('[Y-m-d H:i:s] ') . "SEM RESPOSTA para {$numero} (chatbot inativo ou não autorizado)\n", FILE_APPEND);
 }
+
+
+

@@ -6,11 +6,14 @@ $flash = getFlash();
 $user = currentUser();
 ?>
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="<?= $_SESSION['usuario_tema'] ?? 'light' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $pageTitle ?? 'Oracle X' ?></title>
+    
+    <!-- Anti-flash: apply theme before paint -->
+    <script>!function(){var t=localStorage.getItem('tema');if(t)document.documentElement.setAttribute('data-theme',t)}()</script>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -22,9 +25,11 @@ $user = currentUser();
     <!-- SortableJS for Kanban -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css">
+    <?php $cssVer = filemtime(__DIR__ . '/../../../assets/css/style.css'); ?>
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css?v=<?= $cssVer ?>">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/dark.css?v=<?= filemtime(__DIR__ . '/../../../assets/css/dark.css') ?>">
     <!-- App JS (loaded early so HelpDesk is available for inline scripts) -->
-    <script src="<?= BASE_URL ?>/assets/js/app.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/app.js?v=<?= filemtime(__DIR__ . '/../../../assets/js/app.js') ?>"></script>
 </head>
 <body>
     <div class="app-container">
